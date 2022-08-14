@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,27 +51,45 @@ public class CsvBarsLoader {
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv");
+        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv", "apple_bars", null);
     }
 
-    public static BarSeries loadCsvSeries(String filename) {
+    /**
+     * @return the bar series from SPX.
+     */
+    public static BarSeries loadSpx1MinSeries() {
+        return loadCsvSeries("spx-1min.csv", "spx-1min", null);
+    }
+
+    /**
+     * @return the bar series from SPX for single date.
+     */
+    public static BarSeries loadSpx1MinSeries(ZonedDateTime filteredDate) {
+        return loadCsvSeries("spx-1min.csv", "spx-1min", filteredDate);
+    }
+
+    public static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
 
         InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
 
-        BarSeries series = new BaseBarSeries("apple_bars");
+        BarSeries series = new BaseBarSeries(barSeriesName);
 
         try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
                 1)) {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                ZonedDateTime date = LocalDate.parse(line[0], DATE_FORMAT).atStartOfDay(ZoneId.systemDefault());
-                double open = Double.parseDouble(line[1]);
-                double high = Double.parseDouble(line[2]);
-                double low = Double.parseDouble(line[3]);
-                double close = Double.parseDouble(line[4]);
-                double volume = Double.parseDouble(line[5]);
+                ZonedDateTime date = ZonedDateTime
+                        .of(LocalDate.parse(line[0]), LocalTime.parse(line[1]), ZoneId.systemDefault());
+                if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
+                        date.getDayOfYear() == filteredDate.getDayOfYear())) {
+                    double open = Double.parseDouble(line[3]);
+                    double high = Double.parseDouble(line[4]);
+                    double low = Double.parseDouble(line[5]);
+                    double close = Double.parseDouble(line[6]);
+                    double volume = Double.parseDouble(line[7]);
 
-                series.addBar(date, open, high, low, close, volume);
+                    series.addBar(date, open, high, low, close, volume);
+                }
             }
         } catch (IOException ioe) {
             Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);

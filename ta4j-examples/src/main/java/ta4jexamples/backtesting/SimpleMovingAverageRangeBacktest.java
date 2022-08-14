@@ -45,7 +45,7 @@ import ta4jexamples.loaders.CsvBarsLoader;
 public class SimpleMovingAverageRangeBacktest {
 
     public static void main(String[] args) {
-        BarSeries series = CsvBarsLoader.loadAppleIncSeries();
+        BarSeries series = CsvBarsLoader.loadSpx1MinSeries();
 
         int start = 3;
         int stop = 50;

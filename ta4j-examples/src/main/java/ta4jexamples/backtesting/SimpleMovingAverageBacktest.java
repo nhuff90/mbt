@@ -43,11 +43,12 @@ import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.UnderIndicatorRule;
+import ta4jexamples.loaders.CsvBarsLoader;
 
 public class SimpleMovingAverageBacktest {
 
     public static void main(String[] args) throws InterruptedException {
-        BarSeries series = createBarSeries();
+        BarSeries series = CsvBarsLoader.loadSpx1MinSeries();
 
         Strategy strategy3DaySma = create3DaySmaStrategy(series);
 
