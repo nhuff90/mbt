@@ -41,19 +41,25 @@ public class AMLowRetraceRule extends AbstractRule {
     private final BarSeries series;
     private final AMRangeIndicator amRangeIndicator;
     private final double percentToTakeTrade;
+    private boolean tradeTaken;
 
     public AMLowRetraceRule(BarSeries series, AMRangeIndicator amRangeIndicator, double percentToTakeTrade) {
         this.series = series;
         this.amRangeIndicator = amRangeIndicator;
         this.percentToTakeTrade = percentToTakeTrade;
+        this.tradeTaken = false;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+        if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
+            tradeTaken = false;
+        }
         Range range = amRangeIndicator.getValue(index);
         boolean satisfied = false;
-        if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime())) {
+        if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
             satisfied = series.getBar(index).getLowPrice().isLessThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
+            tradeTaken = true;
         }
         traceIsSatisfied(index, satisfied);
         if (satisfied) {

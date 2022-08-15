@@ -171,4 +171,6 @@ public interface Bar extends Serializable {
     }
 
     void addPrice(Num price);
+
+    Num calculateAverageBarPrice();
 }

@@ -424,6 +424,10 @@ public class BaseBar implements Bar {
         }
     }
 
+    public Num calculateAverageBarPrice() {
+        return getHighPrice().plus(getLowPrice()).dividedBy(DecimalNum.valueOf(2));
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(beginTime, endTime, timePeriod, openPrice, highPrice, lowPrice, closePrice, volume, amount,

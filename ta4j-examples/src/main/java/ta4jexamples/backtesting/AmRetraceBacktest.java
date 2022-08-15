@@ -44,7 +44,7 @@ public class AmRetraceBacktest {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-//        BarSeries series = CsvBarsLoader.loadSpx1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 7, 15 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadSpx1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 13 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
         BarSeries series = CsvBarsLoader.loadSpx1MinSeries();
 
         // AM Bounce Backtest
@@ -60,7 +60,7 @@ public class AmRetraceBacktest {
                 .or(new AMRangeTimeStopRule(series));
 
         // Run backtest
-        BarSeriesManager seriesManager = new BarSeriesManager(series);
+        BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);
         TradingRecord tradingRecord = seriesManager.run(new BaseStrategy(buyingRule, sellingRule));
 
         // Analysis
@@ -93,7 +93,7 @@ public class AmRetraceBacktest {
                 Bar entryBar = series.getBar(position.getEntry().getIndex());
                 Bar exitBar = series.getBar(position.getExit().getIndex());
                 System.out.println("Date: " + entryBar.getDateName() + " | Profitable?: " + (position.getProfit().doubleValue() > 0) +
-                        " | Entry: " + entryBar.getClosePrice() + " | Exit: " + exitBar.getClosePrice() +
+                        " | Entry: " + entryBar.calculateAverageBarPrice() + " | Exit: " + exitBar.calculateAverageBarPrice() +
                         " | Profit: " + DoubleFormatter.formatDollar(position.getProfit().doubleValue()) +
                         " | Closed at: " + exitBar.getEndTime());
 
