@@ -27,30 +27,91 @@ import org.ta4j.core.*;
 import org.ta4j.core.analysis.criteria.*;
 import org.ta4j.core.analysis.criteria.pnl.*;
 import org.ta4j.core.indicators.AMRangeIndicator;
-import org.ta4j.core.indicators.SMAIndicator;
-import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.*;
 import org.ta4j.core.utils.DoubleFormatter;
 import ta4jexamples.loaders.CsvBarsLoader;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 public class AmRetraceBacktest {
 
+
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-//        BarSeries series = CsvBarsLoader.loadSpx1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 13 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadSpx1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 4, 5 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
         BarSeries series = CsvBarsLoader.loadSpx1MinSeries();
 
+        // AM Low Bounce
+        AMRangeIndicator amRangeIndicatorLowBounce = new AMRangeIndicator(series);
+        OHLCPriceIndicator ohlcPriceIndicatorLowBounce = new OHLCPriceIndicator(series);
         // AM Bounce Backtest
-        AMRangeIndicator amRangeIndicator = new AMRangeIndicator(series);
-        OHLCPriceIndicator ohlcPriceIndicator = new OHLCPriceIndicator(series);
+        AMRangeIndicator amRangeIndicatorHighBounce = new AMRangeIndicator(series);
+        OHLCPriceIndicator ohlcPriceIndicatorHighBounce = new OHLCPriceIndicator(series);
 
+        TradingRecord amLowBounceTradingRecord = runAMLowTradingRecord(series, amRangeIndicatorLowBounce, ohlcPriceIndicatorLowBounce);
+        TradingRecord amHighBounceTradingRecord = runAMHighTradingRecord(series, amRangeIndicatorHighBounce, ohlcPriceIndicatorHighBounce);
+
+//        TradingRecord copyOfAmLowBounceTradingRecord = amLowBounceTradingRecord;
+//        filterTradingRecords(amLowBounceTradingRecord, amHighBounceTradingRecord, series);
+//        filterTradingRecords(amHighBounceTradingRecord, copyOfAmLowBounceTradingRecord, series);
+
+        // AM Low Bounce
+        System.out.println("----START AM Low Bounce----");
+        reportAnalysis(series, amLowBounceTradingRecord);
+        System.out.println("----END AM Low Bounce----");
+
+
+        // AM High Bounce
+        System.out.println("----START AM High Bounce----");
+        reportAnalysis(series, amHighBounceTradingRecord);
+        System.out.println("----END AM High Bounce----");
+
+        }
+
+    /**
+     * Not worth the hassel...
+     * @param series
+     * @param amRangeIndicator
+     * @param ohlcPriceIndicator
+     * @return
+     */
+//    private static void filterTradingRecords(TradingRecord tradingRecordToReturn, TradingRecord tradingRecord2, BarSeries series) {
+//        Map<LocalDate, Bar> mapToCompare = new HashMap<>();
+//        tradingRecord2.getPositions().forEach(pos -> {
+//            LocalDate localDate = series.getBar(pos.getEntry().getIndex()).getEndTime().toLocalDate();
+//            mapToCompare.put(LocalDate.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth()), series.getBar(pos.getEntry().getIndex()));
+//        });
+//        List<Position> positionsToRemove = new ArrayList<>();
+//        for(Position pos : tradingRecordToReturn.getPositions()) {
+//            Bar bar = series.getBar(pos.getEntry().getIndex());
+//            LocalDate localDate = bar.getEndTime().toLocalDate();
+//            Bar barFromMap = mapToCompare.get(LocalDate.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth()));
+//
+//            if (barFromMap != null && barFromMap.getEndTime().isBefore(bar.getEndTime())) {
+//                positionsToRemove.add(pos);
+//            }
+//        }
+//
+//        positionsToRemove.forEach(p -> tradingRecordToReturn.getPositions().remove(p));
+//        System.out.println("test");
+//    }
+
+    private static TradingRecord runAMHighTradingRecord(BarSeries series, AMRangeIndicator amRangeIndicator, OHLCPriceIndicator ohlcPriceIndicator) {
+        // Buy Rule
+        Rule buyingRule = new AMHighRetraceRule(series, amRangeIndicator, 0.8);
+
+        // Sell Rule
+        Rule sellingRule = new AMRangeStopGainRule(ohlcPriceIndicator, amRangeIndicator, 0.6)
+                .or(new AMRangeStopLossRule(ohlcPriceIndicator, amRangeIndicator, 0.2))
+                .or(new AMRangeTimeStopRule(series));
+
+        // Run backtest
+        BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);
+        return seriesManager.run(new BaseStrategy(buyingRule, sellingRule), Trade.TradeType.SELL);
+    }
+
+    private static TradingRecord runAMLowTradingRecord(BarSeries series, AMRangeIndicator amRangeIndicator, OHLCPriceIndicator ohlcPriceIndicator) {
         // Buy Rule
         Rule buyingRule = new AMLowRetraceRule(series, amRangeIndicator, 0.2);
 
@@ -61,8 +122,10 @@ public class AmRetraceBacktest {
 
         // Run backtest
         BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);
-        TradingRecord tradingRecord = seriesManager.run(new BaseStrategy(buyingRule, sellingRule));
+        return seriesManager.run(new BaseStrategy(buyingRule, sellingRule));
+    }
 
+    private static void reportAnalysis(BarSeries series, TradingRecord tradingRecord) {
         // Analysis
         if (tradingRecord.getPositionCount() == 0) {
             System.out.println("No trades taken");
@@ -89,15 +152,15 @@ public class AmRetraceBacktest {
             System.out.println("Max Drawdown: " + DoubleFormatter.formatPercent(maximumDrawdownCriterion.calculate(series, tradingRecord).doubleValue()));
 
             // Trade Details
-            for (Position position : tradingRecord.getPositions()) {
-                Bar entryBar = series.getBar(position.getEntry().getIndex());
-                Bar exitBar = series.getBar(position.getExit().getIndex());
-                System.out.println("Date: " + entryBar.getDateName() + " | Profitable?: " + (position.getProfit().doubleValue() > 0) +
-                        " | Entry: " + entryBar.calculateAverageBarPrice() + " | Exit: " + exitBar.calculateAverageBarPrice() +
-                        " | Profit: " + DoubleFormatter.formatDollar(position.getProfit().doubleValue()) +
-                        " | Closed at: " + exitBar.getEndTime());
-
-            }
+//            for (Position position : tradingRecord.getPositions()) {
+//                Bar entryBar = series.getBar(position.getEntry().getIndex());
+//                Bar exitBar = series.getBar(position.getExit().getIndex());
+//                System.out.println("Date: " + entryBar.getDateName() + " | Profitable?: " + (position.getProfit().doubleValue() > 0) +
+//                        " | Entry: " + entryBar.calculateAverageBarPrice() + " | Exit: " + exitBar.calculateAverageBarPrice() +
+//                        " | Profit: " + DoubleFormatter.formatDollar(position.getProfit().doubleValue()) +
+//                        " | Closed at: " + exitBar.getEndTime());
+//
+//            }
 
             // EV
             Num winningEv = averageProfitCriterion.calculate(series, tradingRecord).multipliedBy(numberOfWinningPositions);

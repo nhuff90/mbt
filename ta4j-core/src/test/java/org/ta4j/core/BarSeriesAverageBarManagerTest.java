@@ -23,15 +23,6 @@
  */
 package org.ta4j.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.function.Function;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.ta4j.core.Trade.TradeType;
@@ -40,17 +31,26 @@ import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.FixedRule;
 
-public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> {
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.function.Function;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class BarSeriesAverageBarManagerTest extends AbstractIndicatorTest<BarSeries, Num> {
 
     private BarSeries seriesForRun;
 
-    private BarSeriesManager manager;
+    private BarSeriesAverageBarPriceManager manager;
 
     private Strategy strategy;
 
     private final Num HUNDRED = numOf(100);
 
-    public BarSeriesManagerTest(Function<Number, Num> numFunction) {
+    public BarSeriesAverageBarManagerTest(Function<Number, Num> numFunction) {
         super(numFunction);
     }
 
@@ -68,7 +68,7 @@ public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> 
                         ZonedDateTime.parse("2015-08-01T00:00:00-05:00", dtf),
                         ZonedDateTime.parse("2015-10-01T00:00:00-05:00", dtf),
                         ZonedDateTime.parse("2015-12-01T00:00:00-05:00", dtf) });
-        manager = new BarSeriesManager(seriesForRun);
+        manager = new BarSeriesAverageBarPriceManager(seriesForRun);
 
         strategy = new BaseStrategy(new FixedRule(0, 2, 3, 6), new FixedRule(1, 4, 7, 8));
         strategy.setUnstablePeriod(2); // Strategy would need a real test class

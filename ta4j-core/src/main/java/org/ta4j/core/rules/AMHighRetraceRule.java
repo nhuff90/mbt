@@ -28,6 +28,7 @@ import org.ta4j.core.Indicator;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.AMRangeIndicator;
 import org.ta4j.core.indicators.helpers.Range;
+import org.ta4j.core.utils.MarketTime;
 
 /**
  * AM Retrace Rule.
@@ -37,19 +38,33 @@ import org.ta4j.core.indicators.helpers.Range;
  */
 public class AMHighRetraceRule extends AbstractRule {
 
-    private BarSeries series;
-    private AMRangeIndicator amRangeIndicator;
+    private final BarSeries series;
+    private final AMRangeIndicator amRangeIndicator;
+    private final double percentToTakeTrade;
+    private boolean tradeTaken;
 
-    public AMHighRetraceRule(BarSeries series, AMRangeIndicator amRangeIndicator) {
+    public AMHighRetraceRule(BarSeries series, AMRangeIndicator amRangeIndicator, double percentToTakeTrade) {
         this.series = series;
         this.amRangeIndicator = amRangeIndicator;
+        this.percentToTakeTrade = percentToTakeTrade;
+        this.tradeTaken = false;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+        if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
+            tradeTaken = false;
+        }
         Range range = amRangeIndicator.getValue(index);
-        boolean satisfied = (series.getBar(index).getLowPrice().isGreaterThan(range.getMiddle()));
+        boolean satisfied = false;
+        if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
+            satisfied = series.getBar(index).getHighPrice().isGreaterThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
+            tradeTaken = true;
+        }
         traceIsSatisfied(index, satisfied);
+        if (satisfied) {
+            System.out.println("test - AMHighRetraceRule");
+        }
         return satisfied;
     }
 }

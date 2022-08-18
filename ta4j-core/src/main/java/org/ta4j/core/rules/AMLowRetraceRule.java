@@ -59,11 +59,11 @@ public class AMLowRetraceRule extends AbstractRule {
         boolean satisfied = false;
         if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
             satisfied = series.getBar(index).getLowPrice().isLessThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
-            tradeTaken = true;
+            tradeTaken = satisfied;
         }
         traceIsSatisfied(index, satisfied);
         if (satisfied) {
-            System.out.println("test");
+            System.out.println("test - AMLowRetraceRule");
         }
         return satisfied;
     }

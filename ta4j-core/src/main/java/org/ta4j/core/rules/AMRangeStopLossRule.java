@@ -44,7 +44,7 @@ public class AMRangeStopLossRule extends AbstractRule {
         super();
         this.ohlcPriceIndicator = ohlcPriceIndicator;
         this.amRangeIndicator = amRangeIndicator;
-        this.percentOfRangeToTakeLoss = percentOfRangeToTakeLoss*-1;
+        this.percentOfRangeToTakeLoss = percentOfRangeToTakeLoss;
     }
 
     @Override
@@ -56,14 +56,17 @@ public class AMRangeStopLossRule extends AbstractRule {
             if (currentPosition.isOpened()) {
                 if (currentPosition.getEntry().isBuy()) {
                     satisfied = isBuyGainSatisfied(ohlcPriceIndicator.getValue(index).getHighPriceIndicator(index),
-                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss));
+                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss*-1));
                 } else {
                     satisfied = isSellGainSatisfied(ohlcPriceIndicator.getValue(index).getLowPriceIndicator(index),
-                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss));
+                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss+1));
                 }
             }
         }
         traceIsSatisfied(index, satisfied);
+        if (satisfied) {
+            System.out.println("test - AMRangeStopLossRule");
+        }
         return satisfied;
     }
 
