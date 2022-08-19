@@ -62,9 +62,9 @@ public class AMLowRetraceRule extends AbstractRule {
             tradeTaken = satisfied;
         }
         traceIsSatisfied(index, satisfied);
-        if (satisfied) {
-            System.out.println("test - AMLowRetraceRule");
-        }
+//        if (satisfied) {
+//            System.out.println("test - AMLowRetraceRule");
+//        }
         return satisfied;
     }
 }

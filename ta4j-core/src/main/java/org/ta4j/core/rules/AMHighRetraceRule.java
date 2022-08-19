@@ -62,9 +62,9 @@ public class AMHighRetraceRule extends AbstractRule {
             tradeTaken = true;
         }
         traceIsSatisfied(index, satisfied);
-        if (satisfied) {
-            System.out.println("test - AMHighRetraceRule");
-        }
+//        if (satisfied) {
+//            System.out.println("test - AMHighRetraceRule");
+//        }
         return satisfied;
     }
 }

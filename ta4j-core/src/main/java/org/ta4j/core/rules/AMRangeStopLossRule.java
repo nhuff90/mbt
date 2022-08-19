@@ -64,9 +64,9 @@ public class AMRangeStopLossRule extends AbstractRule {
             }
         }
         traceIsSatisfied(index, satisfied);
-        if (satisfied) {
-            System.out.println("test - AMRangeStopLossRule");
-        }
+//        if (satisfied) {
+//            System.out.println("test - AMRangeStopLossRule");
+//        }
         return satisfied;
     }
 

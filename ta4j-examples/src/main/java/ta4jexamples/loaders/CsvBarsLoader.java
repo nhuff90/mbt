@@ -27,10 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +65,35 @@ public class CsvBarsLoader {
         return loadCsvSeries("spx-1min.csv", "spx-1min", filteredDate);
     }
 
+    /**
+     * @return the bar series from SPX for single date.
+     */
+    public static BarSeries loadEs1MinSeries(ZonedDateTime filteredDate) {
+        return loadCsvSeries("es-1min.csv", "es-1min", filteredDate);
+    }
+
+    /**
+     * @return the bar series from SPX.
+     */
+    public static BarSeries loadEs1MinSeries() {
+        return loadCsvSeries("es-1min.csv", "es-1min", null);
+    }
+
+    /**
+     * @return the bar series from SPX.
+     */
+    public static BarSeries loadAllEs1MinSeries() {
+        return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", null);
+    }
+
+    /**
+     * @return the bar series from SPX for single date.
+     */
+    public static BarSeries loadAllEs1MinSeries(ZonedDateTime filteredDate) {
+//        return loadESHistoricalCsvSeries("ES_back_single_date.csv", "es-1min", filteredDate);
+        return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", filteredDate);
+    }
+
     public static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
 
         InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
@@ -97,6 +123,46 @@ public class CsvBarsLoader {
             Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
         }
         return series;
+    }
+
+    public static BarSeries loadESHistoricalCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
+
+        InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
+
+        BarSeries series = new BaseBarSeries(barSeriesName);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
+                1)) {
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
+                        date.getDayOfYear() == filteredDate.getDayOfYear())) {
+                    double open = Double.parseDouble(line[2]);
+                    double high = Double.parseDouble(line[3]);
+                    double low = Double.parseDouble(line[4]);
+                    double close = Double.parseDouble(line[5]);
+                    double volume = Double.parseDouble(line[6]);
+
+                    series.addBar(date, open, high, low, close, volume);
+                }
+            }
+        } catch (IOException ioe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);
+        } catch (NumberFormatException nfe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
+        }
+        return series;
+    }
+
+    private static ZonedDateTime formatDateAndTime(String date, String time){
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("u/M/d");
+        LocalDate formattedDate =  LocalDate.parse(date, dateFormatter);
+
+        String formattedTime = ((time.split("\\.")[0]).trim()); // Plus 1 hour because data is in central time
+        String day = formattedDate.toString();
+        return LocalDateTime.parse(day + " " + formattedTime, DateTimeFormatter.ofPattern( "u-M-d HH:mm:ss" )).atZone(ZoneId.of( "America/Chicago" ) ).withZoneSameInstant(ZoneId.of( "America/New_York" ) );
     }
 
     public static void main(String[] args) {
