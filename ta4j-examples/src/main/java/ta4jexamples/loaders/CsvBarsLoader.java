@@ -23,9 +23,7 @@
  */
 package ta4jexamples.loaders;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -81,28 +79,28 @@ public class CsvBarsLoader {
      * @return the bar series from ES.
      */
     public static BarSeries loadAllEs1MinSeries() {
-        return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", null);
+        return loadESHistoricalCsvSeries("es_1min_historical_data.csv", "es-1min", null);
     }
 
     /**
      * @return the bar series from ES for specific date.
      */
     public static BarSeries loadAllEs1MinSeries(ZonedDateTime filteredDate) {
-        return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", filteredDate);
+        return loadESHistoricalCsvSeries("es_1min_historical_data.csv", "es-1min", filteredDate);
     }
 
     /**
      * @return the bar series of ES after a specified year. (Inclusive)
      */
     public static BarSeries loadAllEs1MinSeriesAfterYear(ZonedDateTime filteredDate) {
-        return loadESHistoricalCsvSeriesAfterYear("ES_backvolume_adjusted_1min_data.csv", "es-1min", filteredDate);
+        return loadESHistoricalCsvSeriesAfterYear("es_1min_historical_data.csv", "es-1min", filteredDate);
     }
 
     /**
      * @return the bar series of ES between 2 specified years. (Inclusive/Inclusive)
      */
     public static BarSeries loadAllEs1MinSeriesBetweenYears(ZonedDateTime startDate, ZonedDateTime endDate) {
-        return loadESHistoricalCsvSeriesBetweenYears("ES_backvolume_adjusted_1min_data.csv", "es-1min", startDate, endDate);
+        return loadESHistoricalCsvSeriesBetweenYears("es_1min_historical_data.csv", "es-1min", startDate, endDate);
     }
 
     private static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
@@ -116,7 +114,7 @@ public class CsvBarsLoader {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
                 ZonedDateTime date = ZonedDateTime
-                        .of(LocalDate.parse(line[0]), LocalTime.parse(line[1]), ZoneId.systemDefault());
+                        .of(LocalDate.parse(line[0].trim()), LocalTime.parse(line[1].trim()), ZoneId.of ( "America/New_York" ));
                 if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
                         date.getDayOfYear() == filteredDate.getDayOfYear())) {
                     double open = Double.parseDouble(line[3]);
@@ -147,7 +145,9 @@ public class CsvBarsLoader {
                 1)) {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+//                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                ZonedDateTime date = ZonedDateTime
+                        .of(LocalDate.parse(line[0].trim()), LocalTime.parse(line[1].trim()), ZoneId.of ( "America/New_York" ));
                 if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
                         date.getDayOfYear() == filteredDate.getDayOfYear())) {
                     double open = Double.parseDouble(line[2]);
@@ -178,7 +178,9 @@ public class CsvBarsLoader {
                 1)) {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+//                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                ZonedDateTime date = ZonedDateTime
+                        .of(LocalDate.parse(line[0].trim()), LocalTime.parse(line[1].trim()), ZoneId.of ( "America/New_York" ));
                 if ((filteredDate == null) || (date.getYear() >= filteredDate.getYear())) {
                     double open = Double.parseDouble(line[2]);
                     double high = Double.parseDouble(line[3]);
@@ -208,7 +210,9 @@ public class CsvBarsLoader {
                 1)) {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+//                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                ZonedDateTime date = ZonedDateTime
+                        .of(LocalDate.parse(line[0].trim()), LocalTime.parse(line[1].trim()), ZoneId.of ( "America/New_York" ));
                 if (((startDate == null) || (date.getYear() >= startDate.getYear()))
                 && ((endDate == null) || (date.getYear() <= endDate.getYear()))) {
                     double open = Double.parseDouble(line[2]);
@@ -228,14 +232,14 @@ public class CsvBarsLoader {
         return series;
     }
 
-    private static ZonedDateTime formatDateAndTime(String date, String time){
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("u/M/d");
-        LocalDate formattedDate =  LocalDate.parse(date, dateFormatter);
-
-        String formattedTime = ((time.split("\\.")[0]).trim()); // Plus 1 hour because data is in central time
-        String day = formattedDate.toString();
-        return LocalDateTime.parse(day + " " + formattedTime, DateTimeFormatter.ofPattern( "u-M-d HH:mm:ss" )).atZone(ZoneId.of( "America/Chicago" ) ).withZoneSameInstant(ZoneId.of( "America/New_York" ) );
-    }
+//    private static ZonedDateTime formatDateAndTime(String date, String time){
+//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("u/M/d");
+//        LocalDate formattedDate =  LocalDate.parse(date, dateFormatter);
+//
+//        String formattedTime = ((time.split("\\.")[0]).trim()); // Plus 1 hour because data is in central time
+//        String day = formattedDate.toString();
+//        return LocalDateTime.parse(day + " " + formattedTime, DateTimeFormatter.ofPattern( "u-M-d HH:mm:ss" )).atZone(ZoneId.of( "America/Chicago" ) ).withZoneSameInstant(ZoneId.of( "America/New_York" ) );
+//    }
 
     public static void main(String[] args) {
         BarSeries series = CsvBarsLoader.loadAppleIncSeries();
@@ -244,5 +248,67 @@ public class CsvBarsLoader {
         System.out.println("Number of bars: " + series.getBarCount());
         System.out.println("First bar: \n" + "\tVolume: " + series.getBar(0).getVolume() + "\n" + "\tOpen price: "
                 + series.getBar(0).getOpenPrice() + "\n" + "\tClose price: " + series.getBar(0).getClosePrice());
+
+//        convertDateTimeToEst();
     }
+
+//
+//    private static void convertDateTimeToEst() {
+//        InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream("ES_backvolume_adjusted_1min_data.csv");
+//
+////        BarSeries series = new BaseBarSeries(barSeriesName);
+////        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        String str = "Date, Time, Open, High, Low, Close, Volume, # of Trades, OHLC Avg, HLC Avg, HL Avg, Bid Volume, Ask Volume";
+//
+//        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\workspace\\nate\\mbt\\ta4j-examples\\src\\main\\resources\\es_1min_historical_data.csv", true))) {
+//            writer.append(str);
+//            writer.append("\n");
+//
+//
+//            // create formatter Object for ISO_LOCAL_TIME
+//            DateTimeFormatter formatter
+//                    = DateTimeFormatter.ISO_LOCAL_TIME;
+//
+//
+//            try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
+//                    1)) {
+//                String[] line;
+//                while ((line = csvReader.readNext()) != null) {
+//                    ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+////                    double open = Double.parseDouble(line[2]);
+////                    double high = Double.parseDouble(line[3]);
+////                    double low = Double.parseDouble(line[4]);
+////                    double close = Double.parseDouble(line[5]);
+////                    double volume = Double.parseDouble(line[6]);
+//
+////                    series.addBar(date, open, high, low, close, volume);
+//                    writer.append(date.toLocalDate().toString() + ", " + date.toLocalTime().format(formatter)
+//                    + ", " + line[2]
+//                    + ", " + line[3]
+//                    + ", " + line[4]
+//                    + ", " + line[5]
+//                    + ", " + line[6]
+//                    + ", " + line[7]
+//                    + ", " + line[8]
+//                    + ", " + line[9]
+//                    + ", " + line[10]
+//                    + ", " + line[11]
+//                    + ", " + line[12]
+//                    );
+//                    writer.append("\n");
+//                }
+//            } catch (IOException ioe) {
+//                Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);
+//            } catch (NumberFormatException nfe) {
+//                Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
+//            }
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        return;
+//    }
 }
