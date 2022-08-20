@@ -26,11 +26,11 @@ package org.ta4j.core;
 import static org.ta4j.core.num.NaN.NaN;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -483,4 +483,13 @@ public class BaseBarSeries implements BarSeries {
         }
     }
 
+    @Override
+    public Bar getBarByEndTime(LocalTime localTime) {
+        for (Bar bar : bars) {
+            if (LocalDateTime.ofInstant(bar.getEndTime().toInstant(), ZoneId.of("America/New_York")).toLocalTime().equals(localTime)) {
+                return bar;
+            }
+        }
+        return null;
+    }
 }

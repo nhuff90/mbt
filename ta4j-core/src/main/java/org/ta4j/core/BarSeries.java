@@ -26,6 +26,7 @@ package org.ta4j.core;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -356,4 +357,10 @@ public interface BarSeries extends Serializable {
      */
     Function<Number, Num> function();
 
+    /**
+     * Returns the first matching bar given a provided time.
+     * @param localTime
+     * @return
+     */
+    Bar getBarByEndTime(LocalTime localTime);
 }

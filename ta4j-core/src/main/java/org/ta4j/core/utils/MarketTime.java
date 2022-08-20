@@ -32,6 +32,7 @@ public enum MarketTime {
 
     // PM Range Times
     PM_START_AFTER(LocalTime.parse( "13:29:00" )),
+    PM_START(LocalTime.parse( "13:30:00" )),
     PM_END_BEFORE(LocalTime.parse( "14:06:00" )),
     PM_BOUNCE_START_AFTER(LocalTime.parse( "14:02:00" )),
     PM_BOUNCE_END_BEFORE(LocalTime.parse( "14:11:00" )),
@@ -75,6 +76,10 @@ public enum MarketTime {
 
     public static Boolean isAfterAmStop(ZonedDateTime time)  {
         return time.toLocalTime().isAfter( MarketTime.AM_BOUNCE_STOP_LOSS.getLocalTime());
+    }
+
+    public static Boolean isAfterPmStop(ZonedDateTime time)  {
+        return time.toLocalTime().isAfter( MarketTime.PM_BOUNCE_STOP_LOSS.getLocalTime());
     }
 
     public static Boolean isAmBounceRange(ZonedDateTime time)  {

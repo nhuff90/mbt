@@ -42,8 +42,6 @@ import com.opencsv.CSVReader;
  */
 public class CsvBarsLoader {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     /**
      * @return the bar series from Apple Inc. bars.
      */
@@ -59,42 +57,55 @@ public class CsvBarsLoader {
     }
 
     /**
-     * @return the bar series from SPX for single date.
+     * @return the bar series from SPX.
      */
     public static BarSeries loadSpx1MinSeries(ZonedDateTime filteredDate) {
         return loadCsvSeries("spx-1min.csv", "spx-1min", filteredDate);
     }
 
     /**
-     * @return the bar series from SPX for single date.
+     * @return the bar series from ES for single date.
      */
     public static BarSeries loadEs1MinSeries(ZonedDateTime filteredDate) {
         return loadCsvSeries("es-1min.csv", "es-1min", filteredDate);
     }
 
     /**
-     * @return the bar series from SPX.
+     * @return the bar series from ES.
      */
     public static BarSeries loadEs1MinSeries() {
         return loadCsvSeries("es-1min.csv", "es-1min", null);
     }
 
     /**
-     * @return the bar series from SPX.
+     * @return the bar series from ES.
      */
     public static BarSeries loadAllEs1MinSeries() {
         return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", null);
     }
 
     /**
-     * @return the bar series from SPX for single date.
+     * @return the bar series from ES for specific date.
      */
     public static BarSeries loadAllEs1MinSeries(ZonedDateTime filteredDate) {
-//        return loadESHistoricalCsvSeries("ES_back_single_date.csv", "es-1min", filteredDate);
         return loadESHistoricalCsvSeries("ES_backvolume_adjusted_1min_data.csv", "es-1min", filteredDate);
     }
 
-    public static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
+    /**
+     * @return the bar series of ES after a specified year. (Inclusive)
+     */
+    public static BarSeries loadAllEs1MinSeriesAfterYear(ZonedDateTime filteredDate) {
+        return loadESHistoricalCsvSeriesAfterYear("ES_backvolume_adjusted_1min_data.csv", "es-1min", filteredDate);
+    }
+
+    /**
+     * @return the bar series of ES between 2 specified years. (Inclusive/Inclusive)
+     */
+    public static BarSeries loadAllEs1MinSeriesBetweenYears(ZonedDateTime startDate, ZonedDateTime endDate) {
+        return loadESHistoricalCsvSeriesBetweenYears("ES_backvolume_adjusted_1min_data.csv", "es-1min", startDate, endDate);
+    }
+
+    private static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
 
         InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
 
@@ -125,7 +136,7 @@ public class CsvBarsLoader {
         return series;
     }
 
-    public static BarSeries loadESHistoricalCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
+    private static BarSeries loadESHistoricalCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
 
         InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
 
@@ -139,6 +150,67 @@ public class CsvBarsLoader {
                 ZonedDateTime date = formatDateAndTime(line[0], line[1]);
                 if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
                         date.getDayOfYear() == filteredDate.getDayOfYear())) {
+                    double open = Double.parseDouble(line[2]);
+                    double high = Double.parseDouble(line[3]);
+                    double low = Double.parseDouble(line[4]);
+                    double close = Double.parseDouble(line[5]);
+                    double volume = Double.parseDouble(line[6]);
+
+                    series.addBar(date, open, high, low, close, volume);
+                }
+            }
+        } catch (IOException ioe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);
+        } catch (NumberFormatException nfe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
+        }
+        return series;
+    }
+
+    private static BarSeries loadESHistoricalCsvSeriesAfterYear(String filename, String barSeriesName, ZonedDateTime filteredDate) {
+
+        InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
+
+        BarSeries series = new BaseBarSeries(barSeriesName);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
+                1)) {
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                if ((filteredDate == null) || (date.getYear() >= filteredDate.getYear())) {
+                    double open = Double.parseDouble(line[2]);
+                    double high = Double.parseDouble(line[3]);
+                    double low = Double.parseDouble(line[4]);
+                    double close = Double.parseDouble(line[5]);
+                    double volume = Double.parseDouble(line[6]);
+
+                    series.addBar(date, open, high, low, close, volume);
+                }
+            }
+        } catch (IOException ioe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);
+        } catch (NumberFormatException nfe) {
+            Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
+        }
+        return series;
+    }
+
+    private static BarSeries loadESHistoricalCsvSeriesBetweenYears(String filename, String barSeriesName, ZonedDateTime startDate, ZonedDateTime endDate) {
+
+        InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
+
+        BarSeries series = new BaseBarSeries(barSeriesName);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
+                1)) {
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                ZonedDateTime date = formatDateAndTime(line[0], line[1]);
+                if (((startDate == null) || (date.getYear() >= startDate.getYear()))
+                && ((endDate == null) || (date.getYear() <= endDate.getYear()))) {
                     double open = Double.parseDouble(line[2]);
                     double high = Double.parseDouble(line[3]);
                     double low = Double.parseDouble(line[4]);
