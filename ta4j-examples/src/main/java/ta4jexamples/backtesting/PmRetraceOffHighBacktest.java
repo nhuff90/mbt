@@ -25,9 +25,12 @@ package ta4jexamples.backtesting;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
-import org.ta4j.core.indicators.PMRangeIndicator;
+import org.ta4j.core.indicators.mine.PMRangeIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.rules.*;
+import org.ta4j.core.rules.mine.PMHighRetraceRule;
+import org.ta4j.core.rules.mine.PMRangeStopGainRule;
+import org.ta4j.core.rules.mine.PMRangeStopLossRule;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

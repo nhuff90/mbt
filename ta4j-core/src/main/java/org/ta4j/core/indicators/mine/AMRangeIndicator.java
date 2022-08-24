@@ -1,10 +1,8 @@
-package org.ta4j.core.indicators;
+package org.ta4j.core.indicators.mine;
 
 import org.ta4j.core.BarSeries;
+import org.ta4j.core.indicators.CachedIndicator;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.DoubleNum;
-import org.ta4j.core.num.Num;
 import org.ta4j.core.utils.MarketTime;
 
 public class AMRangeIndicator extends CachedIndicator<Range> {

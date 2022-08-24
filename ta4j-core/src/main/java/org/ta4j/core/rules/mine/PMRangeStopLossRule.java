@@ -21,29 +21,30 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules;
+package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.AMRangeIndicator;
+import org.ta4j.core.indicators.mine.PMRangeIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.AbstractRule;
 
 /**
  * A stop-gain rule.
  *
  * Satisfied when the close price reaches the gain threshold.
  */
-public class AMRangeStopLossRule extends AbstractRule {
+public class PMRangeStopLossRule extends AbstractRule {
 
     OHLCPriceIndicator ohlcPriceIndicator;
-    AMRangeIndicator amRangeIndicator;
+    PMRangeIndicator pmRangeIndicator;
     double percentOfRangeToTakeLoss;
 
-    public AMRangeStopLossRule(OHLCPriceIndicator ohlcPriceIndicator, AMRangeIndicator amRangeIndicator, double percentOfRangeToTakeLoss) {
+    public PMRangeStopLossRule(OHLCPriceIndicator ohlcPriceIndicator, PMRangeIndicator pmRangeIndicator, double percentOfRangeToTakeLoss) {
         super();
         this.ohlcPriceIndicator = ohlcPriceIndicator;
-        this.amRangeIndicator = amRangeIndicator;
+        this.pmRangeIndicator = pmRangeIndicator;
         this.percentOfRangeToTakeLoss = percentOfRangeToTakeLoss;
     }
 
@@ -56,16 +57,16 @@ public class AMRangeStopLossRule extends AbstractRule {
             if (currentPosition.isOpened()) {
                 if (currentPosition.getEntry().isBuy()) {
                     satisfied = isBuyGainSatisfied(ohlcPriceIndicator.getValue(index).getHighPriceIndicator(index),
-                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss*-1));
+                            pmRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss*-1));
                 } else {
                     satisfied = isSellGainSatisfied(ohlcPriceIndicator.getValue(index).getLowPriceIndicator(index),
-                            amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss+1));
+                            pmRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss+1));
                 }
             }
         }
         traceIsSatisfied(index, satisfied);
 //        if (satisfied) {
-//            System.out.println("test - AMRangeStopLossRule");
+//            System.out.println("test - PMRangeStopLossRule");
 //        }
         return satisfied;
     }

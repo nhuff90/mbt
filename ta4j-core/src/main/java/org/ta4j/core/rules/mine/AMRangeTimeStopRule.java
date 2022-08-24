@@ -21,48 +21,36 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules;
+package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.Indicator;
+import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.AMRangeIndicator;
-import org.ta4j.core.indicators.PMRangeIndicator;
-import org.ta4j.core.indicators.helpers.Range;
+import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 
 /**
- * PM Low Retrace Rule.
+ * A stop-gain rule.
+ *
+ * Satisfied when the close price reaches the gain threshold.
  */
-public class PMLowRetraceRule extends AbstractRule {
+public class AMRangeTimeStopRule extends AbstractRule {
 
-    private final BarSeries series;
-    private final PMRangeIndicator pmRangeIndicator;
-    private final double percentToTakeTrade;
-    private boolean tradeTaken;
+    BarSeries series;
 
-    public PMLowRetraceRule(BarSeries series, PMRangeIndicator pmRangeIndicator, double percentToTakeTrade) {
+    public AMRangeTimeStopRule(BarSeries series) {
+        super();
         this.series = series;
-        this.pmRangeIndicator = pmRangeIndicator;
-        this.percentToTakeTrade = percentToTakeTrade;
-        this.tradeTaken = false;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
-            tradeTaken = false;
+        if (tradingRecord != null) {
+            Position currentPosition = tradingRecord.getCurrentPosition();
+            if (currentPosition.isOpened()) {
+                return MarketTime.isAfterAmStop(series.getBar(index).getEndTime());
+            }
         }
-        Range range = pmRangeIndicator.getValue(index);
-        boolean satisfied = false;
-        if (MarketTime.isPmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
-            satisfied = series.getBar(index).getLowPrice().isLessThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
-            tradeTaken = satisfied;
-        }
-        traceIsSatisfied(index, satisfied);
-//        if (satisfied) {
-//            System.out.println("test - PMLowRetraceRule");
-//        }
-        return satisfied;
+        return false;
     }
 }

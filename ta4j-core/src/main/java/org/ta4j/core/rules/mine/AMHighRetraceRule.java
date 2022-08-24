@@ -21,29 +21,32 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules;
+package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.AMRangeIndicator;
-import org.ta4j.core.indicators.PMRangeIndicator;
+import org.ta4j.core.indicators.mine.AMRangeIndicator;
 import org.ta4j.core.indicators.helpers.Range;
+import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 
 /**
- * PM High Retrace Rule.
+ * AM Retrace Rule.
+ *
+ * Satisfied when the value of the first {@link Indicator indicator}
+ * crosses-down the value of the second one.
  */
-public class PMHighRetraceRule extends AbstractRule {
+public class AMHighRetraceRule extends AbstractRule {
 
     private final BarSeries series;
-    private final PMRangeIndicator pmRangeIndicator;
+    private final AMRangeIndicator amRangeIndicator;
     private final double percentToTakeTrade;
     private boolean tradeTaken;
 
-    public PMHighRetraceRule(BarSeries series, PMRangeIndicator pmRangeIndicator, double percentToTakeTrade) {
+    public AMHighRetraceRule(BarSeries series, AMRangeIndicator amRangeIndicator, double percentToTakeTrade) {
         this.series = series;
-        this.pmRangeIndicator = pmRangeIndicator;
+        this.amRangeIndicator = amRangeIndicator;
         this.percentToTakeTrade = percentToTakeTrade;
         this.tradeTaken = false;
     }
@@ -53,9 +56,9 @@ public class PMHighRetraceRule extends AbstractRule {
         if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
             tradeTaken = false;
         }
-        Range range = pmRangeIndicator.getValue(index);
+        Range range = amRangeIndicator.getValue(index);
         boolean satisfied = false;
-        if (MarketTime.isPmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
+        if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
             satisfied = series.getBar(index).getHighPrice().isGreaterThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
             tradeTaken = true;
         }

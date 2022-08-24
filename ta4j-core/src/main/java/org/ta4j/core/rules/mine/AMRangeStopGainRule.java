@@ -21,31 +21,31 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules;
+package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.AMRangeIndicator;
-import org.ta4j.core.indicators.PMRangeIndicator;
+import org.ta4j.core.indicators.mine.AMRangeIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.AbstractRule;
 
 /**
  * A stop-gain rule.
  *
  * Satisfied when the close price reaches the gain threshold.
  */
-public class PMRangeStopLossRule extends AbstractRule {
+public class AMRangeStopGainRule extends AbstractRule {
 
     OHLCPriceIndicator ohlcPriceIndicator;
-    PMRangeIndicator pmRangeIndicator;
-    double percentOfRangeToTakeLoss;
+    AMRangeIndicator amRangeIndicator;
+    double percentOfRangeToTakeProfits;
 
-    public PMRangeStopLossRule(OHLCPriceIndicator ohlcPriceIndicator, PMRangeIndicator pmRangeIndicator, double percentOfRangeToTakeLoss) {
+    public AMRangeStopGainRule(OHLCPriceIndicator ohlcPriceIndicator, AMRangeIndicator amRangeIndicator, double percentOfRangeToTakeProfits) {
         super();
         this.ohlcPriceIndicator = ohlcPriceIndicator;
-        this.pmRangeIndicator = pmRangeIndicator;
-        this.percentOfRangeToTakeLoss = percentOfRangeToTakeLoss;
+        this.amRangeIndicator = amRangeIndicator;
+        this.percentOfRangeToTakeProfits = percentOfRangeToTakeProfits;
     }
 
     @Override
@@ -55,27 +55,28 @@ public class PMRangeStopLossRule extends AbstractRule {
         if (tradingRecord != null) {
             Position currentPosition = tradingRecord.getCurrentPosition();
             if (currentPosition.isOpened()) {
+
+                Num currentPrice = ohlcPriceIndicator.getValue(index).getClosePriceIndicator(index);
+
                 if (currentPosition.getEntry().isBuy()) {
-                    satisfied = isBuyGainSatisfied(ohlcPriceIndicator.getValue(index).getHighPriceIndicator(index),
-                            pmRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss*-1));
+                    satisfied = isBuyGainSatisfied(currentPrice, amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeProfits));
                 } else {
-                    satisfied = isSellGainSatisfied(ohlcPriceIndicator.getValue(index).getLowPriceIndicator(index),
-                            pmRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeLoss+1));
+                    satisfied = isSellGainSatisfied(currentPrice, amRangeIndicator.getValue(index).getPercentileFromRange(percentOfRangeToTakeProfits));
                 }
             }
         }
         traceIsSatisfied(index, satisfied);
 //        if (satisfied) {
-//            System.out.println("test - PMRangeStopLossRule");
+//            System.out.println("test - AMRangeStopGainRule");
 //        }
         return satisfied;
     }
 
     private boolean isSellGainSatisfied(Num currentPrice, Num stopPrice) {
-        return currentPrice.isGreaterThanOrEqual(stopPrice);
+        return currentPrice.isLessThanOrEqual(stopPrice);
     }
 
     private boolean isBuyGainSatisfied(Num currentPrice, Num stopPrice) {
-        return currentPrice.isLessThanOrEqual(stopPrice);
+        return currentPrice.isGreaterThanOrEqual(stopPrice);
     }
 }
