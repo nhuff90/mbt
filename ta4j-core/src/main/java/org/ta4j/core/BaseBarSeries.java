@@ -492,4 +492,8 @@ public class BaseBarSeries implements BarSeries {
         }
         return null;
     }
+
+    public List<Bar> getBars() {
+        return bars;
+    }
 }

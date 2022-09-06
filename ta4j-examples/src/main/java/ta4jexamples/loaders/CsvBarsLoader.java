@@ -27,6 +27,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBarSeries;
 
 import com.opencsv.CSVReader;
+import ta4jexamples.data.DailyInformation;
 
 /**
  * This class build a Ta4j bar series from a CSV file containing bars.
@@ -311,4 +313,30 @@ public class CsvBarsLoader {
 //
 //        return;
 //    }
+
+    public static void writeDailyInfoToCSV(List<DailyInformation> dailyInformationList) {
+
+            String str = "Date, Open Price, High Price up to PM, Low Price up to PM, Price at PM range Start, Price at PM range End, Close Price\n";
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\workspace\\nate\\mbt\\ta4j-examples\\src\\main\\resources\\output.csv", true))) {
+                writer.append(str);
+
+
+                dailyInformationList.forEach(dailyInformation -> {
+                    try {
+                        writer.append(dailyInformation.getDate()
+                                + ", " + (dailyInformation.getDailyOpenPrice() != null ? dailyInformation.getDailyOpenPrice() : "")
+                                + ", " + (dailyInformation.getHighPriceUpToPMPrice() != null ? dailyInformation.getHighPriceUpToPMPrice() : "")
+                                + ", " + (dailyInformation.getLowPriceUpToPMPrice() != null ? dailyInformation.getLowPriceUpToPMPrice() : "")
+                                + ", " + (dailyInformation.getPMRangeOpenPrice() != null ? dailyInformation.getPMRangeOpenPrice() : "")
+                                + ", " + (dailyInformation.getPMRangeClosePrice() != null ? dailyInformation.getPMRangeClosePrice() : "")
+                                + ", " + (dailyInformation.getDailyClosePrice() != null ? dailyInformation.getDailyClosePrice() : ""));
+                        writer.append("\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
 }

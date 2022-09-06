@@ -363,4 +363,5 @@ public interface BarSeries extends Serializable {
      * @return
      */
     Bar getBarByEndTime(LocalTime localTime);
+    List<Bar> getBars();
 }

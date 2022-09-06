@@ -12,13 +12,13 @@ public class PMRangeIndicator extends CachedIndicator<Range> {
     public PMRangeIndicator(BarSeries series) {
         super(series);
         pmRangeTimeIndicator = new PMRangeTimeIndicator(series);
-        pmRange = new Range(series.getBarByEndTime(MarketTime.PM_START.getLocalTime()));
+        pmRange = new Range(series.getBarByEndTime(MarketTime.PM_START_TIME.getLocalTime()), MarketTime.PM_START_TIME, MarketTime.PM_END_TIME);
     }
 
     @Override
     protected Range calculate(int index) {
         if (pmRangeTimeIndicator.getValue(index)) {
-            pmRange.setRangeValues(getBarSeries().getBar(index));
+            pmRange.setRangeValues(getBarSeries().getBar(index), MarketTime.PM_START_TIME, MarketTime.PM_END_TIME);
         }
         return pmRange;
     }

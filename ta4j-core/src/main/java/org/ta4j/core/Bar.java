@@ -26,6 +26,7 @@ package org.ta4j.core;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
@@ -173,4 +174,6 @@ public interface Bar extends Serializable {
     void addPrice(Num price);
 
     Num calculateAverageBarPrice();
+
+    LocalDate getLocalDate();
 }

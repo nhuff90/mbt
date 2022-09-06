@@ -25,6 +25,7 @@ package org.ta4j.core;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -426,6 +427,11 @@ public class BaseBar implements Bar {
 
     public Num calculateAverageBarPrice() {
         return getHighPrice().plus(getLowPrice()).dividedBy(DecimalNum.valueOf(2));
+    }
+
+    @Override
+    public LocalDate getLocalDate() {
+        return endTime.toLocalDate();
     }
 
     @Override
