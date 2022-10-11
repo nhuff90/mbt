@@ -251,68 +251,7 @@ public class CsvBarsLoader {
         System.out.println("First bar: \n" + "\tVolume: " + series.getBar(0).getVolume() + "\n" + "\tOpen price: "
                 + series.getBar(0).getOpenPrice() + "\n" + "\tClose price: " + series.getBar(0).getClosePrice());
 
-//        convertDateTimeToEst();
     }
-
-//
-//    private static void convertDateTimeToEst() {
-//        InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream("ES_backvolume_adjusted_1min_data.csv");
-//
-////        BarSeries series = new BaseBarSeries(barSeriesName);
-////        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        String str = "Date, Time, Open, High, Low, Close, Volume, # of Trades, OHLC Avg, HLC Avg, HL Avg, Bid Volume, Ask Volume";
-//
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\workspace\\nate\\mbt\\ta4j-examples\\src\\main\\resources\\es_1min_historical_data.csv", true))) {
-//            writer.append(str);
-//            writer.append("\n");
-//
-//
-//            // create formatter Object for ISO_LOCAL_TIME
-//            DateTimeFormatter formatter
-//                    = DateTimeFormatter.ISO_LOCAL_TIME;
-//
-//
-//            try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
-//                    1)) {
-//                String[] line;
-//                while ((line = csvReader.readNext()) != null) {
-//                    ZonedDateTime date = formatDateAndTime(line[0], line[1]);
-////                    double open = Double.parseDouble(line[2]);
-////                    double high = Double.parseDouble(line[3]);
-////                    double low = Double.parseDouble(line[4]);
-////                    double close = Double.parseDouble(line[5]);
-////                    double volume = Double.parseDouble(line[6]);
-//
-////                    series.addBar(date, open, high, low, close, volume);
-//                    writer.append(date.toLocalDate().toString() + ", " + date.toLocalTime().format(formatter)
-//                    + ", " + line[2]
-//                    + ", " + line[3]
-//                    + ", " + line[4]
-//                    + ", " + line[5]
-//                    + ", " + line[6]
-//                    + ", " + line[7]
-//                    + ", " + line[8]
-//                    + ", " + line[9]
-//                    + ", " + line[10]
-//                    + ", " + line[11]
-//                    + ", " + line[12]
-//                    );
-//                    writer.append("\n");
-//                }
-//            } catch (IOException ioe) {
-//                Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Unable to load bars from CSV", ioe);
-//            } catch (NumberFormatException nfe) {
-//                Logger.getLogger(CsvBarsLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
-//            }
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        return;
-//    }
 
     public static void writeDailyInfoToCSV(List<DailyInformation> dailyInformationList) {
 
@@ -324,12 +263,12 @@ public class CsvBarsLoader {
                 dailyInformationList.forEach(dailyInformation -> {
                     try {
                         writer.append(dailyInformation.getDate()
-                                + ", " + (dailyInformation.getDailyOpenPrice() != null ? dailyInformation.getDailyOpenPrice() : "")
-                                + ", " + (dailyInformation.getHighPriceUpToPMPrice() != null ? dailyInformation.getHighPriceUpToPMPrice() : "")
-                                + ", " + (dailyInformation.getLowPriceUpToPMPrice() != null ? dailyInformation.getLowPriceUpToPMPrice() : "")
-                                + ", " + (dailyInformation.getPMRangeOpenPrice() != null ? dailyInformation.getPMRangeOpenPrice() : "")
-                                + ", " + (dailyInformation.getPMRangeClosePrice() != null ? dailyInformation.getPMRangeClosePrice() : "")
-                                + ", " + (dailyInformation.getDailyClosePrice() != null ? dailyInformation.getDailyClosePrice() : ""));
+                                + ", " + (dailyInformation.getOpenPrice(DailyInformation.DailyRange.RTH) != null ? dailyInformation.getOpenPrice(DailyInformation.DailyRange.RTH) : "")
+                                + ", " + (dailyInformation.getHighPrice(DailyInformation.DailyRange.RTH_TO_PM) != null ? dailyInformation.getHighPrice(DailyInformation.DailyRange.RTH_TO_PM) : "")
+                                + ", " + (dailyInformation.getLowPrice(DailyInformation.DailyRange.RTH_TO_PM) != null ? dailyInformation.getLowPrice(DailyInformation.DailyRange.RTH_TO_PM) : "")
+                                + ", " + (dailyInformation.getOpenPrice(DailyInformation.DailyRange.PM) != null ? dailyInformation.getOpenPrice(DailyInformation.DailyRange.PM) : "")
+                                + ", " + (dailyInformation.getClosePrice(DailyInformation.DailyRange.PM) != null ? dailyInformation.getClosePrice(DailyInformation.DailyRange.PM) : "")
+                                + ", " + (dailyInformation.getClosePrice(DailyInformation.DailyRange.RTH) != null ? dailyInformation.getClosePrice(DailyInformation.DailyRange.RTH) : ""));
                         writer.append("\n");
                     } catch (IOException e) {
                         e.printStackTrace();

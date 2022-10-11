@@ -60,23 +60,23 @@ public class Range {
         }
     }
 
-    public Num getHigh() {
+    public Num getHighPrice() {
         return high;
     }
 
-    public Num getLow() {
+    public Num getLowPrice() {
         return low;
     }
 
-    public Num getMiddle() {
+    public Num getMiddlePrice() {
         return middle;
     }
 
-    public Num getTwentyFivePercent() {
+    public Num getTwentyFivePercentPrice() {
         return twentyFivePercent;
     }
 
-    public Num getSeventyFivePercent() {
+    public Num getSeventyFivePercentPrice() {
         return seventyFivePercent;
     }
 

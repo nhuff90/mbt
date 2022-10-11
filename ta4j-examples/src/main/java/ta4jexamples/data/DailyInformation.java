@@ -7,6 +7,7 @@ import org.ta4j.core.utils.MarketTime;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,8 +25,27 @@ public class DailyInformation {
     Range pmRange = new Range();
     DayBias dayBias;
 
+    Map<DailyRange, Range> rangeMap = new HashMap<>();
+
     // Other ranges below
     Range rthToPMStartRange = new Range();
+
+    public enum DailyRange {
+        RTH,
+        AM,
+        PM,
+        MICRO,
+        RTH_TO_PM
+    }
+
+
+    private void configureRangeMap() {
+        rangeMap.put(DailyRange.RTH, rthDayRange);
+        rangeMap.put(DailyRange.AM, amRange);
+        rangeMap.put(DailyRange.PM, pmRange);
+        rangeMap.put(DailyRange.MICRO, microRange);
+        rangeMap.put(DailyRange.RTH_TO_PM, rthToPMStartRange);
+    }
 
     public DailyInformation(LocalDate date, List<Bar> bars) {
         this(date, bars, null);
@@ -36,7 +56,6 @@ public class DailyInformation {
         this.bars = bars;
         this.timeBarMap = bars.stream().collect(Collectors.toMap(Bar::getBeginTime, Function.identity()));
         this.priorDayInfo = priorDayInfo;
-
 
         generateData();
     }
@@ -49,75 +68,24 @@ public class DailyInformation {
             pmRange.setRangeValues(bar, MarketTime.PM_START_TIME, MarketTime.PM_END_TIME);
             rthToPMStartRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.PM_START_TIME);
         });
+        configureRangeMap();
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public Num getPMHighPrice() {
-        return pmRange.getHigh();
+    public Num getOpenPrice(DailyRange range) {
+        return (rangeMap.get(range) != null) ? rangeMap.get(range).getOpenPrice() : null;
+    }
+    public Num getClosePrice(DailyRange range) {
+        return (rangeMap.get(range) != null) ? rangeMap.get(range).getClosePrice() : null;
+    }
+    public Num getHighPrice(DailyRange range) {
+        return (rangeMap.get(range) != null) ? rangeMap.get(range).getHighPrice() : null;
+    }
+    public Num getLowPrice(DailyRange range) {
+        return (rangeMap.get(range) != null) ? rangeMap.get(range).getLowPrice() : null;
     }
 
-    public Num getPMLowPrice() {
-        return pmRange.getLow();
-    }
-
-    public Num getDailyOpenPrice() {
-        return rthDayRange.getOpenPrice();
-    }
-
-    public Num getHighPriceUpToPMPrice() {
-        return rthToPMStartRange.getHigh();
-    }
-
-    public Num getLowPriceUpToPMPrice() {
-        return rthToPMStartRange.getLow();
-    }
-
-    public Num getPMRangeOpenPrice() {
-        return pmRange.getOpenPrice();
-    }
-
-    public Num getPMRangeClosePrice() {
-        return pmRange.getClosePrice();
-    }
-
-    public Num getDailyClosePrice() {
-        return rthDayRange.getClosePrice();
-    }
-
-    public Num getRTHToPMHighPrice() {
-        return rthToPMStartRange.getHigh();
-    }
-
-    public Num getRTHToPMLowPrice() {
-        return rthToPMStartRange.getLow();
-    }
-
-    public Num getRTHToPMCenterPrice() {
-        return rthToPMStartRange.getPercentileFromRange(.5);
-    }
-
-    public Num getRTHToPMAtPercentilePrice(double percent) {
-        return rthToPMStartRange.getPercentileFromRange(percent);
-    }
-
-    public double getPMStartPriceToRthLow() {
-        if (pmRange.getOpenPrice()==null || rthToPMStartRange.getLow() == null){
-            return Double.NaN;
-        }
-        else {
-            return pmRange.getOpenPrice().minus(rthToPMStartRange.getLow()).doubleValue();
-        }
-    }
-
-    public double getPMEndPriceToRthLow() {
-        if (pmRange.getClosePrice()==null || rthToPMStartRange.getLow() == null){
-            return Double.NaN;
-        }
-        else {
-            return pmRange.getClosePrice().minus(rthToPMStartRange.getLow()).doubleValue();
-        }
-    }
 }
