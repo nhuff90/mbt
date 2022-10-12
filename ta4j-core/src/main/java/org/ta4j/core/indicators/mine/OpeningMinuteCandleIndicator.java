@@ -3,20 +3,19 @@ package org.ta4j.core.indicators.mine;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.CachedIndicator;
+import org.ta4j.core.utils.MarketTime;
 
-public class OmarBreakoutIndicator extends CachedIndicator<Bar> {
-    Opening1MinBarTimeIndicator opening1MinBarTimeIndicator;
-    Bar openingBar;
+public class OpeningMinuteCandleIndicator extends CachedIndicator<Bar> {
+    private Bar openingBar;
 
-    protected OmarBreakoutIndicator(BarSeries series) {
+    public OpeningMinuteCandleIndicator(BarSeries series) {
         super(series);
-        opening1MinBarTimeIndicator = new Opening1MinBarTimeIndicator(series);
     }
 
 
     @Override
     protected Bar calculate(int index) {
-        if (opening1MinBarTimeIndicator.getValue(index)) {
+        if (MarketTime.isStartOfAm(getBarSeries().getBar(index).getEndTime())) {
             openingBar = getBarSeries().getBar(index);
         }
         return openingBar;

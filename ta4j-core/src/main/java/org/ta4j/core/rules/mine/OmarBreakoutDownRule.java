@@ -36,13 +36,14 @@ import org.ta4j.core.utils.MarketTime;
  * Satisfied when the value of the first {@link Indicator indicator}
  * crosses-down the value of the second one.
  */
-public class OmarBreakoutUpRule extends AbstractRule {
+public class OmarBreakoutDownRule extends AbstractRule {
 
     private final BarSeries series;
     private boolean tradeTaken;
     private Bar openingBar;
+    private boolean previousBreakoutHappened = false;
 
-    public OmarBreakoutUpRule(BarSeries series) {
+    public OmarBreakoutDownRule(BarSeries series) {
         this.series = series;
         this.tradeTaken = false;
     }
@@ -55,9 +56,15 @@ public class OmarBreakoutUpRule extends AbstractRule {
             tradeTaken = false;
             return false;
         }
+        if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
+                series.getBar(index).getHighPrice().isGreaterThanOrEqual(openingBar.getHighPrice()) && !tradeTaken &&
+                !previousBreakoutHappened) {
+            previousBreakoutHappened = true;
+        }
 
         if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
-                series.getBar(index).getHighPrice().isGreaterThanOrEqual(openingBar.getHighPrice()) && !tradeTaken) {
+                series.getBar(index).getLowPrice().isLessThanOrEqual(openingBar.getLowPrice()) && !tradeTaken &&
+        !previousBreakoutHappened) {
             tradeTaken = true;
             satisfied = true;
         }

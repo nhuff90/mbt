@@ -36,10 +36,25 @@ import org.ta4j.core.num.Num;
  * Used for backtesting. Allows to run a {@link Strategy trading strategy} over
  * the managed bar series.
  */
-public class BarSeriesLambdaEntryManager {
+public class BarSeriesConfigureEntryManager {
+    /**
+     * Default Entry/Exit Strategy is BAR_AVERAGE
+     */
+    public enum EntryExitStrategy {
+        BAR_OPEN,
+        BAR_HIGH,
+        BAR_LOW,
+        BAR_CLOSE,
+        BAR_AVERAGE,
+        PREVIOUS_BAR_OPEN,
+        PREVIOUS_BAR_HIGH,
+        PREVIOUS_BAR_LOW,
+        PREVIOUS_BAR_CLOSE,
+        PREVIOUS_BAR_AVERAGE
+    }
 
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger(BarSeriesLambdaEntryManager.class);
+    private static final Logger log = LoggerFactory.getLogger(BarSeriesConfigureEntryManager.class);
 
     /** The managed bar series */
     private BarSeries barSeries;
@@ -47,12 +62,15 @@ public class BarSeriesLambdaEntryManager {
     /** The trading cost models */
     private CostModel transactionCostModel;
     private CostModel holdingCostModel;
+    private EntryExitStrategy entryStrategy;
+    private EntryExitStrategy exitStrategy;
 
     /**
      * Constructor.
      */
-    public BarSeriesLambdaEntryManager() {
-        this(null, new ZeroCostModel(), new ZeroCostModel());
+    public BarSeriesConfigureEntryManager() {
+        this(null, new ZeroCostModel(), new ZeroCostModel(),
+                EntryExitStrategy.BAR_AVERAGE, EntryExitStrategy.BAR_AVERAGE);
     }
 
     /**
@@ -60,8 +78,19 @@ public class BarSeriesLambdaEntryManager {
      *
      * @param barSeries the bar series to be managed
      */
-    public BarSeriesLambdaEntryManager(BarSeries barSeries) {
-        this(barSeries, new ZeroCostModel(), new ZeroCostModel());
+    public BarSeriesConfigureEntryManager(BarSeries barSeries) {
+        this(barSeries, new ZeroCostModel(), new ZeroCostModel(),
+                EntryExitStrategy.BAR_AVERAGE, EntryExitStrategy.BAR_AVERAGE);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param barSeries the bar series to be managed
+     */
+    public BarSeriesConfigureEntryManager(BarSeries barSeries, EntryExitStrategy entryStrategy, EntryExitStrategy exitStrategy) {
+        this(barSeries, new ZeroCostModel(), new ZeroCostModel(),
+                entryStrategy, exitStrategy);
     }
 
     /**
@@ -71,10 +100,13 @@ public class BarSeriesLambdaEntryManager {
      * @param transactionCostModel the cost model for transactions of the asset
      * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      */
-    public BarSeriesLambdaEntryManager(BarSeries barSeries, CostModel transactionCostModel, CostModel holdingCostModel) {
+    public BarSeriesConfigureEntryManager(BarSeries barSeries, CostModel transactionCostModel, CostModel holdingCostModel,
+                                          EntryExitStrategy entryStrategy, EntryExitStrategy exitStrategy) {
         this.barSeries = barSeries;
         this.transactionCostModel = transactionCostModel;
         this.holdingCostModel = holdingCostModel;
+        this.entryStrategy = entryStrategy;
+        this.exitStrategy = exitStrategy;
     }
 
     /**
@@ -180,7 +212,13 @@ public class BarSeriesLambdaEntryManager {
         for (int i = runBeginIndex; i <= runEndIndex; i++) {
             // For each bar between both indexes...
             if (strategy.shouldOperate(i, tradingRecord)) {
-                tradingRecord.operate(i, barSeries.getBar(i).calculateAverageBarPrice(), amount);
+                if (tradingRecord.getCurrentPosition().isOpened()){
+                    // close trade
+                    tradingRecord.operate(i, getEntryExitPrice(barSeries, i, exitStrategy), amount);
+                } else {
+                    //open trade
+                    tradingRecord.operate(i, getEntryExitPrice(barSeries, i, entryStrategy), amount);
+                }
             }
         }
 
@@ -193,11 +231,37 @@ public class BarSeriesLambdaEntryManager {
                 // For each bar after the end index of this run...
                 // --> Trying to close the last position
                 if (strategy.shouldOperate(i, tradingRecord)) {
-                    tradingRecord.operate(i, barSeries.getBar(i).calculateAverageBarPrice(), amount);
+                    tradingRecord.operate(i, getEntryExitPrice(barSeries, i, exitStrategy), amount);
                     break;
                 }
             }
         }
         return tradingRecord;
+    }
+
+    private Num getEntryExitPrice(BarSeries barSeries, int i, EntryExitStrategy entryExitStrategy) {
+        switch (entryExitStrategy) {
+            case BAR_OPEN:
+                return barSeries.getBar(i).getOpenPrice();
+            case BAR_HIGH:
+                return barSeries.getBar(i).getHighPrice();
+            case BAR_LOW:
+                return barSeries.getBar(i).getLowPrice();
+            case BAR_CLOSE:
+                return barSeries.getBar(i).getClosePrice();
+            case PREVIOUS_BAR_OPEN:
+                return barSeries.getBar(i-1).getOpenPrice();
+            case PREVIOUS_BAR_HIGH:
+                return barSeries.getBar(i-1).getHighPrice();
+            case PREVIOUS_BAR_LOW:
+                return barSeries.getBar(i-1).getLowPrice();
+            case PREVIOUS_BAR_CLOSE:
+                return barSeries.getBar(i-1).getClosePrice();
+            case PREVIOUS_BAR_AVERAGE:
+                return barSeries.getBar(i-1).calculateAverageBarPrice();
+            case BAR_AVERAGE:
+            default:
+                return barSeries.getBar(i).calculateAverageBarPrice();
+        }
     }
 }

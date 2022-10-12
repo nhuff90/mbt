@@ -42,11 +42,13 @@ import ta4jexamples.data.DailyInformation;
  */
 public class CsvBarsLoader {
 
+    private static String ES_1_MIN_FILENAME = "es_1min_historical_data.csv";
+
     /**
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv", "apple_bars", null);
+        return loadCsvSeries("archive/appleinc_bars_from_20130101_usd.csv", "apple_bars", null);
     }
 
     /**
@@ -56,53 +58,53 @@ public class CsvBarsLoader {
         return loadCsvSeries("spx-1min.csv", "spx-1min", null);
     }
 
-    /**
-     * @return the bar series from SPX.
-     */
-    public static BarSeries loadSpx1MinSeries(ZonedDateTime filteredDate) {
-        return loadCsvSeries("spx-1min.csv", "spx-1min", filteredDate);
-    }
-
+//    /**
+//     * @return the bar series from SPX.
+//     */
+//    public static BarSeries loadSpx1MinSeries(ZonedDateTime filteredDate) {
+//        return loadCsvSeries("spx-1min.csv", "spx-1min", filteredDate);
+//    }
+//
     /**
      * @return the bar series from ES for single date.
      */
-    public static BarSeries loadEs1MinSeries(ZonedDateTime filteredDate) {
-        return loadCsvSeries("es-1min.csv", "es-1min", filteredDate);
+    public static BarSeries loadEs1MinSeriesFromSmaApp(ZonedDateTime filteredDate) {
+        return loadCsvSeries("output.csv", "es-1min", filteredDate); //todo - update file
     }
 
     /**
      * @return the bar series from ES.
      */
-    public static BarSeries loadEs1MinSeries() {
+    public static BarSeries loadEs1MinSeriesFromSmaApp() {
         return loadCsvSeries("es-1min.csv", "es-1min", null);
     }
-
-    /**
-     * @return the bar series from ES.
-     */
-    public static BarSeries loadAllEs1MinSeries() {
-        return loadESHistoricalCsvSeries("es_1min_historical_data.csv", "es-1min", null);
-    }
+//
+//    /**
+//     * @return the bar series from ES.
+//     */
+//    public static BarSeries loadAllEs1MinSeries() {
+//        return loadESHistoricalCsvSeries("es_1min_historical_data.csv", "es-1min", null);
+//    }
 
     /**
      * @return the bar series from ES for specific date.
      */
     public static BarSeries loadAllEs1MinSeries(ZonedDateTime filteredDate) {
-        return loadESHistoricalCsvSeries("es_1min_historical_data.csv", "es-1min", filteredDate);
+        return loadESHistoricalCsvSeries(ES_1_MIN_FILENAME, "es-1min", filteredDate);
     }
 
     /**
      * @return the bar series of ES after a specified year. (Inclusive)
      */
     public static BarSeries loadAllEs1MinSeriesAfterYear(ZonedDateTime filteredDate) {
-        return loadESHistoricalCsvSeriesAfterYear("es_1min_historical_data.csv", "es-1min", filteredDate);
+        return loadESHistoricalCsvSeriesAfterYear(ES_1_MIN_FILENAME, "es-1min", filteredDate);
     }
 
     /**
      * @return the bar series of ES between 2 specified years. (Inclusive/Inclusive)
      */
     public static BarSeries loadAllEs1MinSeriesBetweenYears(ZonedDateTime startDate, ZonedDateTime endDate) {
-        return loadESHistoricalCsvSeriesBetweenYears("es_1min_historical_data.csv", "es-1min", startDate, endDate);
+        return loadESHistoricalCsvSeriesBetweenYears(ES_1_MIN_FILENAME, "es-1min", startDate, endDate);
     }
 
     private static BarSeries loadCsvSeries(String filename, String barSeriesName, ZonedDateTime filteredDate) {
@@ -119,11 +121,11 @@ public class CsvBarsLoader {
                         .of(LocalDate.parse(line[0].trim()), LocalTime.parse(line[1].trim()), ZoneId.of ( "America/New_York" ));
                 if ((filteredDate == null) || (date.getYear() == filteredDate.getYear() && date.getMonthValue() == filteredDate.getMonthValue() &&
                         date.getDayOfYear() == filteredDate.getDayOfYear())) {
-                    double open = Double.parseDouble(line[3]);
-                    double high = Double.parseDouble(line[4]);
-                    double low = Double.parseDouble(line[5]);
-                    double close = Double.parseDouble(line[6]);
-                    double volume = Double.parseDouble(line[7]);
+                    double open = Double.parseDouble(line[2]);
+                    double high = Double.parseDouble(line[3]);
+                    double low = Double.parseDouble(line[4]);
+                    double close = Double.parseDouble(line[5]);
+                    double volume = Double.parseDouble(line[6]);
 
                     series.addBar(date, open, high, low, close, volume);
                 }

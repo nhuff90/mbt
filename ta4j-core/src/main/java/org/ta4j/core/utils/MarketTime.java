@@ -94,4 +94,8 @@ public enum MarketTime {
     public static Boolean is(LocalTime time, LocalTime time2)  {
         return time.equals( time2 );
     }
+
+    public static boolean isRegularTradingHours(ZonedDateTime endTime) {
+        return isBetweenTimes(endTime.toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
+    }
 }

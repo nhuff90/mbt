@@ -21,55 +21,53 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules;
+package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.indicators.helpers.HighPriceIndicator;
+import org.ta4j.core.indicators.helpers.LowPriceIndicator;
+import org.ta4j.core.num.DecimalNum;
+import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.AbstractRule;
 
 /**
- * A stop-gain rule.
+ * A take profit rule.
  *
- * Satisfied when the close price reaches the gain threshold.
+ * Satisfied when the high/low price reaches the gain threshold.
  */
-public class StopGainRule extends AbstractRule {
+public class TakeProfitRule extends AbstractRule {
+
 
     /**
-     * Constant value for 100
+     * The high price indicator
      */
-    private final Num HUNDRED;
+    private final HighPriceIndicator highPrice;
 
     /**
-     * The close price indicator
+     * The low price indicator
      */
-    private final ClosePriceIndicator closePrice;
+    private final LowPriceIndicator lowPrice;
 
     /**
-     * The gain percentage
+     * The gain in points
      */
-    private final Num gainPercentage;
+    private final Num takeProfitInPoints;
 
-    /**
-     * Constructor.
-     *
-     * @param closePrice     the close price indicator
-     * @param gainPercentage the gain percentage
-     */
-    public StopGainRule(ClosePriceIndicator closePrice, Number gainPercentage) {
-        this(closePrice, closePrice.numOf(gainPercentage));
-    }
 
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param gainPercentage the gain percentage
+     * @param highPrice             the high price indicator
+     * @param lowPrice              the low price indicator
+     * @param takeProfitInPoints    the take profits in points
      */
-    public StopGainRule(ClosePriceIndicator closePrice, Num gainPercentage) {
-        this.closePrice = closePrice;
-        this.gainPercentage = gainPercentage;
-        HUNDRED = closePrice.numOf(100);
+    public TakeProfitRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number takeProfitInPoints) {
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.takeProfitInPoints = DecimalNum.valueOf(takeProfitInPoints);
     }
 
     @Override
@@ -81,12 +79,11 @@ public class StopGainRule extends AbstractRule {
             if (currentPosition.isOpened()) {
 
                 Num entryPrice = currentPosition.getEntry().getNetPrice();
-                Num currentPrice = closePrice.getValue(index);
 
                 if (currentPosition.getEntry().isBuy()) {
-                    satisfied = isBuyGainSatisfied(entryPrice, currentPrice);
+                    satisfied = isBuyGainSatisfied(entryPrice, highPrice.getValue(index));
                 } else {
-                    satisfied = isSellGainSatisfied(entryPrice, currentPrice);
+                    satisfied = isSellGainSatisfied(entryPrice, lowPrice.getValue(index));
                 }
             }
         }
@@ -95,14 +92,10 @@ public class StopGainRule extends AbstractRule {
     }
 
     private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
-        Num lossRatioThreshold = HUNDRED.minus(gainPercentage).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isLessThanOrEqual(threshold);
+        return currentPrice.isLessThanOrEqual(entryPrice.plus(takeProfitInPoints));
     }
 
     private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
-        Num lossRatioThreshold = HUNDRED.plus(gainPercentage).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isGreaterThanOrEqual(threshold);
+        return currentPrice.isGreaterThanOrEqual(entryPrice.plus(takeProfitInPoints));
     }
 }

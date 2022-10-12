@@ -94,7 +94,7 @@ public class ResultsAnalysis {
     @Override
     public String toString() {
         return "ResultsAnalysis{" +
-                ", EV=" + getEvAsString() +
+                "EV=" + getEvAsString() +
                 ", Max Drawdown=" + getMaxDrawdownAsString() +
                 ", Win%=" + getWinPercentageAsString() +
                 ", #OfWins=" + getWinningTradeCount() +

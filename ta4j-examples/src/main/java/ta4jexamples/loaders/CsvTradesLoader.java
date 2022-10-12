@@ -55,7 +55,7 @@ public class CsvTradesLoader {
 
         // Reading all lines of the CSV file
         InputStream stream = CsvTradesLoader.class.getClassLoader()
-                .getResourceAsStream("bitstamp_trades_from_20131125_usd.csv");
+                .getResourceAsStream("archive/bitstamp_trades_from_20131125_usd.csv");
         CSVReader csvReader = null;
         List<String[]> lines = null;
         try {

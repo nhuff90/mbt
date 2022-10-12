@@ -27,9 +27,6 @@ import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.AMRangeIndicator;
-import org.ta4j.core.indicators.mine.OpeningMinuteCandleIndicator;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 
@@ -39,13 +36,14 @@ import org.ta4j.core.utils.MarketTime;
  * Satisfied when the value of the first {@link Indicator indicator}
  * crosses-down the value of the second one.
  */
-public class OmarBreakoutRule extends AbstractRule {
+public class OmarBreakoutUpRule extends AbstractRule {
 
     private final BarSeries series;
     private boolean tradeTaken;
     private Bar openingBar;
+    private boolean previousBreakoutHappened = false;
 
-    public OmarBreakoutRule(BarSeries series) {
+    public OmarBreakoutUpRule(BarSeries series) {
         this.series = series;
         this.tradeTaken = false;
     }
@@ -60,7 +58,13 @@ public class OmarBreakoutRule extends AbstractRule {
         }
 
         if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
-                series.getBar(index).getHighPrice().isGreaterThanOrEqual(openingBar.getHighPrice()) && !tradeTaken) {
+                series.getBar(index).getLowPrice().isLessThanOrEqual(openingBar.getLowPrice()) && !tradeTaken) {
+            previousBreakoutHappened = true;
+        }
+
+        if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
+                series.getBar(index).getHighPrice().isGreaterThanOrEqual(openingBar.getHighPrice()) && !tradeTaken &&
+        !previousBreakoutHappened) {
             tradeTaken = true;
             satisfied = true;
         }
