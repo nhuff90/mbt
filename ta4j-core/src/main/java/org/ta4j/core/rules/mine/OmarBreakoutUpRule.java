@@ -54,6 +54,7 @@ public class OmarBreakoutUpRule extends AbstractRule {
         if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
             openingBar = series.getBar(index);
             tradeTaken = false;
+            previousBreakoutHappened = false;
             return false;
         }
 
@@ -68,16 +69,8 @@ public class OmarBreakoutUpRule extends AbstractRule {
             tradeTaken = true;
             satisfied = true;
         }
-//        Range range = amRangeIndicator.getValue(index);
-//        boolean satisfied = false;
-//        if (MarketTime.isAmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
-//            satisfied = series.getBar(index).getHighPrice().isGreaterThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
-//            tradeTaken = true;
-//        }
         traceIsSatisfied(index, satisfied);
-////        if (satisfied) {
-////            System.out.println("test - AMHighRetraceRule");
-////        }
+
         return satisfied;
     }
 }

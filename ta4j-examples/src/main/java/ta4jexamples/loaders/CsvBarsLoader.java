@@ -76,7 +76,7 @@ public class CsvBarsLoader {
      * @return the bar series from ES.
      */
     public static BarSeries loadEs1MinSeriesFromSmaApp() {
-        return loadCsvSeries("es-1min.csv", "es-1min", null);
+        return loadCsvSeries("output.csv", "es-1min", null);
     }
 //
 //    /**

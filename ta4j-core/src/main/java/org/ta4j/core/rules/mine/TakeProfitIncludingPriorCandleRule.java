@@ -27,8 +27,6 @@ import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
-import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
-import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
 /**
@@ -36,40 +34,22 @@ import org.ta4j.core.num.Num;
  *
  * Satisfied when the high/low price reaches the stop threshold.
  */
-public class StopLossRule extends TakeProfitStopLossRuleInterface {
-
-    /**
-     * The high price indicator
-     */
-    final HighPriceIndicator highPrice;
-
-    /**
-     * The low price indicator
-     */
-    final LowPriceIndicator lowPrice;
-
-    /**
-     * The gain in points
-     */
-    final Num stopLossInPoints;
+public class TakeProfitIncludingPriorCandleRule extends TakeProfitRule {
 
 
     /**
      * Constructor.
      *
-     * @param highPrice             the high price indicator
-     * @param lowPrice              the low price indicator
-     * @param stopLossInPoints    the take profits in points
+     * @param highPrice        the high price indicator
+     * @param lowPrice         the low price indicator
+     * @param stopLossInPoints the take profits in points
      */
-    public StopLossRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
-        this.highPrice = highPrice;
-        this.lowPrice = lowPrice;
-        this.stopLossInPoints = DecimalNum.valueOf(stopLossInPoints);
+    public TakeProfitIncludingPriorCandleRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
+        super(highPrice, lowPrice, stopLossInPoints);
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-//        boolean satisfied = false;
         setSatisfied(false);
         // No trading history or no position opened, no loss
         if (tradingRecord != null) {
@@ -79,9 +59,9 @@ public class StopLossRule extends TakeProfitStopLossRuleInterface {
                 Num entryPrice = currentPosition.getEntry().getNetPrice();
 
                 if (currentPosition.getEntry().isBuy()) {
-                    setSatisfied(isBuyStopSatisfied(entryPrice, highPrice.getValue(index)));
+                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)) || isBuyGainSatisfied(entryPrice, highPrice.getValue(index-1)));
                 } else {
-                    setSatisfied(isSellStopSatisfied(entryPrice, lowPrice.getValue(index)));
+                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)) || isSellGainSatisfied(entryPrice, lowPrice.getValue(index-1)));
                 }
             }
         }
@@ -89,11 +69,4 @@ public class StopLossRule extends TakeProfitStopLossRuleInterface {
         return isSatisfied();
     }
 
-    boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
-        return currentPrice.isLessThanOrEqual(entryPrice.plus(stopLossInPoints));
-    }
-
-    boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
-        return currentPrice.isGreaterThanOrEqual(entryPrice.plus(stopLossInPoints));
-    }
 }

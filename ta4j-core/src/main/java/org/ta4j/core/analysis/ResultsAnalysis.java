@@ -1,6 +1,7 @@
 package org.ta4j.core.analysis;
 
 import org.ta4j.core.AnalysisCriterion;
+import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.analysis.criteria.MaximumDrawdownCriterion;
@@ -122,5 +123,16 @@ public class ResultsAnalysis {
         if (ev <= getEv() && maxDrawdown <= getMaxDrawdown() && winPercent <= getWinPercentage()) {
             System.out.println(toString());
         }
+    }
+
+    public void printAllTrades() {
+        tradingRecord.getPositions().forEach(pos -> {
+
+            Bar entryBar = series.getBar(pos.getEntry().getIndex());
+            Bar exitBar = series.getBar(pos.getExit().getIndex());
+            System.out.println("Profitable?: " + (pos.getProfit().doubleValue() >= 0 ? "true" : "false")+ "\n " +
+                    "\tEntry Time: " + entryBar.getEndTime() + " | Entry:" + pos.getEntry().toString() + "\n" +
+                    "\tExit Time: " + exitBar.getEndTime() +  " | Exit: " + pos.getExit().toString());
+        });
     }
 }

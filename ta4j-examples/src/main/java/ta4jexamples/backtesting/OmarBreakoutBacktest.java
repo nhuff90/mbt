@@ -27,6 +27,9 @@ import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
+import org.ta4j.core.num.DecimalNum;
+import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.OrRule;
 import org.ta4j.core.rules.mine.*;
 import ta4jexamples.loaders.CsvBarsLoader;
 
@@ -36,15 +39,16 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
-public class OmarBreakoutUpBacktest {
+public class OmarBreakoutBacktest {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries();
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 9, 29 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 3 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp( ZonedDateTime.of ( LocalDate.of ( 2022, 9, 22 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp();
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 11 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
@@ -55,11 +59,11 @@ public class OmarBreakoutUpBacktest {
 
         // OMAR breakout up
         System.out.println("OMAR breakouts up");
-        reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.BUY, 10, 2));
+        reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.BUY, 3, -2));
 
         // OMAR breakout down
         System.out.println("OMAR breakouts down");
-        reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.SELL, -10, -2));
+        reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.SELL, -3, 2));
 
         
     }
@@ -72,10 +76,39 @@ public class OmarBreakoutUpBacktest {
         Rule buyingRule = (tradeType.equals(Trade.TradeType.BUY) ? new OmarBreakoutUpRule(series) : new OmarBreakoutDownRule(series));
 
         // Sell Rule
-        Rule sellingRule = new TakeProfitRule(highPriceIndicator, lowPriceIndicator, takeProfit).or(new StopLossRule(highPriceIndicator, lowPriceIndicator, stopLoss));
+        Rule sellingRule = new TakeProfitIncludingPriorCandleRule(highPriceIndicator, lowPriceIndicator, takeProfit).or(new StopLossIncludingPriorCandleRule(highPriceIndicator, lowPriceIndicator, stopLoss));
+
+        //TakeProfit and StopLoss
+        TakeProfitStopLossAbstract takeProfitStopLossAbstract = new TakeProfitStopLossAbstract() {
+
+            @Override
+            public Num getExitPrice(Strategy strategy, TradingRecord tradingRecord, BarSeries barSeries, int i) {
+                // Find satisfied rule
+                Rule rule = strategy.getExitRule();
+                TakeProfitRule takeProfitRule = null;
+                StopLossRule stopLossRule;
+                if (((OrRule) rule).getRule1() instanceof TakeProfitRule) {
+                    takeProfitRule = (TakeProfitRule) ((OrRule) rule).getRule1();
+                } else if (((OrRule) rule).getRule1()instanceof StopLossRule) {
+                    stopLossRule = (StopLossRule) ((OrRule) rule).getRule1();
+                }
+
+                if (((OrRule) rule).getRule2() instanceof TakeProfitRule) {
+                    takeProfitRule = (TakeProfitRule) ((OrRule) rule).getRule2();
+                } else if (((OrRule) rule).getRule2() instanceof StopLossRule) {
+                    stopLossRule = (StopLossRule) ((OrRule) rule).getRule2();
+                }
+                assert takeProfitRule != null;
+                double priceOffset =  (takeProfitRule.isSatisfied() ? takeProfit : stopLoss);
+                return tradingRecord.getCurrentPosition().getEntry().getPricePerAsset().plus(DecimalNum.valueOf(priceOffset));
+            }
+        };
+
+        // Determine entry strategy based on trade type
+        BarSeriesConfigureEntryManager.EntryStrategy entryStrategy = (tradeType.equals(Trade.TradeType.BUY) ? BarSeriesConfigureEntryManager.EntryStrategy.PREVIOUS_BAR_HIGH : BarSeriesConfigureEntryManager.EntryStrategy.PREVIOUS_BAR_LOW);
 
         // Run backtest
-        BarSeriesConfigureEntryManager seriesManager = new BarSeriesConfigureEntryManager(series, BarSeriesConfigureEntryManager.EntryExitStrategy.PREVIOUS_BAR_HIGH, BarSeriesConfigureEntryManager.EntryExitStrategy.BAR_AVERAGE);
+        BarSeriesConfigureEntryManager seriesManager = new BarSeriesConfigureEntryManager(series, entryStrategy, takeProfitStopLossAbstract);
         return seriesManager.run(new BaseStrategy(buyingRule, sellingRule), tradeType);
     }
 
@@ -86,7 +119,7 @@ public class OmarBreakoutUpBacktest {
         } else {
             ResultsAnalysis resultsAnalysis = new ResultsAnalysis(series, tradingRecord);
             resultsAnalysis.printResults();
-//            resultsAnalysis.printResults(null, null, 0.5);
+//            resultsAnalysis.printAllTrades();
         }
     }
 

@@ -25,36 +25,34 @@ package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
+import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.num.Num;
-import org.ta4j.core.rules.AbstractRule;
 
 /**
  * A take profit rule.
  *
  * Satisfied when the high/low price reaches the gain threshold.
  */
-public class TakeProfitRule extends AbstractRule {
+public class TakeProfitRule extends TakeProfitStopLossRuleInterface {
 
 
     /**
      * The high price indicator
      */
-    private final HighPriceIndicator highPrice;
+    final HighPriceIndicator highPrice;
 
     /**
      * The low price indicator
      */
-    private final LowPriceIndicator lowPrice;
+    final LowPriceIndicator lowPrice;
 
     /**
      * The gain in points
      */
-    private final Num takeProfitInPoints;
+    final Num takeProfitInPoints;
 
 
     /**
@@ -72,7 +70,7 @@ public class TakeProfitRule extends AbstractRule {
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        boolean satisfied = false;
+        setSatisfied(false);
         // No trading history or no position opened, no loss
         if (tradingRecord != null) {
             Position currentPosition = tradingRecord.getCurrentPosition();
@@ -81,21 +79,21 @@ public class TakeProfitRule extends AbstractRule {
                 Num entryPrice = currentPosition.getEntry().getNetPrice();
 
                 if (currentPosition.getEntry().isBuy()) {
-                    satisfied = isBuyGainSatisfied(entryPrice, highPrice.getValue(index));
+                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)));
                 } else {
-                    satisfied = isSellGainSatisfied(entryPrice, lowPrice.getValue(index));
+                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)));
                 }
             }
         }
-        traceIsSatisfied(index, satisfied);
-        return satisfied;
+        traceIsSatisfied(index, isSatisfied());
+        return isSatisfied();
     }
 
-    private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+    boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
         return currentPrice.isLessThanOrEqual(entryPrice.plus(takeProfitInPoints));
     }
 
-    private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+    boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
         return currentPrice.isGreaterThanOrEqual(entryPrice.plus(takeProfitInPoints));
     }
 }
