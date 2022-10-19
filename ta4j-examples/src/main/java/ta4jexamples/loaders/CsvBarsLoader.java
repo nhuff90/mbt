@@ -89,7 +89,7 @@ public class CsvBarsLoader {
     /**
      * @return the bar series from ES for specific date.
      */
-    public static BarSeries loadAllEs1MinSeries(ZonedDateTime filteredDate) {
+    public static BarSeries loadAllEs1MinSeriesSpecificDate(ZonedDateTime filteredDate) {
         return loadESHistoricalCsvSeries(ES_1_MIN_FILENAME, "es-1min", filteredDate);
     }
 

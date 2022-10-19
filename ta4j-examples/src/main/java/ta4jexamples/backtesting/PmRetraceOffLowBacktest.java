@@ -27,10 +27,10 @@ import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.mine.PMRangeIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
-import org.ta4j.core.rules.*;
 import org.ta4j.core.rules.mine.PMLowRetraceRule;
 import org.ta4j.core.rules.mine.PMRangeStopGainRule;
 import org.ta4j.core.rules.mine.PMRangeStopLossRule;
+import org.ta4j.core.rules.mine.PMRangeTimeStopRule;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

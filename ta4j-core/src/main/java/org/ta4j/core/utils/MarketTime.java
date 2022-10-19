@@ -46,6 +46,10 @@ public enum MarketTime {
         return is(endTime.toLocalTime(), AM_START_TIME.localTime);
     }
 
+    public static boolean isStartOfPmRange(ZonedDateTime endTime) {
+        return is(endTime.toLocalTime(), PM_START_TIME.localTime);
+    }
+
     public LocalTime getLocalTime() {
         return localTime;
     }
@@ -68,6 +72,10 @@ public enum MarketTime {
 
     public static Boolean isAfterAmRange(ZonedDateTime time)  {
         return time.toLocalTime().isAfter( MarketTime.AM_END_TIME.getLocalTime());
+    }
+
+    public static Boolean isInUpToPmRange(ZonedDateTime time)  {
+        return isBetweenTimes(time.toLocalTime(), MarketTime.AM_START_TIME.getLocalTime(), MarketTime.PM_START_TIME.getLocalTime());
     }
 
     public static Boolean isAfterAmStop(ZonedDateTime time)  {
