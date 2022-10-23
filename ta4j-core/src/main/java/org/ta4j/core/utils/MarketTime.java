@@ -16,6 +16,7 @@ public enum MarketTime {
     //RTH Times
     RTH_START_TIME(LocalTime.parse( "09:30:00" )),
     RTH_END_TIME(LocalTime.parse( "16:00:00" )),
+    RTH_END_TIME_1558(LocalTime.parse( "15:58:00" )),
 
     // AM Range Times
     AM_START_TIME(LocalTime.parse( "09:30:00" )),

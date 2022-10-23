@@ -48,7 +48,7 @@ public class OmarBreakoutBacktest {
 
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp();
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 11 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),

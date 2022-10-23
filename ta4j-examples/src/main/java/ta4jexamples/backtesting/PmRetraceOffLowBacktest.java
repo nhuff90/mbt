@@ -59,7 +59,7 @@ public class PmRetraceOffLowBacktest {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries();
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 30 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 30 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));

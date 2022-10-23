@@ -20,6 +20,7 @@ public class DailyInformation {
     Map<ZonedDateTime, Bar> timeBarMap;
     DailyInformation priorDayInfo;
     Range rthDayRange = new Range();
+    Range rthEndAt1558DayRange = new Range();
     Range amRange = new Range();
     Range microRange = new Range();
     Range pmRange = new Range();
@@ -32,6 +33,7 @@ public class DailyInformation {
 
     public enum DailyRange {
         RTH,
+        RTH_END_AT_1558,
         AM,
         PM,
         MICRO,
@@ -41,6 +43,7 @@ public class DailyInformation {
 
     private void configureRangeMap() {
         rangeMap.put(DailyRange.RTH, rthDayRange);
+        rangeMap.put(DailyRange.RTH_END_AT_1558, rthEndAt1558DayRange);
         rangeMap.put(DailyRange.AM, amRange);
         rangeMap.put(DailyRange.PM, pmRange);
         rangeMap.put(DailyRange.MICRO, microRange);
@@ -63,6 +66,7 @@ public class DailyInformation {
     private void generateData() {
         bars.forEach( bar -> {
             rthDayRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.RTH_END_TIME);
+            rthEndAt1558DayRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.RTH_END_TIME_1558);
             amRange.setRangeValues(bar, MarketTime.AM_START_TIME, MarketTime.AM_END_TIME);
             microRange.setRangeValues(bar, MarketTime.MICRO_START_TIME, MarketTime.MICRO_END_TIME);
             pmRange.setRangeValues(bar, MarketTime.PM_START_TIME, MarketTime.PM_END_TIME);

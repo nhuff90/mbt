@@ -26,12 +26,9 @@ package ta4jexamples.backtesting;
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.DateTimeIndicator;
-import org.ta4j.core.indicators.SMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.mine.UpToPMRangeIndicator;
-import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.TimeRangeRule;
-import org.ta4j.core.rules.UnderIndicatorRule;
 import org.ta4j.core.rules.mine.*;
 import org.ta4j.core.utils.MarketTime;
 import ta4jexamples.loaders.CsvBarsLoader;
@@ -48,21 +45,13 @@ public class PmOpenRangeBacktest {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries();
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 3 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp();
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp( ZonedDateTime.of ( LocalDate.of ( 2022, 6,  30), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-
-        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 2, 16 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesBetweenYears(
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaAppSpecificDate(ZonedDateTime.of ( LocalDate.of ( 2022, 6,  30), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of ( LocalDate.of ( 2022, 1,  1), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaAppBetweenYears(
 //                ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
 //                ZonedDateTime.of ( LocalDate.of ( 2021, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 29 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
         // OMAR breakout up
         System.out.println("20-40% Longs");
@@ -83,7 +72,7 @@ public class PmOpenRangeBacktest {
         Rule buyingRule = new UpToPMOpenRangeRule(series, upToPMRangeIndicator, lowRangePercentage, highRangePercentage);
 
         // Sell Rule
-        List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(MarketTime.RTH_END_TIME.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime()));
+        List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(MarketTime.RTH_END_TIME_1558.getLocalTime(), MarketTime.RTH_END_TIME_1558.getLocalTime()));
         DateTimeIndicator timeIndicator = new DateTimeIndicator(series);
         ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
         Rule sellingRule = new TimeRangeRule(timeRanges, timeIndicator);//.or(new StopGainRule(closePrice, 50)); // sell at close - todo - update?
@@ -107,11 +96,4 @@ public class PmOpenRangeBacktest {
 //            resultsAnalysis.printAllTrades();
         }
     }
-
-//    private static Strategy createPmOpenRangeBreakoutStrategy(BarSeries series) {
-//        ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
-//        SMAIndicator sma = new SMAIndicator(closePrice, 3);
-//        return new BaseStrategy(new UnderIndicatorRule(sma, closePrice), new OverIndicatorRule(sma, closePrice));
-//    }
-
 }

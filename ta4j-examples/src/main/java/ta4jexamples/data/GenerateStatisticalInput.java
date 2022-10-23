@@ -2,7 +2,6 @@ package ta4jexamples.data;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.utils.DoubleFormatter;
 import org.ta4j.core.utils.MapUtils;
 import ta4jexamples.loaders.CsvBarsLoader;
 
@@ -20,11 +19,11 @@ public class GenerateStatisticalInput {
      */
     public static void main(String[] args) {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries();
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries( ZonedDateTime.of ( LocalDate.of ( 2022, 6, 29 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesBetweenYears(
-                ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 7, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2017, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
+                ZonedDateTime.of ( LocalDate.of ( 2017, 1, 6 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
                 ZonedDateTime.of ( LocalDate.of ( 2021, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 //        System.out.println(series);

@@ -95,11 +95,11 @@ public class ResultsAnalysis {
     @Override
     public String toString() {
         return "ResultsAnalysis{" +
-                "EV=" + getEvAsString() +
-                ", Max Drawdown=" + getMaxDrawdownAsString() +
-                ", Win%=" + getWinPercentageAsString() +
-                ", #OfWins=" + getWinningTradeCount() +
-                ", #OfLosses=" + getLosingTradeCount() +
+                "EV= " + getEvAsString() +
+                ", Max Drawdown= " + getMaxDrawdownAsString() +
+                ", Win%= " + getWinPercentageAsString() +
+                ", #OfWins= " + getWinningTradeCount() +
+                ", #OfLosses= " + getLosingTradeCount() +
                 '}';
     }
 
