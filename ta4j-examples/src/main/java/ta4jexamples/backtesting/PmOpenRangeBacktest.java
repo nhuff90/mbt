@@ -28,6 +28,8 @@ import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.DateTimeIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.mine.UpToPMRangeIndicator;
+import org.ta4j.core.rules.StopGainRule;
+import org.ta4j.core.rules.StopLossRule;
 import org.ta4j.core.rules.TimeRangeRule;
 import org.ta4j.core.rules.mine.*;
 import org.ta4j.core.utils.MarketTime;
@@ -75,7 +77,7 @@ public class PmOpenRangeBacktest {
         List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(MarketTime.RTH_END_TIME_1558.getLocalTime(), MarketTime.RTH_END_TIME_1558.getLocalTime()));
         DateTimeIndicator timeIndicator = new DateTimeIndicator(series);
         ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
-        Rule sellingRule = new TimeRangeRule(timeRanges, timeIndicator);//.or(new StopGainRule(closePrice, 50)); // sell at close - todo - update?
+        Rule sellingRule = new TimeRangeRule(timeRanges, timeIndicator);//.or(new StopGainRule(closePrice, 0.5).or(new StopLossRule(closePrice, 0.5))); // sell at close - todo - update?
 
 
         // Determine entry strategy based on trade type

@@ -7,23 +7,12 @@ import org.ta4j.core.utils.MarketTime;
 
 
 public class Range {
-    Num high;
-    Num low;
-    Num middle;
-    Num twentyFivePercent;
-    Num seventyFivePercent;
-    Num open;
-    Num close;
+    Bar highBar;
+    Bar lowBar;
+    Bar openBar;
+    Bar closeBar;
 
     public Range() {
-    }
-
-    public Range(Num high, Num low, Num middle, Num twentyFivePercent, Num seventyFivePercent) {
-        this.high = high;
-        this.low = low;
-        this.middle = middle;
-        this.twentyFivePercent = twentyFivePercent;
-        this.seventyFivePercent = seventyFivePercent;
     }
 
     public Range(Bar bar, MarketTime startTimeOfRange, MarketTime endTimeOfRange) {
@@ -34,65 +23,58 @@ public class Range {
         if (!bar.getEndTime().toLocalTime().isBefore(startTimeOfRange.getLocalTime()) && !bar.getEndTime().toLocalTime().isAfter(endTimeOfRange.getLocalTime())) {
             // If start bar, reset high and low of range
             if (startTimeOfRange.getLocalTime().equals(bar.getEndTime().toLocalTime())) {
-                this.high = bar.getHighPrice();
-                this.low = bar.getLowPrice();
-                this.open = bar.getOpenPrice();
+                this.highBar = bar;
+                this.lowBar = bar;
+                this.openBar = bar;
             } else {
-                // todo remove
-                if (this.high == null) {
-                    System.out.println("Debug");
-                }
-                this.high = this.high.max(bar.getHighPrice());
-                this.low = this.low.min(bar.getLowPrice());
+                this.highBar = (this.highBar.getHighPrice().isGreaterThan(bar.getHighPrice()) ? this.highBar :  bar);
+                this.lowBar = (this.lowBar.getLowPrice().isLessThan(bar.getLowPrice()) ? this.lowBar :  bar);
             }
-            this.middle = this.high.plus(this.low).dividedBy(DecimalNum.valueOf(2));
-            this.twentyFivePercent = this.low.plus(middle).dividedBy(DecimalNum.valueOf(2));
-            this.seventyFivePercent = this.high.plus(middle).dividedBy(DecimalNum.valueOf(2));
 
             if (endTimeOfRange.getLocalTime().equals(bar.getEndTime().toLocalTime())) {
-                this.close = bar.getClosePrice();
+                this.closeBar = bar;
             }
         }
     }
 
     public Num getPercentileFromRange(double percentage) {
-        if (this.high != null && this.low != null) {
-            double percentOffset = (this.high.doubleValue() - this.low.doubleValue()) * percentage;
-            return this.low.plus(DecimalNum.valueOf(percentOffset));
+        if (this.highBar != null && this.lowBar != null) {
+            double percentOffset = (this.highBar.getHighPrice().doubleValue() - this.lowBar.getLowPrice().doubleValue()) * percentage;
+            return this.lowBar.getLowPrice().plus(DecimalNum.valueOf(percentOffset));
         } else {
             return null;
         }
     }
 
     public Num getHighPrice() {
-        return high;
+        return highBar.getHighPrice();
     }
 
     public Num getLowPrice() {
-        return low;
+        return lowBar.getLowPrice();
     }
 
     public Num getMiddlePrice() {
-        return middle;
+        return this.highBar.getHighPrice().plus(this.lowBar.getLowPrice()).dividedBy(DecimalNum.valueOf(2));
     }
 
     public Num getTwentyFivePercentPrice() {
-        return twentyFivePercent;
+        return this.lowBar.getLowPrice().plus(getMiddlePrice()).dividedBy(DecimalNum.valueOf(2));
     }
 
     public Num getSeventyFivePercentPrice() {
-        return seventyFivePercent;
+        return this.highBar.getHighPrice().plus(getMiddlePrice()).dividedBy(DecimalNum.valueOf(2));
     }
 
     public Num getOpenPrice() {
-        return open;
+        return openBar.getOpenPrice();
     }
 
     public Num getClosePrice() {
-        return close;
+        return closeBar.getClosePrice();
     }
 
     public Num getRangeSize() {
-        return high.minus(low);
+        return highBar.getHighPrice().minus(lowBar.getLowPrice());
     }
 }

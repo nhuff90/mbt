@@ -28,7 +28,8 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.mine.PMRangeIndicator;
 import org.ta4j.core.indicators.helpers.Range;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.MarketTimeRanges;
+import org.ta4j.core.utils.TimeUtils;
 
 /**
  * PM Low Retrace Rule.
@@ -49,12 +50,12 @@ public class PMLowRetraceRule extends AbstractRule {
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
+        if (TimeUtils.isStartOfRange(series.getBar(index).getEndTime(), MarketTimeRanges.AM_RANGE)) {
             tradeTaken = false;
         }
         Range range = pmRangeIndicator.getValue(index);
         boolean satisfied = false;
-        if (MarketTime.isPmBounceRange(series.getBar(index).getEndTime()) && !tradeTaken) {
+        if (TimeUtils.isInRange(series.getBar(index).getEndTime(), MarketTimeRanges.PM_BOUNCE_RANGE) && !tradeTaken) {
             satisfied = series.getBar(index).getLowPrice().isLessThanOrEqual(range.getPercentileFromRange(percentToTakeTrade));
             tradeTaken = satisfied;
         }

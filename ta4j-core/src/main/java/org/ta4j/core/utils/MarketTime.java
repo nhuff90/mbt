@@ -55,68 +55,7 @@ public enum MarketTime {
         this.localTime = localTime ;
     }
 
-    public static boolean isStartOfAm(ZonedDateTime endTime) {
-        return is(endTime.toLocalTime(), AM_START_TIME.localTime);
-    }
-
-    public static boolean isStartOfPmRange(ZonedDateTime endTime) {
-        return is(endTime.toLocalTime(), PM_START_TIME.localTime);
-    }
-
     public LocalTime getLocalTime() {
         return localTime;
-    }
-
-    public static Boolean isInAmRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.AM_START_TIME.getLocalTime(), MarketTime.AM_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isInMicroRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.MICRO_START_TIME.getLocalTime(), MarketTime.MICRO_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isInPmRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.PM_START_TIME.getLocalTime(), MarketTime.PM_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isAfterPmRange(LocalTime time)  {
-        return time.isAfter( MarketTime.PM_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isAfterAmRange(ZonedDateTime time)  {
-        return time.toLocalTime().isAfter( MarketTime.AM_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isInUpToPmRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.AM_START_TIME.getLocalTime(), MarketTime.PM_START_TIME.getLocalTime());
-    }
-
-    public static Boolean isAfterAmStop(ZonedDateTime time)  {
-        return time.toLocalTime().isAfter( MarketTime.AM_BOUNCE_STOP_LOSS_TIME.getLocalTime());
-    }
-
-    public static Boolean isAfterPmStop(ZonedDateTime time)  {
-        return time.toLocalTime().isAfter( MarketTime.PM_BOUNCE_STOP_LOSS_TIME.getLocalTime());
-    }
-
-    public static Boolean isAmBounceRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.AM_BOUNCE_START_TIME.getLocalTime(), MarketTime.AM_BOUNCE_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isPmBounceRange(ZonedDateTime time)  {
-        return isBetweenTimes(time.toLocalTime(), MarketTime.PM_BOUNCE_START_TIME.getLocalTime(), MarketTime.PM_BOUNCE_END_TIME.getLocalTime());
-    }
-
-    public static Boolean isBetweenTimes(LocalTime time, LocalTime startTime, LocalTime endTime)  {
-        return !time.isBefore( startTime ) &&
-                !time.isAfter( endTime );
-    }
-
-    public static Boolean is(LocalTime time, LocalTime time2)  {
-        return time.equals( time2 );
-    }
-
-    public static boolean isRegularTradingHours(ZonedDateTime endTime) {
-        return isBetweenTimes(endTime.toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
     }
 }

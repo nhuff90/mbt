@@ -26,12 +26,12 @@ package org.ta4j.core.rules.mine;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.PMRangeIndicator;
 import org.ta4j.core.indicators.mine.UpToPMRangeIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.MarketTimeRanges;
+import org.ta4j.core.utils.TimeUtils;
 
 /**
  * PM Low Retrace Rule.
@@ -54,7 +54,7 @@ public class UpToPMOpenRangeRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         Range range = upToPMRangeIndicator.getValue(index);
         boolean satisfied = false;
-        if (MarketTime.isStartOfPmRange(series.getBar(index).getEndTime())) {
+        if (TimeUtils.isStartOfRange(series.getBar(index).getEndTime(), MarketTimeRanges.PM_RANGE)) {
             Num pmPercentageStartRange = calculatePmPercentOpen(range, series.getBar(index).getOpenPrice());
             satisfied = pmPercentageStartRange.isGreaterThanOrEqual(DecimalNum.valueOf(lowRangePercentage)) &&
                     pmPercentageStartRange.isLessThanOrEqual(DecimalNum.valueOf(highRangePercentage));

@@ -28,7 +28,8 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.MarketTimeRanges;
+import org.ta4j.core.utils.TimeUtils;
 
 /**
  * AM Retrace Rule.
@@ -51,19 +52,19 @@ public class OmarBreakoutUpRule extends AbstractRule {
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
-        if (MarketTime.isStartOfAm(series.getBar(index).getEndTime())) {
+        if (TimeUtils.isStartOfRange(series.getBar(index).getEndTime(), MarketTimeRanges.AM_RANGE)) {
             openingBar = series.getBar(index);
             tradeTaken = false;
             previousBreakoutHappened = false;
             return false;
         }
 
-        if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
+        if (openingBar != null && TimeUtils.isInRange(series.getBar(index).getEndTime(), MarketTimeRanges.RTH) &&
                 series.getBar(index).getLowPrice().isLessThanOrEqual(openingBar.getLowPrice()) && !tradeTaken) {
             previousBreakoutHappened = true;
         }
 
-        if (openingBar != null && MarketTime.isRegularTradingHours(series.getBar(index).getEndTime()) &&
+        if (openingBar != null && TimeUtils.isInRange(series.getBar(index).getEndTime(), MarketTimeRanges.RTH) &&
                 series.getBar(index).getHighPrice().isGreaterThanOrEqual(openingBar.getHighPrice()) && !tradeTaken &&
         !previousBreakoutHappened) {
             tradeTaken = true;

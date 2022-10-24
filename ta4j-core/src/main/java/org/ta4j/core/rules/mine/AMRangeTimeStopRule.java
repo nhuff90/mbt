@@ -28,6 +28,7 @@ import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.TimeUtils;
 
 /**
  * A stop-gain rule.
@@ -48,7 +49,7 @@ public class AMRangeTimeStopRule extends AbstractRule {
         if (tradingRecord != null) {
             Position currentPosition = tradingRecord.getCurrentPosition();
             if (currentPosition.isOpened()) {
-                return MarketTime.isAfterAmStop(series.getBar(index).getEndTime());
+                return TimeUtils.isAfter(series.getBar(index).getEndTime(), MarketTime.AM_BOUNCE_STOP_LOSS_TIME);
             }
         }
         return false;

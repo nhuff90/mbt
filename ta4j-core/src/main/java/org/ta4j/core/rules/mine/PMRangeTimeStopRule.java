@@ -27,7 +27,8 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.MarketTimeRanges;
+import org.ta4j.core.utils.TimeUtils;
 
 /**
  * A stop-gain rule.
@@ -48,7 +49,7 @@ public class PMRangeTimeStopRule extends AbstractRule {
         if (tradingRecord != null) {
             Position currentPosition = tradingRecord.getCurrentPosition();
             if (currentPosition.isOpened()) {
-                return MarketTime.isAfterPmStop(series.getBar(index).getEndTime());
+                return TimeUtils.isAfterRange(series.getBar(index).getEndTime(), MarketTimeRanges.PM_RANGE);
             }
         }
         return false;

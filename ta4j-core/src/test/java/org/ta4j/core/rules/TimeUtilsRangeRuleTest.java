@@ -39,9 +39,9 @@ import org.ta4j.core.indicators.DateTimeIndicator;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-public class TimeRangeRuleTest extends AbstractIndicatorTest<Object, Object> {
+public class TimeUtilsRangeRuleTest extends AbstractIndicatorTest<Object, Object> {
 
-    public TimeRangeRuleTest(Function<Number, Num> numFunction) {
+    public TimeUtilsRangeRuleTest(Function<Number, Num> numFunction) {
         super(numFunction);
     }
 

@@ -3,7 +3,8 @@ package org.ta4j.core.indicators.mine;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.CachedIndicator;
-import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.MarketTimeRanges;
+import org.ta4j.core.utils.TimeUtils;
 
 public class OpeningMinuteCandleIndicator extends CachedIndicator<Bar> {
     private Bar openingBar;
@@ -15,7 +16,7 @@ public class OpeningMinuteCandleIndicator extends CachedIndicator<Bar> {
 
     @Override
     protected Bar calculate(int index) {
-        if (MarketTime.isStartOfAm(getBarSeries().getBar(index).getEndTime())) {
+        if (TimeUtils.isStartOfRange(getBarSeries().getBar(index).getEndTime(), MarketTimeRanges.AM_RANGE)) {
             openingBar = getBarSeries().getBar(index);
         }
         return openingBar;

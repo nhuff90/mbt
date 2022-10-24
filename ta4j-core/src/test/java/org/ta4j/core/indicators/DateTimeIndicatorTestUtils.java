@@ -39,11 +39,11 @@ import org.ta4j.core.mocks.MockBar;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-public class DateTimeIndicatorTest extends AbstractIndicatorTest<Indicator<Num>, Num> {
+public class DateTimeIndicatorTestUtils extends AbstractIndicatorTest<Indicator<Num>, Num> {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
-    public DateTimeIndicatorTest(Function<Number, Num> numFunction) {
+    public DateTimeIndicatorTestUtils(Function<Number, Num> numFunction) {
         super(numFunction);
     }
 
