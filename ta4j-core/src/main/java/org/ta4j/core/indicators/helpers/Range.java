@@ -38,6 +38,10 @@ public class Range {
                 this.low = bar.getLowPrice();
                 this.open = bar.getOpenPrice();
             } else {
+                // todo remove
+                if (this.high == null) {
+                    System.out.println("Debug");
+                }
                 this.high = this.high.max(bar.getHighPrice());
                 this.low = this.low.min(bar.getLowPrice());
             }
@@ -86,5 +90,9 @@ public class Range {
 
     public Num getClosePrice() {
         return close;
+    }
+
+    public Num getRangeSize() {
+        return high.minus(low);
     }
 }

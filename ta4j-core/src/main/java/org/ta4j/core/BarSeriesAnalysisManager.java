@@ -36,45 +36,21 @@ import org.ta4j.core.num.Num;
  * Used for backtesting. Allows to run a {@link Strategy trading strategy} over
  * the managed bar series.
  */
-public class BarSeriesManager {
+public class BarSeriesAnalysisManager {
 
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger(BarSeriesManager.class);
+    private static final Logger log = LoggerFactory.getLogger(BarSeriesAnalysisManager.class);
 
     /** The managed bar series */
     private BarSeries barSeries;
 
-    /** The trading cost models */
-    private CostModel transactionCostModel;
-    private CostModel holdingCostModel;
-
     /**
      * Constructor.
-     */
-    public BarSeriesManager() {
-        this(null, new ZeroCostModel(), new ZeroCostModel());
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param barSeries the bar series to be managed
-     */
-    public BarSeriesManager(BarSeries barSeries) {
-        this(barSeries, new ZeroCostModel(), new ZeroCostModel());
-    }
-
-    /**
-     * Constructor.
-     * 
+     *
      * @param barSeries            the bar series to be managed
-     * @param transactionCostModel the cost model for transactions of the asset
-     * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      */
-    public BarSeriesManager(BarSeries barSeries, CostModel transactionCostModel, CostModel holdingCostModel) {
+    public BarSeriesAnalysisManager(BarSeries barSeries) {
         this.barSeries = barSeries;
-        this.transactionCostModel = transactionCostModel;
-        this.holdingCostModel = holdingCostModel;
     }
 
     /**
@@ -98,7 +74,7 @@ public class BarSeriesManager {
      * 
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy) {
+    public String run(Strategy strategy) {
         return run(strategy, TradeType.BUY);
     }
 
@@ -113,7 +89,7 @@ public class BarSeriesManager {
      * @param finishIndex the finish index for the run (included)
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy, int startIndex, int finishIndex) {
+    public String run(Strategy strategy, int startIndex, int finishIndex) {
         return run(strategy, TradeType.BUY, barSeries.numOf(1), startIndex, finishIndex);
     }
 
@@ -126,7 +102,7 @@ public class BarSeriesManager {
      * @param tradeType the {@link TradeType} used to open the position
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy, TradeType tradeType) {
+    public String run(Strategy strategy, TradeType tradeType) {
         return run(strategy, tradeType, barSeries.numOf(1));
     }
 
@@ -142,7 +118,7 @@ public class BarSeriesManager {
      * @param finishIndex the finish index for the run (included)
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy, TradeType tradeType, int startIndex, int finishIndex) {
+    public String run(Strategy strategy, TradeType tradeType, int startIndex, int finishIndex) {
         return run(strategy, tradeType, barSeries.numOf(1), startIndex, finishIndex);
     }
 
@@ -154,7 +130,7 @@ public class BarSeriesManager {
      * @param amount    the amount used to open/close the trades
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy, TradeType tradeType, Num amount) {
+    public String run(Strategy strategy, TradeType tradeType, Num amount) {
         return run(strategy, tradeType, amount, barSeries.getBeginIndex(), barSeries.getEndIndex());
     }
 
@@ -169,14 +145,18 @@ public class BarSeriesManager {
      * @param finishIndex the finish index for the run (included)
      * @return the trading record coming from the run
      */
-    public TradingRecord run(Strategy strategy, TradeType tradeType, Num amount, int startIndex, int finishIndex) {
+    public String run(Strategy strategy, TradeType tradeType, Num amount, int startIndex, int finishIndex) {
+
+        // todo - update to return BarSeriesAnalysis once implemented
+
+        // end of temp stuff
 
         int runBeginIndex = Math.max(startIndex, barSeries.getBeginIndex());
         int runEndIndex = Math.min(finishIndex, barSeries.getEndIndex());
 
         log.trace("Running strategy (indexes: {} -> {}): {} (starting with {})", runBeginIndex, runEndIndex, strategy,
                 tradeType);
-        TradingRecord tradingRecord = new BaseTradingRecord(tradeType, transactionCostModel, holdingCostModel);
+        TradingRecord tradingRecord = new BaseTradingRecord(tradeType);
         for (int i = runBeginIndex; i <= runEndIndex; i++) {
             // For each bar between both indexes...
             if (strategy.shouldOperate(i, tradingRecord)) {
@@ -198,7 +178,7 @@ public class BarSeriesManager {
                 }
             }
         }
-        return tradingRecord;
+        return "";
     }
 
 }

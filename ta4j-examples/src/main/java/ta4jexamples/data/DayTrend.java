@@ -1,6 +1,6 @@
 package ta4jexamples.data;
 
-public enum DayBias {
+public enum DayTrend {
     NA("N/A"),
     UNPREDICTABLE("Unpredictable"),
     TREND_UP("Trend Day Up"),
@@ -10,9 +10,9 @@ public enum DayBias {
     EXPANDED_RANGE_UP("Expanded Range Day Up"),
     EXPANDED_RANGE_DOWN("Expanded Range Day Down");
 
-    final String dayBias;
+    final String dayTrend;
 
-    DayBias(String s) {
-        this.dayBias = s;
+    DayTrend(String s) {
+        this.dayTrend = s;
     }
 }

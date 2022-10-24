@@ -13,7 +13,7 @@ public enum MarketTime {
     OVERNIGHT_START_TIME(LocalTime.parse( "00:00:00" )),
     ETH_END_TIME(LocalTime.parse( "09:30:00" )),
 
-    //RTH Times
+    // RTH Times
     RTH_START_TIME(LocalTime.parse( "09:30:00" )),
     RTH_END_TIME(LocalTime.parse( "16:00:00" )),
     RTH_END_TIME_1558(LocalTime.parse( "15:58:00" )),
@@ -34,7 +34,19 @@ public enum MarketTime {
     PM_BOUNCE_START_TIME(LocalTime.parse( "13:33:00" )),
     PM_BOUNCE_END_TIME(LocalTime.parse( "14:10:00" )),
     PM_BOUNCE_STOP_LOSS_TIME(LocalTime.parse( "14:20:00" ) ),
-    PM_END_TIME(LocalTime.parse( "14:05:00" ));
+    PM_END_TIME(LocalTime.parse( "14:05:00" )),
+
+    // Power Hour -- up to 3:00 to 3:58 EST
+    POWER_HOUR_START_TIME(LocalTime.parse( "15:00:00" )),
+    POWER_HOUR_END_TIME(LocalTime.parse( "15:58:00" )),
+
+    // Initial Balance Range
+    INITIAL_BALANCE_START_TIME(LocalTime.parse( "09:30:00" ) ),
+    INITIAL_BALANCE_END_TIME(LocalTime.parse( "10:30:00" )),
+
+    // Opening Drive Range -- todo - need to determine OD time. 930-935? 930-945?
+    OPENING_DRIVE_START_TIME(LocalTime.parse( "09:30:00" ) ),
+    OPENING_DRIVE_END_TIME(LocalTime.parse( "09:40:00" ));
 
     private final LocalTime localTime ;
 

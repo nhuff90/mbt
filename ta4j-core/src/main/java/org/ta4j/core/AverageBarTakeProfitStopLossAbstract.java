@@ -4,12 +4,12 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.mine.StopLossRule;
 import org.ta4j.core.rules.mine.TakeProfitRule;
 
-public class AverageBarTakeProfitStopLosAbstract extends TakeProfitStopLossAbstract {
-    public AverageBarTakeProfitStopLosAbstract(TakeProfitRule takeProfitRule, StopLossRule stopLossRule) {
+public class AverageBarTakeProfitStopLossAbstract extends TakeProfitStopLossAbstract {
+    public AverageBarTakeProfitStopLossAbstract(TakeProfitRule takeProfitRule, StopLossRule stopLossRule) {
         super(takeProfitRule, stopLossRule);
     }
 
-    public AverageBarTakeProfitStopLosAbstract() {
+    public AverageBarTakeProfitStopLossAbstract() {
         super(null, null); //todo fix this - should not be sending in nulls
     }
 

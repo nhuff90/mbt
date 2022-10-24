@@ -67,7 +67,7 @@ public class BarSeriesConfigureEntryManager {
      * Constructor.
      */
     public BarSeriesConfigureEntryManager() {
-        this(null, new ZeroCostModel(), new ZeroCostModel(), EntryStrategy.BAR_AVERAGE, new AverageBarTakeProfitStopLosAbstract());
+        this(null, new ZeroCostModel(), new ZeroCostModel(), EntryStrategy.BAR_AVERAGE, new AverageBarTakeProfitStopLossAbstract());
     }
 
     /**
@@ -76,7 +76,7 @@ public class BarSeriesConfigureEntryManager {
      * @param barSeries the bar series to be managed
      */
     public BarSeriesConfigureEntryManager(BarSeries barSeries) {
-        this(barSeries, new ZeroCostModel(), new ZeroCostModel(), EntryStrategy.BAR_AVERAGE, new AverageBarTakeProfitStopLosAbstract());
+        this(barSeries, new ZeroCostModel(), new ZeroCostModel(), EntryStrategy.BAR_AVERAGE, new AverageBarTakeProfitStopLossAbstract());
     }
 
     /**
@@ -85,7 +85,7 @@ public class BarSeriesConfigureEntryManager {
      * @param barSeries the bar series to be managed
      */
     public BarSeriesConfigureEntryManager(BarSeries barSeries, EntryStrategy entryStrategy) {
-        this(barSeries, new ZeroCostModel(), new ZeroCostModel(), entryStrategy, new AverageBarTakeProfitStopLosAbstract());
+        this(barSeries, new ZeroCostModel(), new ZeroCostModel(), entryStrategy, new AverageBarTakeProfitStopLossAbstract());
     }
 
     /**

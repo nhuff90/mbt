@@ -1,6 +1,9 @@
 package ta4jexamples.data;
 
 import com.opencsv.CSVReader;
+import org.ta4j.core.Bar;
+import org.ta4j.core.BarSeries;
+import org.ta4j.core.utils.MapUtils;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.io.*;
@@ -10,9 +13,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +27,7 @@ public class GenerateDailyDataFile {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeries();
 //        BarSeries seriesSMA = CsvBarsLoader.loadEs1MinSeriesFromSmaApp( ZonedDateTime.of ( LocalDate.of ( 2022, 7, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries seriesJay = CsvBarsLoader.loadAllEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 7, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 18 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2017, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadAllEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of ( LocalDate.of ( 2017, 1, 6 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
@@ -34,44 +35,74 @@ public class GenerateDailyDataFile {
 
 //        System.out.println(series);
 
-        Map<ZonedDateTime, Candle> map2 = loadESHistoricalCsvSeriesBetweenYears("es_1min_historical_data.csv", "es-1min", null, null);
-        Map<ZonedDateTime, Candle> map1 = loadCsvSeries("es-1min.csv", "es-1min", null);
-        Map<ZonedDateTime, Candle> mergedMap = mergeMaps(map1,map2);
-        writeDailyInfoToCSV(mergedMap);
+        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
+
+        writeDailyInfoToCSV(populateDayInformation(series));
 
     }
 
-    private static Map<ZonedDateTime, Candle> mergeMaps(Map<ZonedDateTime, Candle> map1, Map<ZonedDateTime, Candle> map2) {
-        Map<ZonedDateTime, Candle> map3 = new TreeMap<>(map1);
-        map2.forEach(
-                (key, value) -> map3.merge(key, value, (v1, v2) -> v2));
-        return map3;
+    private static List<DailyInformation> populateDayInformation(BarSeries series) {
+        List<DailyInformation> dailyInformationList = new ArrayList<>();
+        Map<LocalDate, List<Bar>> dateBarMap = MapUtils.getMap(series.getBars(), Bar::getLocalDate, LinkedHashMap::new, ArrayList::new);
+        for (Map.Entry<LocalDate, List<Bar>> entry : dateBarMap.entrySet()) {
+            dailyInformationList.add(new DailyInformation(entry.getKey(), entry.getValue()));
+        }
+
+        return dailyInformationList;
     }
 
-    public static void writeDailyInfoToCSV(Map<ZonedDateTime, Candle> map) {
-        String outputFileName = "C:\\workspace\\nate\\mbt\\ta4j-examples\\src\\main\\resources\\es-1min-master.csv";
+    public static void writeDailyInfoToCSV(List<DailyInformation> dailyInformationList) {
+        String outputFileName = "C:\\workspace\\nate\\mbt\\ta4j-examples\\src\\main\\resources\\es-daily-info.csv";
         CsvBarsLoader.clearFileContents(outputFileName);
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss");
 
-        String str = "date, time, open, high, low, close, volume\n";
+        String str = "Date, " +
+                "Daily Open, Daily High, Daily Low, Daily Close, Daily HB, " +
+                "OD Open, OD High, OD Low, OD Close, OD HB, " +
+                "AM Open, AM High, AM Low, AM Close, AM HB, " +
+                "Micro Open, Micro High, Micro Low, Micro Close, Micro HB, " +
+                "PM Open, PM High, PM Low, PM Close, PM HB, " +
+                "Up to PM Open, Up to PM High, Up to PM Low, Up to PM Close, Up to PM HB, " +
+                "Power Hour Open, Power Hour High, Power Hour Low, Power Hour Close, Power Hour HB, " +
+//                "Prior Day Open, Prior Day High, Prior Day Low, Prior Day Close, Prior Day HB, " +
+                "Trend\n";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true))) {
             writer.append(str);
 
-            for (Map.Entry<ZonedDateTime, Candle> entry : map.entrySet()) {
-                writer.append(entry.getKey().format(formatter2)
-                        + ", " + entry.getValue().getOpen()
-                        + ", " + entry.getValue().getHigh()
-                        + ", " + entry.getValue().getLow()
-                        + ", " + entry.getValue().getClose()
-                        + ", " + entry.getValue().getVolume()
-                        + "\n"
-                );
-
-            }
+            dailyInformationList.forEach(dailyInformation -> {
+                try {
+                    if (dailyInformation.getDayTrend() != null && !dailyInformation.getDayTrend().equals(DayTrend.NA)) {
+                        writer.append(dailyInformation.getDate() + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.RTH) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.OPENING_DRIVE) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.AM) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.MICRO) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.PM) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.RTH_TO_PM) + ", " +
+                                        getOHLCString(dailyInformation, DailyInformation.DailyRange.POWER_HOUR) + ", " +
+//                        getOHLCString(dailyInformation, DailyInformation.DailyRange.PRIOR_DAY_RTH) + ", " +
+                                        (dailyInformation.getDayTrend() != null ? dailyInformation.getDayTrend() : "")
+                        );
+                        writer.append("\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private static String getOHLCString(DailyInformation dailyInformation, DailyInformation.DailyRange range) {
+
+        return (dailyInformation.getOpenPrice(range) != null ? dailyInformation.getOpenPrice(range) : "") + ", " +
+                (dailyInformation.getHighPrice(range) != null ? dailyInformation.getHighPrice(range) : "") + ", " +
+                (dailyInformation.getLowPrice(range) != null ? dailyInformation.getLowPrice(range) : "") + ", " +
+                (dailyInformation.getClosePrice(range) != null ? dailyInformation.getClosePrice(range) : "") + ", " +
+                (dailyInformation.getHalfBackPrice(range) != null ? dailyInformation.getHalfBackPrice(range) : "");
+    }
+
 
     private static Map<ZonedDateTime, Candle> loadESHistoricalCsvSeriesBetweenYears(String filename, String barSeriesName, ZonedDateTime startDate, ZonedDateTime endDate) {
 
