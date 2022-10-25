@@ -48,7 +48,7 @@ public class PmOpenRangeBacktest {
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaApp();
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaAppSpecificDate(ZonedDateTime.of ( LocalDate.of ( 2022, 6,  30), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate(ZonedDateTime.of ( LocalDate.of ( 2022, 6,  9), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of ( LocalDate.of ( 2022, 1,  1), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesFromSmaAppBetweenYears(
 //                ZonedDateTime.of ( LocalDate.of ( 2020, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
@@ -56,12 +56,12 @@ public class PmOpenRangeBacktest {
 
 
         // OMAR breakout up
-        System.out.println("20-40% Longs");
-        reportAnalysis(series, runUpToPmOpenRangeTradingRecord(series, .20, .40, Trade.TradeType.BUY));
+        System.out.println("20-40% Shorts");
+        reportAnalysis(series, runUpToPmOpenRangeTradingRecord(series, .20, .40, Trade.TradeType.SELL));
 
         // OMAR breakout down
-        System.out.println("60-80% Shorts");
-        reportAnalysis(series, runUpToPmOpenRangeTradingRecord(series, .60, .80, Trade.TradeType.SELL));
+        System.out.println("60-80% Longs");
+        reportAnalysis(series, runUpToPmOpenRangeTradingRecord(series, .60, .80, Trade.TradeType.BUY));
 //        reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.SELL, -3, 2));
 
         
