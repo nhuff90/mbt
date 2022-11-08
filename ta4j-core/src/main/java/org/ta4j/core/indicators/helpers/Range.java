@@ -27,8 +27,12 @@ public class Range {
                 this.lowBar = bar;
                 this.openBar = bar;
             } else {
-                this.highBar = (this.highBar.getHighPrice().isGreaterThan(bar.getHighPrice()) ? this.highBar :  bar);
-                this.lowBar = (this.lowBar.getLowPrice().isLessThan(bar.getLowPrice()) ? this.lowBar :  bar);
+                try {
+                    this.highBar = (this.highBar.getHighPrice().isGreaterThan(bar.getHighPrice()) ? this.highBar : bar);
+                    this.lowBar = (this.lowBar.getLowPrice().isLessThan(bar.getLowPrice()) ? this.lowBar : bar);
+                } catch (Exception e) {
+                    System.out.println("test");
+                }
             }
 
             if (endTimeOfRange.getLocalTime().equals(bar.getEndTime().toLocalTime())) {
@@ -47,11 +51,11 @@ public class Range {
     }
 
     public Num getHighPrice() {
-        return highBar.getHighPrice();
+        return (highBar != null ? highBar.getHighPrice() : null);
     }
 
     public Num getLowPrice() {
-        return lowBar.getLowPrice();
+        return (lowBar != null ? lowBar.getLowPrice() : null);
     }
 
     public Num getMiddlePrice() {
@@ -67,14 +71,19 @@ public class Range {
     }
 
     public Num getOpenPrice() {
-        return openBar.getOpenPrice();
+        return (openBar != null ? openBar.getOpenPrice(): null);
     }
 
     public Num getClosePrice() {
-        return closeBar.getClosePrice();
+        return (closeBar != null ? closeBar.getClosePrice(): null);
     }
 
     public Num getRangeSize() {
         return highBar.getHighPrice().minus(lowBar.getLowPrice());
+    }
+
+    // This is used to determine if the range is incomplete
+    public boolean isRangeIncomplete() {
+        return (openBar == null) || (closeBar == null);
     }
 }
