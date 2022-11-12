@@ -76,7 +76,7 @@ public class OmarBreakoutBacktest {
         Rule buyingRule = (tradeType.equals(Trade.TradeType.BUY) ? new OmarBreakoutUpRule(series) : new OmarBreakoutDownRule(series));
 
         // Sell Rule
-        Rule sellingRule = new TakeProfitIncludingPriorCandleRule(highPriceIndicator, lowPriceIndicator, takeProfit).or(new StopLossIncludingPriorCandleRule(highPriceIndicator, lowPriceIndicator, stopLoss));
+        Rule sellingRule = new TakeProfitIncludingPriorCandleInPointsRule(highPriceIndicator, lowPriceIndicator, takeProfit).or(new StopLossIncludingPriorCandleRule(highPriceIndicator, lowPriceIndicator, stopLoss));
 
         //TakeProfit and StopLoss
         TakeProfitStopLossAbstract takeProfitStopLossAbstract = new TakeProfitStopLossAbstract() {
@@ -85,21 +85,21 @@ public class OmarBreakoutBacktest {
             public Num getExitPrice(Strategy strategy, TradingRecord tradingRecord, BarSeries barSeries, int i) {
                 // Find satisfied rule
                 Rule rule = strategy.getExitRule();
-                TakeProfitRule takeProfitRule = null;
-                StopLossRule stopLossRule;
-                if (((OrRule) rule).getRule1() instanceof TakeProfitRule) {
-                    takeProfitRule = (TakeProfitRule) ((OrRule) rule).getRule1();
-                } else if (((OrRule) rule).getRule1()instanceof StopLossRule) {
-                    stopLossRule = (StopLossRule) ((OrRule) rule).getRule1();
+                TakeProfitInPointsRule takeProfitInPointsRule = null;
+                StopLossInPointsRule stopLossInPointsRule;
+                if (((OrRule) rule).getRule1() instanceof TakeProfitInPointsRule) {
+                    takeProfitInPointsRule = (TakeProfitInPointsRule) ((OrRule) rule).getRule1();
+                } else if (((OrRule) rule).getRule1()instanceof StopLossInPointsRule) {
+                    stopLossInPointsRule = (StopLossInPointsRule) ((OrRule) rule).getRule1();
                 }
 
-                if (((OrRule) rule).getRule2() instanceof TakeProfitRule) {
-                    takeProfitRule = (TakeProfitRule) ((OrRule) rule).getRule2();
-                } else if (((OrRule) rule).getRule2() instanceof StopLossRule) {
-                    stopLossRule = (StopLossRule) ((OrRule) rule).getRule2();
+                if (((OrRule) rule).getRule2() instanceof TakeProfitInPointsRule) {
+                    takeProfitInPointsRule = (TakeProfitInPointsRule) ((OrRule) rule).getRule2();
+                } else if (((OrRule) rule).getRule2() instanceof StopLossInPointsRule) {
+                    stopLossInPointsRule = (StopLossInPointsRule) ((OrRule) rule).getRule2();
                 }
-                assert takeProfitRule != null;
-                double priceOffset =  (takeProfitRule.isSatisfied() ? takeProfit : stopLoss);
+                assert takeProfitInPointsRule != null;
+                double priceOffset =  (takeProfitInPointsRule.isSatisfied() ? takeProfit : stopLoss);
                 return tradingRecord.getCurrentPosition().getEntry().getPricePerAsset().plus(DecimalNum.valueOf(priceOffset));
             }
         };

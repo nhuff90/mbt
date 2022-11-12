@@ -27,12 +27,8 @@ public class Range {
                 this.lowBar = bar;
                 this.openBar = bar;
             } else {
-                try {
-                    this.highBar = (this.highBar.getHighPrice().isGreaterThan(bar.getHighPrice()) ? this.highBar : bar);
-                    this.lowBar = (this.lowBar.getLowPrice().isLessThan(bar.getLowPrice()) ? this.lowBar : bar);
-                } catch (Exception e) {
-                    System.out.println("test");
-                }
+                this.highBar = (this.highBar.getHighPrice().isGreaterThan(bar.getHighPrice()) ? this.highBar : bar);
+                this.lowBar = (this.lowBar.getLowPrice().isLessThan(bar.getLowPrice()) ? this.lowBar : bar);
             }
 
             if (endTimeOfRange.getLocalTime().equals(bar.getEndTime().toLocalTime())) {

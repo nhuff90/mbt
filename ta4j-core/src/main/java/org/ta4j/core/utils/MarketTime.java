@@ -46,7 +46,15 @@ public enum MarketTime {
 
     // Opening Drive Range -- todo - need to determine OD time. 930-935? 930-945?
     OPENING_DRIVE_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    OPENING_DRIVE_END_TIME(LocalTime.parse( "09:40:00" ));
+    OPENING_DRIVE_END_TIME(LocalTime.parse( "09:45:00" )),
+
+    // OMAR Range
+    OMAR_START_TIME(LocalTime.parse( "09:30:00" ) ),
+    OMAR_END_TIME(LocalTime.parse( "09:30:00" )),
+
+    // Opening 5 mins Range
+    OPENING_5MINS_START_TIME(LocalTime.parse( "09:30:00" ) ),
+    OPENING_5MINS_END_TIME(LocalTime.parse( "09:34:00" ));
 
     private final LocalTime localTime ;
 

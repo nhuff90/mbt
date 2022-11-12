@@ -35,7 +35,14 @@ public enum MarketTimeRanges {
     INITIAL_BALANCE_RANGE(MarketTime.INITIAL_BALANCE_START_TIME.getLocalTime(), MarketTime.INITIAL_BALANCE_END_TIME.getLocalTime()),
 
     // Opening Drive Range -- todo - need to determine OD time. 930-935? 930-945?
-    OPENING_DRIVE_RANGE(MarketTime.OPENING_DRIVE_START_TIME.getLocalTime(), MarketTime.OPENING_DRIVE_END_TIME.getLocalTime());
+    OPENING_DRIVE_RANGE(MarketTime.OPENING_DRIVE_START_TIME.getLocalTime(), MarketTime.OPENING_DRIVE_END_TIME.getLocalTime()),
+
+    // Opening 5 Mins Range
+    OPENING_5MINS_RANGE(MarketTime.OPENING_5MINS_START_TIME.getLocalTime(), MarketTime.OPENING_5MINS_END_TIME.getLocalTime()),
+
+    // Opening 5 Mins Range
+
+    OMAR_RANGE(MarketTime.OMAR_START_TIME.getLocalTime(), MarketTime.OMAR_END_TIME.getLocalTime());
 
     final LocalTime startTime ;
     final LocalTime endTime ;

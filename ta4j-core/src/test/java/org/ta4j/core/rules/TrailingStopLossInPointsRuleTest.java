@@ -60,9 +60,9 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-public class TrailingStopLossRuleTest extends AbstractIndicatorTest<Object, Object> {
+public class TrailingStopLossInPointsRuleTest extends AbstractIndicatorTest<Object, Object> {
 
-    public TrailingStopLossRuleTest(Function<Number, Num> numFunction) {
+    public TrailingStopLossInPointsRuleTest(Function<Number, Num> numFunction) {
         super(numFunction);
     }
 

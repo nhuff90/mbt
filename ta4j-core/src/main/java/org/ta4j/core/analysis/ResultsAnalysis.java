@@ -125,6 +125,10 @@ public class ResultsAnalysis {
         }
     }
 
+    public void printWinRate() {
+        System.out.println("Win%: " + getWinPercentageAsString() );
+    }
+
     public void printAllTrades() {
         tradingRecord.getPositions().forEach(pos -> {
 
@@ -134,5 +138,9 @@ public class ResultsAnalysis {
                     "\tEntry Time: " + entryBar.getEndTime() + " | Entry:" + pos.getEntry().toString() + "\n" +
                     "\tExit Time: " + exitBar.getEndTime() +  " | Exit: " + pos.getExit().toString());
         });
+    }
+
+    public void exportResultsToCSV() {
+        System.out.println("Win%: " + getWinPercentageAsString() );
     }
 }

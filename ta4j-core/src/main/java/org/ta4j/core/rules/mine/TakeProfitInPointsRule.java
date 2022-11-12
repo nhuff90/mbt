@@ -27,25 +27,44 @@ import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
+import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
 /**
- * A stop loss rule.
+ * A take profit rule.
  *
- * Satisfied when the high/low price reaches the stop threshold.
+ * Satisfied when the high/low price reaches the gain threshold.
  */
-public class TakeProfitIncludingPriorCandleRule extends TakeProfitRule {
+public class TakeProfitInPointsRule extends TakeProfitStopLossRuleInterface {
+
+
+    /**
+     * The high price indicator
+     */
+    final HighPriceIndicator highPrice;
+
+    /**
+     * The low price indicator
+     */
+    final LowPriceIndicator lowPrice;
+
+    /**
+     * The gain in points
+     */
+    final Num takeProfitInPoints;
 
 
     /**
      * Constructor.
      *
-     * @param highPrice        the high price indicator
-     * @param lowPrice         the low price indicator
-     * @param stopLossInPoints the take profits in points
+     * @param highPrice             the high price indicator
+     * @param lowPrice              the low price indicator
+     * @param takeProfitInPoints    the take profits in points
      */
-    public TakeProfitIncludingPriorCandleRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
-        super(highPrice, lowPrice, stopLossInPoints);
+    public TakeProfitInPointsRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number takeProfitInPoints) {
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.takeProfitInPoints = DecimalNum.valueOf(takeProfitInPoints);
     }
 
     @Override
@@ -59,9 +78,9 @@ public class TakeProfitIncludingPriorCandleRule extends TakeProfitRule {
                 Num entryPrice = currentPosition.getEntry().getNetPrice();
 
                 if (currentPosition.getEntry().isBuy()) {
-                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)) || isBuyGainSatisfied(entryPrice, highPrice.getValue(index-1)));
+                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)));
                 } else {
-                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)) || isSellGainSatisfied(entryPrice, lowPrice.getValue(index-1)));
+                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)));
                 }
             }
         }
@@ -69,4 +88,11 @@ public class TakeProfitIncludingPriorCandleRule extends TakeProfitRule {
         return isSatisfied();
     }
 
+    boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+        return currentPrice.isLessThanOrEqual(entryPrice.plus(takeProfitInPoints));
+    }
+
+    boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+        return currentPrice.isGreaterThanOrEqual(entryPrice.plus(takeProfitInPoints));
+    }
 }

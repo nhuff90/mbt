@@ -39,11 +39,11 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-public class StopLossRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
+public class StopLossInPointsRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
 
     private ClosePriceIndicator closePrice;
 
-    public StopLossRuleTest(Function<Number, Num> numFunction) {
+    public StopLossInPointsRuleTest(Function<Number, Num> numFunction) {
         super(numFunction);
     }
 

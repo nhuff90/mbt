@@ -34,7 +34,7 @@ import org.ta4j.core.num.Num;
  *
  * Satisfied when the high/low price reaches the stop threshold.
  */
-public class StopLossIncludingPriorCandleRule extends StopLossInPointsRule {
+public class TakeProfitIncludingPriorCandleInPointsRule extends TakeProfitInPointsRule {
 
 
     /**
@@ -44,13 +44,12 @@ public class StopLossIncludingPriorCandleRule extends StopLossInPointsRule {
      * @param lowPrice         the low price indicator
      * @param stopLossInPoints the take profits in points
      */
-    public StopLossIncludingPriorCandleRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
+    public TakeProfitIncludingPriorCandleInPointsRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
         super(highPrice, lowPrice, stopLossInPoints);
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-//        boolean satisfied = false;
         setSatisfied(false);
         // No trading history or no position opened, no loss
         if (tradingRecord != null) {
@@ -60,9 +59,9 @@ public class StopLossIncludingPriorCandleRule extends StopLossInPointsRule {
                 Num entryPrice = currentPosition.getEntry().getNetPrice();
 
                 if (currentPosition.getEntry().isBuy()) {
-                    setSatisfied(isBuyStopSatisfied(entryPrice, highPrice.getValue(index)) || isBuyStopSatisfied(entryPrice, highPrice.getValue(index-1)));
+                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)) || isBuyGainSatisfied(entryPrice, highPrice.getValue(index-1)));
                 } else {
-                    setSatisfied(isSellStopSatisfied(entryPrice, lowPrice.getValue(index)) || isSellStopSatisfied(entryPrice, lowPrice.getValue(index-1)));
+                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)) || isSellGainSatisfied(entryPrice, lowPrice.getValue(index-1)));
                 }
             }
         }

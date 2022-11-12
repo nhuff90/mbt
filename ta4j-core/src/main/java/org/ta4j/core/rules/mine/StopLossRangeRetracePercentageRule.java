@@ -27,17 +27,18 @@ import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
-import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
+import org.ta4j.core.indicators.helpers.Range;
+import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
 /**
- * A take profit rule.
+ * A stop loss rule given a range indicator and percentage.
  *
- * Satisfied when the high/low price reaches the gain threshold.
+ * Satisfied when price retraces the provided percent of the given range.
+ * e.g., range = 200-300, provided % = 50%, stop loss for buy will be 250 and sell will be 250
  */
-public class TakeProfitRule extends TakeProfitStopLossRuleInterface {
-
+public class StopLossRangeRetracePercentageRule extends TakeProfitStopLossRuleInterface {
 
     /**
      * The high price indicator
@@ -52,36 +53,41 @@ public class TakeProfitRule extends TakeProfitStopLossRuleInterface {
     /**
      * The gain in points
      */
-    final Num takeProfitInPoints;
+    final Opening5MinsRangeIndicator opening5MinsRangeIndicator;
+
+    /**
+     * The percentage of the range to Stop Out
+     */
+    private Num percentageOfRange;
 
 
     /**
      * Constructor.
-     *
-     * @param highPrice             the high price indicator
+     *  @param highPrice             the high price indicator
      * @param lowPrice              the low price indicator
-     * @param takeProfitInPoints    the take profits in points
+     * @param opening5MinsRangeIndicator
      */
-    public TakeProfitRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number takeProfitInPoints) {
+    public StopLossRangeRetracePercentageRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Opening5MinsRangeIndicator opening5MinsRangeIndicator,
+                                              Num percentageOfRange) {
         this.highPrice = highPrice;
         this.lowPrice = lowPrice;
-        this.takeProfitInPoints = DecimalNum.valueOf(takeProfitInPoints);
+        this.percentageOfRange = percentageOfRange;
+        this.opening5MinsRangeIndicator = opening5MinsRangeIndicator;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+//        boolean satisfied = false;
         setSatisfied(false);
         // No trading history or no position opened, no loss
         if (tradingRecord != null) {
             Position currentPosition = tradingRecord.getCurrentPosition();
             if (currentPosition.isOpened()) {
-
-                Num entryPrice = currentPosition.getEntry().getNetPrice();
-
+                Range range = opening5MinsRangeIndicator.getValue(index);
                 if (currentPosition.getEntry().isBuy()) {
-                    setSatisfied(isBuyGainSatisfied(entryPrice, highPrice.getValue(index)));
+                    setSatisfied(isBuyStopSatisfied(this.lowPrice.getValue(index), calculateBuyStop(range, percentageOfRange)));
                 } else {
-                    setSatisfied(isSellGainSatisfied(entryPrice, lowPrice.getValue(index)));
+                    setSatisfied(isSellStopSatisfied(this.highPrice.getValue(index), calculateSellStop(range, percentageOfRange)));
                 }
             }
         }
@@ -89,11 +95,23 @@ public class TakeProfitRule extends TakeProfitStopLossRuleInterface {
         return isSatisfied();
     }
 
-    boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
-        return currentPrice.isLessThanOrEqual(entryPrice.plus(takeProfitInPoints));
+    private Num calculateBuyStop(Range range, Num percentageOfRange) {
+        Num rangeSize = range.getRangeSize();
+        Num stopLossOffset = rangeSize.multipliedBy(DecimalNum.valueOf(percentageOfRange.doubleValue()));
+        return range.getHighPrice().minus(stopLossOffset);
     }
 
-    boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
-        return currentPrice.isGreaterThanOrEqual(entryPrice.plus(takeProfitInPoints));
+    private Num calculateSellStop(Range range, Num percentageOfRange) {
+        Num rangeSize = range.getRangeSize();
+        Num stopLossOffset = rangeSize.multipliedBy(DecimalNum.valueOf(percentageOfRange.doubleValue()));
+        return range.getLowPrice().plus(stopLossOffset);
+    }
+
+    boolean isBuyStopSatisfied(Num price, Num buyStopPrice) {
+        return price.isLessThanOrEqual(buyStopPrice);
+    }
+
+    boolean isSellStopSatisfied(Num price, Num sellStopPrice) {
+        return price.isGreaterThanOrEqual(sellStopPrice);
     }
 }

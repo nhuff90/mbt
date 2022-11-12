@@ -1,28 +1,28 @@
 package org.ta4j.core;
 
 import org.ta4j.core.num.Num;
-import org.ta4j.core.rules.mine.StopLossRule;
-import org.ta4j.core.rules.mine.TakeProfitRule;
+import org.ta4j.core.rules.mine.StopLossInPointsRule;
+import org.ta4j.core.rules.mine.TakeProfitInPointsRule;
 
 public abstract class TakeProfitStopLossAbstract {
-    TakeProfitRule takeProfitRule;
+    TakeProfitInPointsRule takeProfitInPointsRule;
 
-    public TakeProfitRule getTakeProfitRule() {
-        return takeProfitRule;
+    public TakeProfitInPointsRule getTakeProfitRule() {
+        return takeProfitInPointsRule;
     }
 
-    public StopLossRule getStopLossRule() {
-        return stopLossRule;
+    public StopLossInPointsRule getStopLossRule() {
+        return stopLossInPointsRule;
     }
 
-    StopLossRule stopLossRule;
+    StopLossInPointsRule stopLossInPointsRule;
 
     public TakeProfitStopLossAbstract() {
 
     }
-    public TakeProfitStopLossAbstract(TakeProfitRule takeProfitRule, StopLossRule stopLossRule) {
-        this.takeProfitRule = takeProfitRule;
-        this.stopLossRule = stopLossRule;
+    public TakeProfitStopLossAbstract(TakeProfitInPointsRule takeProfitInPointsRule, StopLossInPointsRule stopLossInPointsRule) {
+        this.takeProfitInPointsRule = takeProfitInPointsRule;
+        this.stopLossInPointsRule = stopLossInPointsRule;
     }
 
     public abstract Num getExitPrice(Strategy strategy, TradingRecord tradingRecord, BarSeries barSeries, int i);

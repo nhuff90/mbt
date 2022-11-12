@@ -27,7 +27,6 @@ import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
-import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
@@ -36,7 +35,7 @@ import org.ta4j.core.num.Num;
  *
  * Satisfied when the high/low price reaches the stop threshold.
  */
-public class StopLossRule extends TakeProfitStopLossRuleInterface {
+public class StopLossInPointsRule extends TakeProfitStopLossRuleInterface {
 
     /**
      * The high price indicator
@@ -61,7 +60,7 @@ public class StopLossRule extends TakeProfitStopLossRuleInterface {
      * @param lowPrice              the low price indicator
      * @param stopLossInPoints    the take profits in points
      */
-    public StopLossRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
+    public StopLossInPointsRule(HighPriceIndicator highPrice, LowPriceIndicator lowPrice, Number stopLossInPoints) {
         this.highPrice = highPrice;
         this.lowPrice = lowPrice;
         this.stopLossInPoints = DecimalNum.valueOf(stopLossInPoints);

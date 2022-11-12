@@ -1,12 +1,12 @@
 package org.ta4j.core;
 
 import org.ta4j.core.num.Num;
-import org.ta4j.core.rules.mine.StopLossRule;
-import org.ta4j.core.rules.mine.TakeProfitRule;
+import org.ta4j.core.rules.mine.StopLossInPointsRule;
+import org.ta4j.core.rules.mine.TakeProfitInPointsRule;
 
 public class AverageBarTakeProfitStopLossAbstract extends TakeProfitStopLossAbstract {
-    public AverageBarTakeProfitStopLossAbstract(TakeProfitRule takeProfitRule, StopLossRule stopLossRule) {
-        super(takeProfitRule, stopLossRule);
+    public AverageBarTakeProfitStopLossAbstract(TakeProfitInPointsRule takeProfitInPointsRule, StopLossInPointsRule stopLossInPointsRule) {
+        super(takeProfitInPointsRule, stopLossInPointsRule);
     }
 
     public AverageBarTakeProfitStopLossAbstract() {
