@@ -21,18 +21,21 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.backtesting.probability;
+package ta4jexamples.backtesting.probability.edge.omar;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.DateTimeIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.indicators.mine.OmarRangeIndicator;
-import org.ta4j.core.indicators.mine.OpeningDriveRangeIndicator;
+import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
+import org.ta4j.core.indicators.volume.VWAPIndicator;
 import org.ta4j.core.num.DoubleNum;
+import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.TimeRangeRule;
-import org.ta4j.core.rules.mine.OpeningDriveTrendDownRule;
+import org.ta4j.core.rules.mine.Opening5MinRangeTrendDownRule;
 import org.ta4j.core.rules.mine.TakeProfitRangePercentageRule;
 import org.ta4j.core.utils.MarketTime;
 import ta4jexamples.loaders.CsvBarsLoader;
@@ -46,28 +49,27 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class OmarHighIsOpeningDriveHighTrendDownBacktest {
+public class OmarHighIs930To935HighAndBelowDWAPTrendDownBacktest {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 12), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
-                ZonedDateTime.of ( LocalDate.of ( 2018, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
+                ZonedDateTime.of ( LocalDate.of ( 2021, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )),
                 ZonedDateTime.of ( LocalDate.of ( 2022, 12, 31 ), LocalTime.of ( 16, 00 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2022, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
 
-//        List<Double> rangeMultiplierTakeProfitList = Arrays.asList(0.5);
         List<Double> rangeMultiplierTakeProfitList = Arrays.asList(0.5, 1.0, 1.5, 2.0, 3.0, 4.0);
 
         for(Double rangeMultiplierTakeProfit: rangeMultiplierTakeProfitList) {
-            System.out.println("OMAR HOD = OD Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
+            System.out.println("OMAR HOD = 5 min Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.AM_END_TIME));
 
 
-            System.out.println("OMAR HOD = OD Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
+            System.out.println("OMAR HOD = 5 min Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
             System.out.println("");
         }
@@ -76,23 +78,26 @@ public class OmarHighIsOpeningDriveHighTrendDownBacktest {
 
     public static TradingRecord runOmarTradingRecord(BarSeries series, double rangeMultiplierTakeProfit, MarketTime byCloseOfRangeTime) {
         OmarRangeIndicator omarRangeIndicator = new OmarRangeIndicator(series);
-        OpeningDriveRangeIndicator openingDriveRangeIndicator = new OpeningDriveRangeIndicator(series);
+        Opening5MinsRangeIndicator opening5MinsRangeIndicator = new Opening5MinsRangeIndicator(series);
 
         // Buy Rule
-        // If OMAR high = Opening Drive high
-        Rule buyingRule = new OpeningDriveTrendDownRule(series, omarRangeIndicator, openingDriveRangeIndicator);
+        VWAPIndicator vwapIndicator = new VWAPIndicator(series, 500);
+        ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+        // If OMAR high = opening 5 min range high and below DVWAP
+        Rule buyingRule = new Opening5MinRangeTrendDownRule(series, omarRangeIndicator, opening5MinsRangeIndicator)
+                .and(new OverIndicatorRule(vwapIndicator, closePriceIndicator));
 
         // Sell Rule
-        // If 100% of Opening Drive
+        // If 100% of opening 5 min range.
         HighPriceIndicator highPriceIndicator = new HighPriceIndicator(series);
         LowPriceIndicator lowPriceIndicator = new LowPriceIndicator(series);
 
         // Sell Rule
         DateTimeIndicator timeIndicator = new DateTimeIndicator(series);
 
-        // If 1x/1.5x/etc. of Opening Drive OR by AM close/EOD
+        // If 1x/1.5x/etc. of opening 5 min range OR by AM close.
         List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(byCloseOfRangeTime.getLocalTime(), byCloseOfRangeTime.getLocalTime()));
-        Rule sellingRule = new TakeProfitRangePercentageRule(highPriceIndicator, lowPriceIndicator, openingDriveRangeIndicator, DoubleNum.valueOf(rangeMultiplierTakeProfit)).or(new TimeRangeRule(timeRanges, timeIndicator));
+        Rule sellingRule = new TakeProfitRangePercentageRule(highPriceIndicator, lowPriceIndicator, opening5MinsRangeIndicator, DoubleNum.valueOf(rangeMultiplierTakeProfit)).or(new TimeRangeRule(timeRanges, timeIndicator));
 
         // Run backtest
         BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);

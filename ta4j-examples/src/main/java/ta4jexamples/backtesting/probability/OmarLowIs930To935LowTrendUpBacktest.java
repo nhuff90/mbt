@@ -66,18 +66,18 @@ public class OmarLowIs930To935LowTrendUpBacktest {
 
         for(Double rangeMultiplierTakeProfit: rangeMultiplierTakeProfitList) {
             System.out.println("OMAR LOD = 5 min Range LOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
-            reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.BUY, rangeMultiplierTakeProfit, MarketTime.AM_END_TIME));
+            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.AM_END_TIME));
 
 
             System.out.println("OMAR LOD = 5 min Range LOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
-            reportAnalysis(series, runOmarTradingRecord(series, Trade.TradeType.BUY, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
+            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
             System.out.println("");
         }
 
         
     }
 
-    private static TradingRecord runOmarTradingRecord(BarSeries series, Trade.TradeType tradeType, double rangeMultiplierTakeProfit, MarketTime byCloseOfRangeTime) {
+    public static TradingRecord runOmarTradingRecord(BarSeries series, double rangeMultiplierTakeProfit, MarketTime byCloseOfRangeTime) {
         OmarRangeIndicator omarRangeIndicator = new OmarRangeIndicator(series);
         Opening5MinsRangeIndicator opening5MinsRangeIndicator = new Opening5MinsRangeIndicator(series);
 
@@ -99,7 +99,7 @@ public class OmarLowIs930To935LowTrendUpBacktest {
 
         // Run backtest
         BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);
-        return seriesManager.run(new BaseStrategy(buyingRule, sellingRule), tradeType);
+        return seriesManager.run(new BaseStrategy(buyingRule, sellingRule), Trade.TradeType.BUY);
     }
 
     private static void reportAnalysis(BarSeries series, TradingRecord tradingRecord) {
