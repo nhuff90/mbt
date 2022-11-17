@@ -37,7 +37,6 @@ import org.ta4j.core.indicators.mine.OpeningDriveRangeIndicator;
 import org.ta4j.core.indicators.volume.VWAPIndicator;
 import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.TimeRangeRule;
 import org.ta4j.core.rules.mine.*;
 import org.ta4j.core.utils.MarketTime;
@@ -66,7 +65,7 @@ import java.util.List;
  *  The purpose of this Edge class is to try new things. Once done implementing a backtest,
  *  archive to the omar package.
  */
-public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodLodTrendBacktest {
+public class EdgeOmarHodLodWithTrendBacktest implements EdgeOmarHodLodTrendBacktest {
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 

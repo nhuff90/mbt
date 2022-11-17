@@ -67,7 +67,7 @@ import java.util.List;
  *  The purpose of this Edge class is to try new things. Once done implementing a backtest,
  *  archive to the omar package.
  */
-public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodLodTrendBacktest {
+public class EdgeOmarHodLodWithVwapTrendBacktest implements EdgeOmarHodLodTrendBacktest {
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 

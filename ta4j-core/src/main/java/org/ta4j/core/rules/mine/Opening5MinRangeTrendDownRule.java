@@ -25,6 +25,7 @@ package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
+import org.ta4j.core.indicators.CachedIndicator;
 import org.ta4j.core.indicators.helpers.Range;
 import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
 import org.ta4j.core.indicators.mine.OmarRangeIndicator;
@@ -41,10 +42,10 @@ public class Opening5MinRangeTrendDownRule extends AbstractRule {
 
     private final BarSeries series;
     private final OmarRangeIndicator omarRangeIndicator;
-    private final Opening5MinsRangeIndicator opening5MinsRangeIndicator;
+    private final CachedIndicator<Range> opening5MinsRangeIndicator;
     private boolean tradeTaken;
 
-    public Opening5MinRangeTrendDownRule(BarSeries series, OmarRangeIndicator omarRangeIndicator, Opening5MinsRangeIndicator opening5MinsRangeIndicator) {
+    public Opening5MinRangeTrendDownRule(BarSeries series, OmarRangeIndicator omarRangeIndicator, CachedIndicator<Range> opening5MinsRangeIndicator) {
         this.series = series;
         this.omarRangeIndicator = omarRangeIndicator;
         this.opening5MinsRangeIndicator = opening5MinsRangeIndicator;

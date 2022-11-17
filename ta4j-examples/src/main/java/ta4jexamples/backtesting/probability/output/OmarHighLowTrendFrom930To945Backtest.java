@@ -7,7 +7,9 @@ import org.ta4j.core.analysis.ResultsAnalysisWithRowName;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.MarketTimeRanges;
 import ta4jexamples.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
+import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithTrendBacktest;
 import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithVwapAndWvwapTrendBacktest;
+import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithVwapTrendBacktest;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;
@@ -16,13 +18,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-public class OmarHighLowTrendFrom930To935Backtest {
-    static int startYear = 2021;
+public class OmarHighLowTrendFrom930To945Backtest {
+    static int startYear = 2018;
     static int endYear = 2022;
 
+    static MarketTimeRanges rangeToTest = MarketTimeRanges.OPENING_DRIVE_RANGE;
+
     static Map<MarketTimeRanges, String> marketTimeRangesStringMap = new HashMap<MarketTimeRanges, String>() {{
-        put(MarketTimeRanges.OPENING_5MINS_RANGE, "930-935");
-//        put(MarketTimeRanges.OPENING_DRIVE_RANGE, "930-945");
+        put(MarketTimeRanges.OPENING_DRIVE_RANGE, "930-945");
     }};
     static Map<MarketTime, String> marketTimeStringMap = new HashMap<MarketTime, String>() {{
         put(MarketTime.AM_END_TIME, "AM Range");
@@ -30,7 +33,10 @@ public class OmarHighLowTrendFrom930To935Backtest {
     }};
 
     static List<Double> rangeMultiplierTakeProfitList = Arrays.asList(0.5, 1.0, 1.5, 2.0, 3.0, 4.0);
-    static List<ResultsAnalysisWithRowName> resultsAnalysisList = new ArrayList<>();
+    static List<ResultsAnalysisWithRowName> resultsAnalysisTrendUpAmRangeList = new ArrayList<>();
+    static List<ResultsAnalysisWithRowName> resultsAnalysisTrendDownAmRangeList = new ArrayList<>();
+    static List<ResultsAnalysisWithRowName> resultsAnalysisTrendUpRthRangeList = new ArrayList<>();
+    static List<ResultsAnalysisWithRowName> resultsAnalysisTrendDownRthRangeList = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
@@ -43,18 +49,31 @@ public class OmarHighLowTrendFrom930To935Backtest {
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
         for(Double rangeMultiplierTakeProfit : rangeMultiplierTakeProfitList) {
-            resultsAnalysisList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.AM_END_TIME, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
-            resultsAnalysisList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.AM_END_TIME, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
-            resultsAnalysisList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
-            resultsAnalysisList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
+            resultsAnalysisTrendUpAmRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
+                    rangeToTest, MarketTime.AM_END_TIME, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
+            resultsAnalysisTrendDownAmRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
+                    rangeToTest, MarketTime.AM_END_TIME, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
+            resultsAnalysisTrendUpRthRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
+                    rangeToTest, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
+            resultsAnalysisTrendDownRthRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
+                    rangeToTest, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
         }
 
-        createAndPrintResults("Omar = 930-935 [" + startYear + "-" + endYear + "]",
-                Arrays.asList("Win%", "EV", "Max Drawdown"), resultsAnalysisList);
+        createAndPrintResults("Omar Low = " +
+                        marketTimeRangesStringMap.get(rangeToTest) + " Low. By close of AM Range [" + startYear + "-" + endYear + "]",
+                Arrays.asList("Win%", "EV", "Max Drawdown"), resultsAnalysisTrendUpAmRangeList);
+
+        createAndPrintResults("Omar High " + marketTimeRangesStringMap.get(rangeToTest) + " = " +
+                        marketTimeRangesStringMap.get(rangeToTest) + " High. By close of AM Range [" + startYear + "-" + endYear + "]",
+                Arrays.asList("Win%", "EV", "Max Drawdown"), resultsAnalysisTrendDownAmRangeList);
+
+        createAndPrintResults("Omar Low " + marketTimeRangesStringMap.get(rangeToTest) + " = " +
+                        marketTimeRangesStringMap.get(rangeToTest) + " Low. By close of RTH Range [" + startYear + "-" + endYear + "]",
+                Arrays.asList("Win%", "EV", "Max Drawdown"), resultsAnalysisTrendUpRthRangeList);
+
+        createAndPrintResults("Omar High " + marketTimeRangesStringMap.get(rangeToTest) + " = " +
+                        marketTimeRangesStringMap.get(rangeToTest) + " High. By close of RTH Range [" + startYear + "-" + endYear + "]",
+                Arrays.asList("Win%", "EV", "Max Drawdown"), resultsAnalysisTrendDownRthRangeList);
     }
 
     private static ResultsAnalysisWithRowName runBacktests(BarSeries series, Double rangeMultiplierTakeProfit,
@@ -64,7 +83,7 @@ public class OmarHighLowTrendFrom930To935Backtest {
         /**
          * Update class here
          */
-        TradingRecord omarHighTradingRecord = EdgeOmarHodLodWithVwapAndWvwapTrendBacktest.runOmarTradingRecord(series,
+        TradingRecord omarHighTradingRecord = EdgeOmarHodLodWithVwapTrendBacktest.runOmarTradingRecord(series,
                 rangeMultiplierTakeProfit, range, amEndTime,
                 trendToTest);
         String omarHighOrLowStr = (trendToTest == EdgeOmarHodLodTrendBacktest.TrendToTest.UP ? "OMAR Low = " + marketTimeRangesStringMap.get(range) + " Low"

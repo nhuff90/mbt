@@ -25,9 +25,9 @@ package org.ta4j.core.rules.mine;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
+import org.ta4j.core.indicators.CachedIndicator;
 import org.ta4j.core.indicators.helpers.Range;
 import org.ta4j.core.indicators.mine.OmarRangeIndicator;
-import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
 import org.ta4j.core.indicators.mine.OpeningDriveRangeIndicator;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
@@ -42,10 +42,10 @@ public class OpeningDriveTrendDownRule extends AbstractRule {
 
     private final BarSeries series;
     private final OmarRangeIndicator omarRangeIndicator;
-    private final OpeningDriveRangeIndicator openingDriveRangeIndicator;
+    private final CachedIndicator<Range> openingDriveRangeIndicator;
     private boolean tradeTaken;
 
-    public OpeningDriveTrendDownRule(BarSeries series, OmarRangeIndicator omarRangeIndicator, OpeningDriveRangeIndicator openingDriveRangeIndicator) {
+    public OpeningDriveTrendDownRule(BarSeries series, OmarRangeIndicator omarRangeIndicator, CachedIndicator<Range> openingDriveRangeIndicator) {
         this.series = series;
         this.omarRangeIndicator = omarRangeIndicator;
         this.openingDriveRangeIndicator = openingDriveRangeIndicator;

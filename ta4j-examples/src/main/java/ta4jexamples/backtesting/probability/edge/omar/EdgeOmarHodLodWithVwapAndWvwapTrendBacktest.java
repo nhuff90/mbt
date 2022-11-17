@@ -39,9 +39,8 @@ import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.TimeRangeRule;
-import org.ta4j.core.rules.mine.Opening5MinRangeTrendDownRule;
-import org.ta4j.core.rules.mine.OpeningDriveTrendDownRule;
-import org.ta4j.core.rules.mine.TakeProfitRangePercentageRule;
+import org.ta4j.core.rules.UnderIndicatorRule;
+import org.ta4j.core.rules.mine.*;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.MarketTimeRanges;
 import ta4jexamples.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
@@ -69,12 +68,6 @@ import java.util.List;
  *  archive to the omar package.
  */
 public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodLodTrendBacktest {
-
-    public enum TrendToTest {
-        UP,
-        DOWN;
-    }
-
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 
@@ -144,26 +137,42 @@ public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodL
         ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
         // If OMAR high = opening 5 min range high and below DVWAP and WVWAP
         AbstractRule rangeBuyRule = null;
+        AbstractRule vwapBuyRule = null;
+        AbstractRule wvwapBuyRule = null;
         CachedIndicator<Range> rangeCachedIndicator = null;
         Trade.TradeType tradeType = null;
         if (testingTimeRange.equals(MarketTimeRanges.OPENING_5MINS_RANGE)) {
             rangeCachedIndicator = new Opening5MinsRangeIndicator(series);
             if (trendToTest.equals(TrendToTest.DOWN)) {
                 tradeType = Trade.TradeType.SELL;
-                rangeBuyRule = new Opening5MinRangeTrendDownRule(series, omarRangeIndicator, new Opening5MinsRangeIndicator(series));
+                rangeBuyRule = new Opening5MinRangeTrendDownRule(series, omarRangeIndicator, rangeCachedIndicator);
+                vwapBuyRule = new OverIndicatorRule(dailyVwapIndicator, closePriceIndicator);
+                wvwapBuyRule = new OverIndicatorRule(weeklyVwapIndicator, closePriceIndicator);
+            } else if (trendToTest.equals(TrendToTest.UP)) {
+                tradeType = Trade.TradeType.BUY;
+                rangeBuyRule = new Opening5MinRangeTrendUpRule(series, omarRangeIndicator, rangeCachedIndicator);
+                vwapBuyRule = new UnderIndicatorRule(dailyVwapIndicator, closePriceIndicator);
+                wvwapBuyRule = new UnderIndicatorRule(weeklyVwapIndicator, closePriceIndicator);
             }
         } else if (testingTimeRange.equals(MarketTimeRanges.OPENING_DRIVE_RANGE)) {
             rangeCachedIndicator = new OpeningDriveRangeIndicator(series);
-            if (trendToTest.equals(TrendToTest.UP)) {
+            if (trendToTest.equals(TrendToTest.DOWN)) {
+                tradeType = Trade.TradeType.SELL;
+                rangeBuyRule = new OpeningDriveTrendDownRule(series, omarRangeIndicator, rangeCachedIndicator);
+                vwapBuyRule = new OverIndicatorRule(dailyVwapIndicator, closePriceIndicator);
+                wvwapBuyRule = new OverIndicatorRule(weeklyVwapIndicator, closePriceIndicator);
+            } else if (trendToTest.equals(TrendToTest.UP)) {
                 tradeType = Trade.TradeType.BUY;
-                rangeBuyRule = new OpeningDriveTrendDownRule(series, omarRangeIndicator, new OpeningDriveRangeIndicator(series));
+                rangeBuyRule = new OpeningDriveTrendUpRule(series, omarRangeIndicator, rangeCachedIndicator);
+                vwapBuyRule = new UnderIndicatorRule(dailyVwapIndicator, closePriceIndicator);
+                wvwapBuyRule = new UnderIndicatorRule(weeklyVwapIndicator, closePriceIndicator);
             }
         }
 
         assert rangeBuyRule != null;
         Rule buyingRule = rangeBuyRule
-                .and(new OverIndicatorRule(dailyVwapIndicator, closePriceIndicator))
-                .and(new OverIndicatorRule(weeklyVwapIndicator, closePriceIndicator));
+                .and(vwapBuyRule)
+                .and(wvwapBuyRule);
 
         // Sell Rule
         // If 100% of opening 5 min range.
@@ -181,7 +190,11 @@ public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodL
 
         // Run backtest
         BarSeriesAverageBarPriceManager seriesManager = new BarSeriesAverageBarPriceManager(series);
-        return seriesManager.run(new BaseStrategy(buyingRule, sellingRule), tradeType);
+        TradingRecord tradingRecord =  seriesManager.run(new BaseStrategy(buyingRule, sellingRule), tradeType);
+
+        // For debugging
+//        reportAnalysis(series, tradingRecord);
+        return tradingRecord;
     }
 
     private static void reportAnalysis(BarSeries series, TradingRecord tradingRecord) {
@@ -190,7 +203,7 @@ public class EdgeOmarHodLodWithVwapAndWvwapTrendBacktest implements EdgeOmarHodL
             System.out.println("No trades taken");
         } else {
             ResultsAnalysis resultsAnalysis = new ResultsAnalysis(series, tradingRecord);
-//            resultsAnalysis.printAllTrades();
+            resultsAnalysis.printAllTrades();
             resultsAnalysis.printResults();
         }
     }
