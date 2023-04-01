@@ -42,3 +42,4 @@ hs_err_pid*
 /ta4j-examples/src/main/resources/es-1min-master-temp.csv
 /historical-data/
 /ta4j-examples/src/main/resources/data/
+/ta4j-examples/src/main/resources/archive/
