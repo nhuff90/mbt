@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class GapDownBackTestWithDailyMgi extends BackTestWithDailyMgi {
+public class GapDownBackTest extends BackTestWithDailyMgi {
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 

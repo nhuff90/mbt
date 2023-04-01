@@ -1,8 +1,8 @@
-package com.sma.utils;
+package nate.data.utils;
 
 import com.opencsv.CSVWriter;
-import com.sma.v01.domain.Candle;
-import com.sma.v01.domain.CandleLength;
+import nate.data.domain.Candle;
+import nate.data.domain.CandleLength;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,45 +19,7 @@ import java.util.*;
 
 
 public class CSVUtils {
-    public static List<Candle> readCandlesFromCSV(String fileName) {
-        List<Candle> candles = new ArrayList<>();
-        Path pathToFile = Paths.get(fileName);
-
-        // create an instance of BufferedReader
-        // using try with resource, Java 7 feature to close resources
-        try (BufferedReader br = Files.newBufferedReader(pathToFile,
-                StandardCharsets.US_ASCII)) {
-
-            // read the first line from the text file
-            String line = br.readLine();
-            line = br.readLine();
-
-            // loop until all lines are read
-            while (line != null) {
-
-                // use string.split to load a string array with the values from
-                // each line of
-                // the file, using a comma as the delimiter
-                String[] attributes = line.split(",");
-
-                Candle candle = createCandle(attributes);
-
-                // adding book into ArrayList
-                candles.add(candle);
-
-                // read next line before looping
-                // if end of file reached, line would be null
-                line = br.readLine();
-            }
-
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return candles;
-    }
-
-    public static Map<String, Candle> readSpaceSeperatedCSV(String fileName) {
+    public static Map<String, Candle> readDataCsv(String fileName) {
         Path pathToFile = Paths.get(fileName);
         Map<String, Candle> map = new HashMap<>();
 
@@ -68,7 +30,9 @@ public class CSVUtils {
 
             // read the first line from the text file, skip first 2 lines
             String line = br.readLine();
-            line = br.readLine();
+            if (line != null && line.equalsIgnoreCase("Empty DataFrame")) {
+                return null;
+            }
             line = br.readLine();
 
             // loop until all lines are read
@@ -77,7 +41,7 @@ public class CSVUtils {
                 // use string.split to load a string array with the values from
                 // each line of
                 // the file, using a comma as the delimiter
-                String[] attributes = line.split(" ");
+                String[] attributes = line.split(",");
                 // Remove blank elements
                 List<String> list = new ArrayList<>(Arrays.asList(attributes));
                 list.removeAll(Arrays.asList("", null));
@@ -100,7 +64,7 @@ public class CSVUtils {
         return map;
     }
 
-    public static Map<String, Candle> readGeneratedCsv(String fileName) {
+    public static Map<String, Candle> readSpaceSeperatedCSV(String fileName) {
         Path pathToFile = Paths.get(fileName);
         Map<String, Candle> map = new HashMap<>();
 
@@ -111,6 +75,10 @@ public class CSVUtils {
 
             // read the first line from the text file, skip first 2 lines
             String line = br.readLine();
+            if (line != null && line.equalsIgnoreCase("Empty DataFrame")) {
+                return null;
+            }
+            line = br.readLine();
             line = br.readLine();
 
             // loop until all lines are read
@@ -119,7 +87,7 @@ public class CSVUtils {
                 // use string.split to load a string array with the values from
                 // each line of
                 // the file, using a comma as the delimiter
-                String[] attributes = line.split(",");
+                String[] attributes = line.split(" ");
                 // Remove blank elements
                 List<String> list = new ArrayList<>(Arrays.asList(attributes));
                 list.removeAll(Arrays.asList("", null));
@@ -159,9 +127,9 @@ public class CSVUtils {
 
         // adding data to csv
         // adding header to csv
-        String[] header = { "date", "time", "symbol","open","high","low","close","volume" };
-        writer.writeNext(header);
-        candles.forEach(candle -> writer.writeNext(candle.toStringArray()));
+        String[] header = { "date", "time","open","high","low","close","volume" };
+        writer.writeNext(header, false);
+        candles.forEach(candle -> writer.writeNext(candle.toStringArray(), false));
 
 
         // closing writer connection
@@ -181,13 +149,18 @@ public class CSVUtils {
         Double close = null;
         Integer volume = null;
         try {
-            date = LocalDate.parse(removeQuotes(metadata[0]));
-            time = LocalTime.parse(addStartingZero(removeQuotes(metadata[1])).toString().split("-")[0]);
-            open = Double.parseDouble(removeQuotes(metadata[3]));
-            high = Double.parseDouble(removeQuotes(metadata[4]));
-            low = Double.parseDouble(removeQuotes(metadata[5]));
-            close = Double.parseDouble(removeQuotes(metadata[6]));
-            volume = new BigDecimal(removeQuotes(metadata[7])).intValue();
+            int i = 0;
+            date = LocalDate.parse(removeQuotes(metadata[i++]));
+            time = LocalTime.parse(addStartingZero(removeQuotes(metadata[i++])).toString().split("-")[0]);
+            if (removeQuotes(metadata[i]).startsWith("CME")) {
+                i++;
+                //todo - this should be a temp thing. delete once file is consolidated.
+            }
+            open = Double.parseDouble(removeQuotes(metadata[i++]));
+            high = Double.parseDouble(removeQuotes(metadata[i++]));
+            low = Double.parseDouble(removeQuotes(metadata[i++]));
+            close = Double.parseDouble(removeQuotes(metadata[i++]));
+            volume = new BigDecimal(removeQuotes(metadata[i])).intValue();
         }
         catch (Exception e) {
             System.out.println("Error here");
@@ -224,7 +197,7 @@ public class CSVUtils {
         return new Candle(date, time, open, high, low, close, volume, candleLength);
     }
 
-    private static String removeQuotes(String metadatum) {
+    public static String removeQuotes(String metadatum) {
         if (metadatum.startsWith("\"")) {
             metadatum = metadatum.substring(1);
         }

@@ -41,7 +41,7 @@ public class GenerateDailyDataFile {
 
     }
 
-    private static List<DailyInformation> populateDayInformation(BarSeries series) {
+    public static List<DailyInformation> populateDayInformation(BarSeries series) {
         List<DailyInformation> dailyInformationList = new ArrayList<>();
         Map<LocalDate, List<Bar>> dateBarMap = MapUtils.getMap(series.getBars(), Bar::getLocalDate, LinkedHashMap::new, ArrayList::new);
         for (Map.Entry<LocalDate, List<Bar>> entry : dateBarMap.entrySet()) {

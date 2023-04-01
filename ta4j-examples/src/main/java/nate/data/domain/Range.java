@@ -1,12 +1,5 @@
-package com.sma.domain;
+package nate.data.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
 public class Range {
     double high;
     double low;

@@ -1,13 +1,5 @@
-package com.sma.utils;
+package nate.data.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalTime;
-import java.util.Objects;
-
-@Getter
 public enum DayBias {
     UNKNOWN("UNKNOWN"),
     TREND_UP("Trend Up Day"),

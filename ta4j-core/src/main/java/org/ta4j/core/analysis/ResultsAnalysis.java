@@ -16,6 +16,7 @@ import org.ta4j.core.utils.DoubleFormatter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResultsAnalysis {
 
@@ -32,7 +33,7 @@ public class ResultsAnalysis {
     AnalysisCriterion numberOfLosingPositionsCriterion;
 
     // P/L
-    AnalysisCriterion netProfitCriterion;
+    AnalysisCriterion profitCriterion;
 
     // Max Drawdown
     MaximumDrawdownCriterion maximumDrawdownCriterion;
@@ -50,7 +51,7 @@ public class ResultsAnalysis {
         this.averageLossCriterion = new AverageLossCriterion();
         this.numberOfWinningPositionsCriterion = new NumberOfWinningPositionsCriterion();
         this.numberOfLosingPositionsCriterion = new NumberOfLosingPositionsCriterion();
-        this.netProfitCriterion = new ProfitLossCriterion();
+        this.profitCriterion = new ProfitLossCriterion();
         this.maximumDrawdownCriterion = new MaximumDrawdownCriterion();
         this.winningPositionsRatio = new WinningPositionsRatioCriterion();
     }
@@ -130,11 +131,13 @@ public class ResultsAnalysis {
     }
 
     public void printAllTrades() {
+        AtomicInteger i = new AtomicInteger();
         tradingRecord.getPositions().forEach(pos -> {
-
+            i.getAndIncrement();
+            System.out.println("Trade # " + i);
             Bar entryBar = series.getBar(pos.getEntry().getIndex());
             Bar exitBar = series.getBar(pos.getExit().getIndex());
-            System.out.println("Profitable?: " + (pos.getProfit().doubleValue() >= 0 ? "true" : "false")+ "\n " +
+            System.out.println("Profitable?: " + (pos.getProfit().doubleValue() >= 0 ? "true" : "false")+ " | P/L: $" + pos.getProfit().doubleValue() + "\n " +
                     "\tEntry Time: " + entryBar.getEndTime() + " | Entry:" + pos.getEntry().toString() + "\n" +
                     "\tExit Time: " + exitBar.getEndTime() +  " | Exit: " + pos.getExit().toString());
         });

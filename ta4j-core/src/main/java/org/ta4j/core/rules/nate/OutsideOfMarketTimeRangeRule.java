@@ -25,23 +25,22 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.TimeUtils;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 /**
  * Satisfied when the bar is inside of the given range
  */
-public class MarketTimeRangeRule extends DailyOHLCRule {
+public class OutsideOfMarketTimeRangeRule extends AbstractRule {
+    protected BarSeries series;
     private MarketTime startTime;
     private MarketTime endTime;
 
-    public MarketTimeRangeRule(BarSeries series, MarketTime startTime, MarketTime endTime) {
-        super(series);
+    public OutsideOfMarketTimeRangeRule(BarSeries series, MarketTime startTime, MarketTime endTime) {
+        this.series = series;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -50,8 +49,7 @@ public class MarketTimeRangeRule extends DailyOHLCRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        LocalTime temp = series.getBar(index).getEndTime().toLocalTime();
-        if (!dailyTradeTaken && TimeUtils.isBetweenTimes(series.getBar(index).getEndTime().toLocalTime(), startTime.getLocalTime(), endTime.getLocalTime())) {
+        if (TimeUtils.isBefore(series.getBar(index).getEndTime(), startTime) ||  TimeUtils.isAfter(series.getBar(index).getEndTime(), endTime)) {
             satisfied = true;
         }
 

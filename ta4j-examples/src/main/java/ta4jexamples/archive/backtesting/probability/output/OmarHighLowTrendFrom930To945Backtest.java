@@ -1,4 +1,4 @@
-package ta4jexamples.backtesting.probability.output;
+package ta4jexamples.archive.backtesting.probability.output;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
@@ -6,10 +6,8 @@ import org.ta4j.core.analysis.ResultsAnalysisAsTable;
 import org.ta4j.core.analysis.ResultsAnalysisWithRowName;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.MarketTimeRanges;
-import ta4jexamples.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
-import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithTrendBacktest;
-import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithVwapAndWvwapTrendBacktest;
-import ta4jexamples.backtesting.probability.edge.omar.EdgeOmarHodLodWithVwapTrendBacktest;
+import ta4jexamples.archive.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
+import ta4jexamples.archive.backtesting.probability.edge.omar.EdgeOmarHodLodWithVwapTrendBacktest;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

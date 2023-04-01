@@ -26,7 +26,7 @@ package org.ta4j.core.rules.nate;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.UpToPMRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.UpToPMRangeIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;

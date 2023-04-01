@@ -1,4 +1,4 @@
-package org.ta4j.core.indicators.mine;
+package org.ta4j.core.indicators.nate.archive;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.CachedIndicator;

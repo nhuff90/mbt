@@ -28,7 +28,7 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.Opening5MinsRangeIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 

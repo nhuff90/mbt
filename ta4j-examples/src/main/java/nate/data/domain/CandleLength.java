@@ -1,4 +1,4 @@
-package com.sma.v01.domain;
+package nate.data.domain;
 
 public enum CandleLength {
     ONE_MIN,

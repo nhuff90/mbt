@@ -29,6 +29,7 @@ import org.ta4j.core.Trade.TradeType;
 import org.ta4j.core.cost.CostModel;
 import org.ta4j.core.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.nate.DailyMgiBuyRule;
 
 /**
  * A manager for {@link BarSeries} objects.
@@ -36,10 +37,10 @@ import org.ta4j.core.num.Num;
  * Used for backtesting. Allows to run a {@link Strategy trading strategy} over
  * the managed bar series.
  */
-public class BarSeriesManager {
+public class BarSeriesWithDailyMgiManager {
 
     /** The logger */
-    private static final Logger log = LoggerFactory.getLogger(BarSeriesManager.class);
+    private static final Logger log = LoggerFactory.getLogger(BarSeriesWithDailyMgiManager.class);
 
     /** The managed bar series */
     private BarSeries barSeries;
@@ -51,27 +52,27 @@ public class BarSeriesManager {
     /**
      * Constructor.
      */
-    public BarSeriesManager() {
+    public BarSeriesWithDailyMgiManager() {
         this(null, new ZeroCostModel(), new ZeroCostModel());
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param barSeries the bar series to be managed
      */
-    public BarSeriesManager(BarSeries barSeries) {
+    public BarSeriesWithDailyMgiManager(BarSeries barSeries) {
         this(barSeries, new ZeroCostModel(), new ZeroCostModel());
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param barSeries            the bar series to be managed
      * @param transactionCostModel the cost model for transactions of the asset
      * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      */
-    public BarSeriesManager(BarSeries barSeries, CostModel transactionCostModel, CostModel holdingCostModel) {
+    public BarSeriesWithDailyMgiManager(BarSeries barSeries, CostModel transactionCostModel, CostModel holdingCostModel) {
         this.barSeries = barSeries;
         this.transactionCostModel = transactionCostModel;
         this.holdingCostModel = holdingCostModel;
@@ -176,8 +177,12 @@ public class BarSeriesManager {
 
         log.trace("Running strategy (indexes: {} -> {}): {} (starting with {})", runBeginIndex, runEndIndex, strategy,
                 tradeType);
-        TradingRecord tradingRecord = new BaseTradingRecord(tradeType, transactionCostModel, holdingCostModel);
+        TradingRecord tradingRecord = new TradingRecordWithDailyMgi(tradeType, transactionCostModel, holdingCostModel);
+        DailyMgiBuyRule.series = barSeries;
         for (int i = runBeginIndex; i <= runEndIndex; i++) {
+            // Update Daily MGI data
+            DailyMgiBuyRule.updateDailyMgi(i, tradingRecord);
+
             // For each bar between both indexes...
             if (strategy.shouldOperate(i, tradingRecord)) {
                 tradingRecord.operate(i, barSeries.getBar(i).getClosePrice(), amount);

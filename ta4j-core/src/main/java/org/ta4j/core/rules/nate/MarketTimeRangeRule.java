@@ -25,28 +25,29 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.DoubleNum;
-import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.TimeUtils;
 
 /**
- * Satisfied when there is a gap up from yesterday's closed to today's open
+ * Satisfied when the bar is inside of the given range
  */
-public class GapUpRule extends DailyOHLCRule {
+public class MarketTimeRangeRule extends AbstractRule {
+    protected BarSeries series;
+    private MarketTime startTime;
+    private MarketTime endTime;
 
-    public GapUpRule(BarSeries series) {
-        super(series);
+    public MarketTimeRangeRule(BarSeries series, MarketTime startTime, MarketTime endTime) {
+        this.series = series;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
-        updateDailyOhlc(index, tradingRecord);
 
-        if (priorDayRthOhlc.getClose() != null && TimeUtils.is(series.getBar(index).getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime()) &&
-                isValidGap(priorDayRthOhlc.getClose().getPrice(), series.getBar(index).getOpenPrice(), 5)) {
+        if (TimeUtils.isBetweenTimes(series.getBar(index).getEndTime().toLocalTime(), startTime.getLocalTime(), endTime.getLocalTime())) {
             satisfied = true;
         }
 
@@ -55,12 +56,4 @@ public class GapUpRule extends DailyOHLCRule {
         return satisfied;
     }
 
-    /**
-     * Returns true
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
-    }
 }

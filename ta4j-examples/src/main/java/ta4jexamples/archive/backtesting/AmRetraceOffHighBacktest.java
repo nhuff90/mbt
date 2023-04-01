@@ -21,16 +21,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.backtesting;
+package ta4jexamples.archive.backtesting;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
-import org.ta4j.core.indicators.mine.AMRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.AMRangeIndicator;
 import org.ta4j.core.indicators.helpers.OHLCPriceIndicator;
-import org.ta4j.core.rules.mine.AMHighRetraceRule;
-import org.ta4j.core.rules.mine.AMRangeStopGainRule;
-import org.ta4j.core.rules.mine.AMRangeStopLossRule;
-import org.ta4j.core.rules.mine.AMRangeTimeStopRule;
+import org.ta4j.core.rules.nate.AMHighRetraceRule;
+import org.ta4j.core.rules.nate.AMRangeStopGainRule;
+import org.ta4j.core.rules.nate.AMRangeStopLossRule;
+import org.ta4j.core.rules.nate.AMRangeTimeStopRule;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

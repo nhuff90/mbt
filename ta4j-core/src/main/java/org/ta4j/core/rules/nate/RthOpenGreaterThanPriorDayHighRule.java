@@ -27,33 +27,28 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.TimeUtils;
+
+import java.time.LocalDate;
 
 /**
  * Satisfied when there is a gap up from yesterday's closed to today's open
  */
-public class GapUpRule extends DailyOHLCRule {
+public class RthOpenGreaterThanPriorDayHighRule extends AbstractRule {
+    protected BarSeries series;
 
-    boolean satisfied = false;
-
-    public GapUpRule(BarSeries series) {
-        super(series);
+    public RthOpenGreaterThanPriorDayHighRule(BarSeries series) {
+        this.series = series;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        updateDailyOhlc(index, tradingRecord);
+        boolean satisfied = false;
 
-        if (!dailyTradeTakenAndClosed && priorDayRthOhlc.getClose() != null && TimeUtils.is(series.getBar(index).getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime()) &&
-                isValidGap(priorDayRthOhlc.getClose().getPrice(), rthOhlc.getOpen().getPrice(), 5)) {
+        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && DailyMgiBuyRule.rthOhlc.getOpen() != null && DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice().isLessThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
             satisfied = true;
-        }
-
-        // Reset satisfied flag if new day
-        if (TimeUtils.is(series.getBar(index).getEndTime().toLocalTime(), MarketTime.ETH_0000.getLocalTime())) {
-            satisfied = false;
-            dailyTradeTakenAndClosed = false;
         }
 
         traceIsSatisfied(index, satisfied);

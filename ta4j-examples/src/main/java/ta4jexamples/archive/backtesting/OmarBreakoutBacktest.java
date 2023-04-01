@@ -21,7 +21,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.backtesting;
+package ta4jexamples.archive.backtesting;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
@@ -30,7 +30,7 @@ import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.OrRule;
-import org.ta4j.core.rules.mine.*;
+import org.ta4j.core.rules.nate.*;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

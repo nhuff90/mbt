@@ -31,10 +31,10 @@ import org.ta4j.core.rules.AbstractRule;
 /**
  * Satisfied when there is a new high of day
  */
-public class CrossingPriorHighOfDayRule extends AbstractRule {
+public class NewHighOfDayRule extends AbstractRule {
     protected BarSeries series;
 
-    public CrossingPriorHighOfDayRule(BarSeries series) {
+    public NewHighOfDayRule(BarSeries series) {
         this.series = series;
     }
 
@@ -43,9 +43,6 @@ public class CrossingPriorHighOfDayRule extends AbstractRule {
         boolean satisfied = false;
 
         Num barHighPrice = series.getBar(index).getHighPrice();
-//        if (DailyMgiBuyRule.overnightRthOhlc.getHigh() != null && DailyMgiBuyRule.overnightRthOhlc.getHigh().getPrice().isLessThan(barHighPrice)) {
-//            satisfied = true;
-//        }
 
         if (DailyMgiBuyRule.rthOhlc.getHigh() != null && DailyMgiBuyRule.rthOhlc.getHigh().getPrice().isLessThan(barHighPrice)) {
             satisfied = true;

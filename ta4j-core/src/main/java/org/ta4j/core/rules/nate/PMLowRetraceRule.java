@@ -25,7 +25,7 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.indicators.mine.PMRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.PMRangeIndicator;
 import org.ta4j.core.indicators.helpers.Range;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTimeRanges;

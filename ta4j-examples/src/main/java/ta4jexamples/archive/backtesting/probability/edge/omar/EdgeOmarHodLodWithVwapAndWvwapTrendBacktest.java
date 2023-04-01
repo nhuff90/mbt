@@ -21,7 +21,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.backtesting.probability.edge.omar;
+package ta4jexamples.archive.backtesting.probability.edge.omar;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
@@ -31,19 +31,19 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.indicators.helpers.HighPriceIndicator;
 import org.ta4j.core.indicators.helpers.LowPriceIndicator;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.OmarRangeIndicator;
-import org.ta4j.core.indicators.mine.Opening5MinsRangeIndicator;
-import org.ta4j.core.indicators.mine.OpeningDriveRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.OmarRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.Opening5MinsRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.OpeningDriveRangeIndicator;
 import org.ta4j.core.indicators.volume.VWAPIndicator;
 import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.TimeRangeRule;
 import org.ta4j.core.rules.UnderIndicatorRule;
-import org.ta4j.core.rules.mine.*;
+import org.ta4j.core.rules.nate.*;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.MarketTimeRanges;
-import ta4jexamples.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
+import ta4jexamples.archive.backtesting.probability.edge.EdgeOmarHodLodTrendBacktest;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;

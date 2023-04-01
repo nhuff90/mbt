@@ -27,7 +27,7 @@ import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.CachedIndicator;
 import org.ta4j.core.indicators.helpers.Range;
-import org.ta4j.core.indicators.mine.OmarRangeIndicator;
+import org.ta4j.core.indicators.nate.archive.OmarRangeIndicator;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 import org.ta4j.core.utils.MarketTime;

@@ -21,17 +21,15 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.backtesting;
+package ta4jexamples.archive.backtesting;
 
 import org.ta4j.core.*;
 import org.ta4j.core.analysis.ResultsAnalysis;
 import org.ta4j.core.indicators.DateTimeIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-import org.ta4j.core.indicators.mine.UpToPMRangeIndicator;
-import org.ta4j.core.rules.StopGainRule;
-import org.ta4j.core.rules.StopLossRule;
+import org.ta4j.core.indicators.nate.archive.UpToPMRangeIndicator;
 import org.ta4j.core.rules.TimeRangeRule;
-import org.ta4j.core.rules.mine.*;
+import org.ta4j.core.rules.nate.*;
 import org.ta4j.core.utils.MarketTime;
 import ta4jexamples.loaders.CsvBarsLoader;
 

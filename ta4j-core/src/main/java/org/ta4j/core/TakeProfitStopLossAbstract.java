@@ -1,8 +1,8 @@
 package org.ta4j.core;
 
 import org.ta4j.core.num.Num;
-import org.ta4j.core.rules.mine.StopLossInPointsRule;
-import org.ta4j.core.rules.mine.TakeProfitInPointsRule;
+import org.ta4j.core.rules.nate.StopLossInPointsRule;
+import org.ta4j.core.rules.nate.TakeProfitInPointsRule;
 
 public abstract class TakeProfitStopLossAbstract {
     TakeProfitInPointsRule takeProfitInPointsRule;

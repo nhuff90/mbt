@@ -1,8 +1,7 @@
-package org.ta4j.core.indicators.mine;
+package org.ta4j.core.indicators.nate.archive;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.CachedIndicator;
-import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.MarketTimeRanges;
 import org.ta4j.core.utils.TimeUtils;
 

@@ -33,10 +33,10 @@ import java.time.LocalDate;
 /**
  * Satisfied when there is a new high of day
  */
-public class CrossingPriorHighOfDayRule extends AbstractRule {
+public class CrossAboveOvernightHighRule extends AbstractRule {
     protected BarSeries series;
 
-    public CrossingPriorHighOfDayRule(BarSeries series) {
+    public CrossAboveOvernightHighRule(BarSeries series) {
         this.series = series;
     }
 
@@ -44,10 +44,10 @@ public class CrossingPriorHighOfDayRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        // todo remove
-        if (DailyMgiBuyRule.rthOhlc.getOpen().getDate().isEqual(LocalDate.of ( 2023, 3, 21 ))) {
-            System.out.println("test");
-        }
+//        // todo remove
+//        if (DailyMgiBuyRule.rthOhlc.getOpen().getDate().isEqual(LocalDate.of ( 2023, 3, 21 ))) {
+//            System.out.println("test");
+//        }
 
         Num barHighPrice = series.getBar(index).getHighPrice();
         if (DailyMgiBuyRule.overnightRthOhlc.getHigh() != null && DailyMgiBuyRule.overnightRthOhlc.getHigh().getPrice().isLessThan(barHighPrice)) {

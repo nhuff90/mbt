@@ -38,4 +38,7 @@ ta4j-examples/indicators.csv
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/ta4j-examples/src/main/resources/es-1min-master.csv
+/ta4j-examples/src/main/resources/*.csv
+/ta4j-examples/src/main/resources/es-1min-master-temp.csv
+/historical-data/
+/ta4j-examples/src/main/resources/data/

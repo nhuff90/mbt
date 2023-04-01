@@ -25,24 +25,23 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
+import org.ta4j.core.rules.AbstractRule;
 
 /**
- * Satisfied when px crosses over the RTH open price.
+ * Satisfied when px crosses below the RTH open price.
  */
-public class CrossRthOpenRule extends DailyOHLCRule {
+public class CrossingBelowRthOpenRule extends AbstractRule {
+    protected BarSeries series;
 
-    public CrossRthOpenRule(BarSeries series) {
-        super(series);
+    public CrossingBelowRthOpenRule(BarSeries series) {
+        this.series = series;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
-//        updateDailyOhlc(index, tradingRecord);
 
-        if (!dailyTradeTakenAndClosed && series.getBar(index).getOpenPrice().isGreaterThanOrEqual(rthOhlc.getOpen().getPrice()) &&  series.getBar(index).getLowPrice().isLessThan(rthOhlc.getOpen().getPrice())) {
-            satisfied = true;
-        } else if (!dailyTradeTakenAndClosed && series.getBar(index).getOpenPrice().isLessThanOrEqual(rthOhlc.getOpen().getPrice()) && series.getBar(index).getHighPrice().isGreaterThan(rthOhlc.getOpen().getPrice())) {
+        if (series.getBar(index).getOpenPrice().isGreaterThanOrEqual(DailyMgiBuyRule.rthOhlc.getOpen().getPrice()) && series.getBar(index).getLowPrice().isLessThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
             satisfied = true;
         }
 

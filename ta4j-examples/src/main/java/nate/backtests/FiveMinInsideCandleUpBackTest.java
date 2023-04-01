@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class FiveMinInsideCandleBackTest extends BackTest {
+public class FiveMinInsideCandleUpBackTest extends BackTestWithDailyMgi {
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
 
@@ -26,18 +26,18 @@ public class FiveMinInsideCandleBackTest extends BackTest {
 
         /**
          * Buy Rules
-         * 1. PDH > RTH Open by more than 5 points
+         * 1. After first 30mins of RTH
          * AND
-         * 2. After first 15mins of RTH
+         * 2. 5 Min Inside Bar Close
          * AND
-         * 3. Fall below OMAR Low
+         * 3. Break out up of Engulfing candle high
          */
 
         /**
          * Sell Rules
-         * 1. Gap filled. Px <= PDH
+         * 1. Stop at Low of Engulfing candle
          * OR
-         * 2. Stop out on new HOD -- Px > RTH High
+         * 2. TP at 1R (size of engulfing candle)
          * OR
          * 3. End of RTH
          */

@@ -23,19 +23,20 @@
  */
 package org.ta4j.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.ta4j.core.Trade.TradeType;
 import org.ta4j.core.cost.CostModel;
 import org.ta4j.core.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.rules.nate.DailyMgiBuyRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base implementation of a {@link TradingRecord}.
  *
  */
-public class BaseTradingRecord implements TradingRecord {
+public class TradingRecordWithDailyMgi implements TradingRecord {
 
     private static final long serialVersionUID = -4436851731855891220L;
 
@@ -93,7 +94,7 @@ public class BaseTradingRecord implements TradingRecord {
     /**
      * Constructor.
      */
-    public BaseTradingRecord() {
+    public TradingRecordWithDailyMgi() {
         this(TradeType.BUY);
     }
 
@@ -102,7 +103,7 @@ public class BaseTradingRecord implements TradingRecord {
      *
      * @param name the name of the tradingRecord
      */
-    public BaseTradingRecord(String name) {
+    public TradingRecordWithDailyMgi(String name) {
         this(TradeType.BUY);
         this.name = name;
     }
@@ -111,10 +112,10 @@ public class BaseTradingRecord implements TradingRecord {
      * Constructor.
      *
      * @param name           the name of the trading record
-     * @param entryTradeType the {@link TradeType trade type} of entries in the
+     * @param tradeType the {@link TradeType trade type} of entries in the
      *                       trading session
      */
-    public BaseTradingRecord(String name, TradeType tradeType) {
+    public TradingRecordWithDailyMgi(String name, TradeType tradeType) {
         this(tradeType, new ZeroCostModel(), new ZeroCostModel());
         this.name = name;
     }
@@ -122,10 +123,10 @@ public class BaseTradingRecord implements TradingRecord {
     /**
      * Constructor.
      *
-     * @param entryTradeType the {@link TradeType trade type} of entries in the
+     * @param tradeType the {@link TradeType trade type} of entries in the
      *                       trading session
      */
-    public BaseTradingRecord(TradeType tradeType) {
+    public TradingRecordWithDailyMgi(TradeType tradeType) {
         this(tradeType, new ZeroCostModel(), new ZeroCostModel());
     }
 
@@ -137,7 +138,7 @@ public class BaseTradingRecord implements TradingRecord {
      * @param transactionCostModel the cost model for transactions of the asset
      * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      */
-    public BaseTradingRecord(TradeType entryTradeType, CostModel transactionCostModel, CostModel holdingCostModel) {
+    public TradingRecordWithDailyMgi(TradeType entryTradeType, CostModel transactionCostModel, CostModel holdingCostModel) {
         if (entryTradeType == null) {
             throw new IllegalArgumentException("Starting type must not be null");
         }
@@ -152,7 +153,7 @@ public class BaseTradingRecord implements TradingRecord {
      *
      * @param trades the trades to be recorded (cannot be empty)
      */
-    public BaseTradingRecord(Trade... trades) {
+    public TradingRecordWithDailyMgi(Trade... trades) {
         this(new ZeroCostModel(), new ZeroCostModel(), trades);
     }
 
@@ -163,7 +164,7 @@ public class BaseTradingRecord implements TradingRecord {
      * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      * @param trades               the trades to be recorded (cannot be empty)
      */
-    public BaseTradingRecord(CostModel transactionCostModel, CostModel holdingCostModel, Trade... trades) {
+    public TradingRecordWithDailyMgi(CostModel transactionCostModel, CostModel holdingCostModel, Trade... trades) {
         this(trades[0].getType(), transactionCostModel, holdingCostModel);
         for (Trade o : trades) {
             boolean newTradeWillBeAnEntry = currentPosition.isNew();
@@ -277,6 +278,7 @@ public class BaseTradingRecord implements TradingRecord {
         // Storing the new trade in entries/exits lists
         if (isEntry) {
             entryTrades.add(trade);
+            DailyMgiBuyRule.dailyTradeTaken = true;
         } else {
             exitTrades.add(trade);
         }
