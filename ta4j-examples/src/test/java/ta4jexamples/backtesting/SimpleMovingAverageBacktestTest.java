@@ -24,6 +24,7 @@
 package ta4jexamples.backtesting;
 
 import org.junit.Test;
+import ta4jexamples.archive.backtesting.SimpleMovingAverageBacktest;
 
 public class SimpleMovingAverageBacktestTest {
 

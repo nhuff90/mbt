@@ -9,12 +9,20 @@ import java.util.Objects;
  */
 public enum MarketTime {
     // ETH Times
-    ETH_START_TIME(LocalTime.parse( "16:00:00" )),
-    OVERNIGHT_START_TIME(LocalTime.parse( "00:00:00" )),
-    ETH_END_TIME(LocalTime.parse( "09:30:00" )),
+    ETH_START_TIME(LocalTime.parse( "15:59:00" )),
+    ETH_0929(LocalTime.parse( "09:29:00" )),
+    ETH_1601(LocalTime.parse( "16:01:00" )),
+    ETH_2359(LocalTime.parse( "23:59:00" )),
+    ETH_0000(LocalTime.parse( "00:00:00" )),
+    ETH_END_TIME(LocalTime.parse( "09:31:00" )),
 
     // RTH Times
     RTH_START_TIME(LocalTime.parse( "09:30:00" )),
+    RTH_0931(LocalTime.parse( "09:31:00" )),
+    RTH_0935(LocalTime.parse( "09:35:00" )),
+    RTH_1005(LocalTime.parse( "10:05:00" )),
+    RTH_0945(LocalTime.parse( "09:45:00" )),
+    RTH_1500(LocalTime.parse( "15:00:00" )),
     RTH_END_TIME(LocalTime.parse( "16:00:00" )),
     RTH_END_TIME_1558(LocalTime.parse( "15:58:00" )),
 
@@ -43,6 +51,10 @@ public enum MarketTime {
     // Initial Balance Range
     INITIAL_BALANCE_START_TIME(LocalTime.parse( "09:30:00" ) ),
     INITIAL_BALANCE_END_TIME(LocalTime.parse( "10:30:00" )),
+
+    // First 30 mins Range
+    OPEN_TO_1000_START_TIME(LocalTime.parse( "09:30:00" ) ),
+    OPEN_TO_1000_END_TIME(LocalTime.parse( "10:30:00" )),
 
     // Opening Drive Range -- todo - need to determine OD time. 930-935? 930-945?
     OPENING_DRIVE_START_TIME(LocalTime.parse( "09:30:00" ) ),
