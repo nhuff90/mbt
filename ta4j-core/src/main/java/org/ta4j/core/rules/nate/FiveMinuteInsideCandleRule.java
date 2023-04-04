@@ -25,17 +25,16 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.Num;
+import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.rules.AbstractRule;
 
 /**
- * Satisfied when there is a gap down from yesterday's close to today's open
+ * Satisfied when there is a 5 minute candle which is engulfed by the previous 5 min candle.
  */
-public class GapDownRule extends AbstractRule {
+public class FiveMinuteInsideCandleRule extends AbstractRule {
     private final BarSeries series;
 
-    public GapDownRule(BarSeries series) {
+    public FiveMinuteInsideCandleRule(BarSeries series) {
         this.series = series;
     }
 
@@ -43,12 +42,11 @@ public class GapDownRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() == null || DailyMgiBuyRule.rthOhlc.getOpen() == null || DailyMgiBuyRule.dailyTradeTaken) {
-            return false;
-        }
-
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() != null && isValidGapDown(DailyMgiBuyRule.priorDayRthOhlc.getClose().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
-            satisfied = true;
+        OHLCIndicator fiveMinEngulfingCandle = getEngulfingCandle();
+        if (fiveMinEngulfingCandle != null) {
+            if (fiveMinEngulfingCandle.getHigh().getPrice().isLessThan(series.getBar(index).getHighPrice()) || fiveMinEngulfingCandle.getLow().getPrice().isGreaterThan(series.getBar(index).getLowPrice())) {
+                satisfied = true;
+            }
         }
 
         traceIsSatisfied(index, satisfied);
@@ -56,14 +54,14 @@ public class GapDownRule extends AbstractRule {
         return satisfied;
     }
 
-    /**
-     * Returns true if there is a gap down that is greater than or equal to minGapSize
-     * @param closePrice
-     * @param openPrice
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGapDown(Num closePrice, Num openPrice, int minGapSize) {
-        return closePrice.minus(openPrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
+    private OHLCIndicator getEngulfingCandle() {
+        OHLCIndicator previousFiveMinCandle = DailyMgiBuyRule.get5MinCandle(1);
+        OHLCIndicator previousPreviousFiveMinCandle = DailyMgiBuyRule.get5MinCandle(2);
+
+        if (previousPreviousFiveMinCandle.getHigh().getPrice().isGreaterThan(previousFiveMinCandle.getHigh().getPrice()) && previousPreviousFiveMinCandle.getLow().getPrice().isLessThan(previousFiveMinCandle.getLow().getPrice())) {
+            return previousPreviousFiveMinCandle;
+        } else {
+            return null;
+        }
     }
 }

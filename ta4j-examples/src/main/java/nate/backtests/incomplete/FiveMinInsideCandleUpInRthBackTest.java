@@ -1,4 +1,4 @@
-package nate.backtests.inWork;
+package nate.backtests.incomplete;
 
 import nate.backtests.BackTestWithDailyMgi;
 import org.ta4j.core.BarSeries;

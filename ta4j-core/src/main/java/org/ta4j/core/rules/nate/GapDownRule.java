@@ -29,15 +29,13 @@ import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 
-import java.time.LocalDate;
-
 /**
- * Satisfied when there is a gap up from yesterday's closed to today's open
+ * Satisfied when there is a gap down from yesterday's close to today's open
  */
-public class GapUpRule extends AbstractRule {
+public class GapDownRule extends AbstractRule {
     private final BarSeries series;
 
-    public GapUpRule(BarSeries series) {
+    public GapDownRule(BarSeries series) {
         this.series = series;
     }
 
@@ -49,7 +47,7 @@ public class GapUpRule extends AbstractRule {
             return false;
         }
 
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() != null && isValidGap(DailyMgiBuyRule.priorDayRthOhlc.getClose().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
+        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() != null && isValidGapDown(DailyMgiBuyRule.priorDayRthOhlc.getClose().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
             satisfied = true;
         }
 
@@ -59,11 +57,13 @@ public class GapUpRule extends AbstractRule {
     }
 
     /**
-     * Returns true if there is a gap up that is greater than or equal to minGapSize
+     * Returns true if there is a gap down that is greater than or equal to minGapSize
+     * @param closePrice
+     * @param openPrice
      * @param minGapSize
      * @return
      */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
+    private boolean isValidGapDown(Num closePrice, Num openPrice, int minGapSize) {
+        return closePrice.minus(openPrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
     }
 }

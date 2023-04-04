@@ -28,18 +28,12 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
-import org.ta4j.core.utils.TimeUtils;
 
-import java.time.LocalDate;
 
-/**
- * Satisfied when there is a gap up from yesterday's closed to today's open
- */
-public class RthOpenGreaterThanPriorDayHighRule extends AbstractRule {
+public class RthOpenLessThanPriorDayLowRule extends AbstractRule {
     protected BarSeries series;
 
-    public RthOpenGreaterThanPriorDayHighRule(BarSeries series) {
+    public RthOpenLessThanPriorDayLowRule(BarSeries series) {
         this.series = series;
     }
 
@@ -47,21 +41,12 @@ public class RthOpenGreaterThanPriorDayHighRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && DailyMgiBuyRule.rthOhlc.getOpen() != null && DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice().isLessThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
+        if (DailyMgiBuyRule.priorDayRthOhlc.getLow() != null && DailyMgiBuyRule.rthOhlc.getOpen() != null && DailyMgiBuyRule.priorDayRthOhlc.getLow().getPrice().isGreaterThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
             satisfied = true;
         }
 
         traceIsSatisfied(index, satisfied);
 
         return satisfied;
-    }
-
-    /**
-     * Returns true if there is a gap up that is greater than or equal to minGapSize
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
     }
 }

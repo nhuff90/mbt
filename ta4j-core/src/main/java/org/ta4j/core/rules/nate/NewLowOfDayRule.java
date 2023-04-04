@@ -29,12 +29,12 @@ import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 
 /**
- * Satisfied when there is a new high of day
+ * Satisfied when there is a new low of day
  */
-public class NewHighOfDayRule extends AbstractRule {
+public class NewLowOfDayRule extends AbstractRule {
     protected BarSeries series;
 
-    public NewHighOfDayRule(BarSeries series) {
+    public NewLowOfDayRule(BarSeries series) {
         this.series = series;
     }
 
@@ -42,9 +42,9 @@ public class NewHighOfDayRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        Num barHighPrice = series.getBar(index).getHighPrice();
+        Num barLowPrice = series.getBar(index).getLowPrice();
 
-        if (DailyMgiBuyRule.rthOhlc.getHigh() != null && DailyMgiBuyRule.rthOhlc.getHigh().getPrice().isLessThan(barHighPrice)) {
+        if (DailyMgiBuyRule.rthOhlc.getLow() != null && DailyMgiBuyRule.rthOhlc.getLow().getPrice().isGreaterThan(barLowPrice)) {
             satisfied = true;
         }
 

@@ -26,22 +26,17 @@ package org.ta4j.core.rules.nate;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.DoubleNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
-import org.ta4j.core.utils.MarketTime;
-import org.ta4j.core.utils.TimeUtils;
-
-import java.time.LocalDate;
 
 /**
  * Satisfied when there is a gap up from yesterday's closed that is filled to prior day's high
  */
-public class GapUpFillRule extends AbstractRule {
+public class GapDownFillRule extends AbstractRule {
     private final BarSeries series;
     protected double gapFillPercentage;
 
-    public GapUpFillRule(BarSeries series, double gapFillPercentage) {
+    public GapDownFillRule(BarSeries series, double gapFillPercentage) {
         this.series = series;
         this.gapFillPercentage = gapFillPercentage;
     }
@@ -50,7 +45,7 @@ public class GapUpFillRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && isGapUpFilled(DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice(), series.getBar(index).getLowPrice())) {
+        if (DailyMgiBuyRule.priorDayRthOhlc.getLow() != null && isGapDownFilled(DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), DailyMgiBuyRule.priorDayRthOhlc.getLow().getPrice(), series.getBar(index).getHighPrice())) {
             satisfied = true;
         }
 
@@ -60,18 +55,19 @@ public class GapUpFillRule extends AbstractRule {
     }
 
     /**
-     * Returns true if the target price is greater than the current price
+     * Returns true if the gap down was filled.
+     * @param rthOpenPrice
      * @param targetPrice
      * @param currentPrice
      * @return
      */
-    private boolean isGapUpFilled(Num rthOpenPrice, Num targetPrice, Num currentPrice) {
+    private boolean isGapDownFilled(Num rthOpenPrice, Num targetPrice, Num currentPrice) {
         Num delta = targetPrice.minus(rthOpenPrice);
         if (delta.isLessThan(DecimalNum.valueOf(0))) {
             delta = delta.multipliedBy(DecimalNum.valueOf(-1));
         }
         Num partialGapTargetDelta = delta.multipliedBy(DecimalNum.valueOf(gapFillPercentage));
-        Num partialGapTargetPrice = rthOpenPrice.minus(partialGapTargetDelta);
-        return partialGapTargetPrice.isGreaterThanOrEqual(currentPrice);
+        Num partialGapTargetPrice = rthOpenPrice.plus(partialGapTargetDelta);
+        return partialGapTargetPrice.isLessThanOrEqual(currentPrice);
     }
 }

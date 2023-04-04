@@ -23,20 +23,17 @@
  */
 package org.ta4j.core.rules.nate;
 
-import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.rules.AbstractRule;
 
-import java.time.LocalDate;
-
 /**
- * Satisfied when px crosses below the RTH open price.
+ * Satisfied when px crosses above the Overnight High price.
  */
-public class LookAndFailAboveOvernightHighRule extends AbstractRule {
+public class CrossingAboveOvernightHighRule extends AbstractRule {
     protected BarSeries series;
 
-    public LookAndFailAboveOvernightHighRule(BarSeries series) {
+    public CrossingAboveOvernightHighRule(BarSeries series) {
         this.series = series;
     }
 
@@ -44,8 +41,6 @@ public class LookAndFailAboveOvernightHighRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-
-        Bar bar = series.getBar(index);
         if (DailyMgiBuyRule.overnightRthOhlc.getHigh() != null &&
                 DailyMgiBuyRule.rthOhlc.getHigh().getPrice().isGreaterThanOrEqual(DailyMgiBuyRule.overnightRthOhlc.getHigh().getPrice())) {
             satisfied = true;

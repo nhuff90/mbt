@@ -23,18 +23,17 @@
  */
 package org.ta4j.core.rules.nate;
 
-import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.rules.AbstractRule;
 
 /**
- * Satisfied when px looks below Overnight Low and crosses back over it.
+ * Satisfied when px looks below Overnight Low.
  */
-public class LookAndFailBelowOvernightLowRule extends AbstractRule {
+public class CrossingBelowOvernightLowRule extends AbstractRule {
     protected BarSeries series;
 
-    public LookAndFailBelowOvernightLowRule(BarSeries series) {
+    public CrossingBelowOvernightLowRule(BarSeries series) {
         this.series = series;
     }
 

@@ -30,10 +30,10 @@ import org.ta4j.core.rules.AbstractRule;
 /**
  * Satisfied when px crosses below the RTH open price.
  */
-public class CrossingBelowRthOpenRule extends AbstractRule {
+public class CrossingAboveRthOpenRule extends AbstractRule {
     protected BarSeries series;
 
-    public CrossingBelowRthOpenRule(BarSeries series) {
+    public CrossingAboveRthOpenRule(BarSeries series) {
         this.series = series;
     }
 
@@ -41,7 +41,7 @@ public class CrossingBelowRthOpenRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-        if (series.getBar(index).getOpenPrice().isGreaterThanOrEqual(DailyMgiBuyRule.rthOhlc.getOpen().getPrice()) && series.getBar(index).getLowPrice().isLessThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
+        if (series.getBar(index).getOpenPrice().isLessThanOrEqual(DailyMgiBuyRule.rthOhlc.getOpen().getPrice()) && series.getBar(index).getHighPrice().isGreaterThan(DailyMgiBuyRule.rthOhlc.getOpen().getPrice())) {
             satisfied = true;
         }
 

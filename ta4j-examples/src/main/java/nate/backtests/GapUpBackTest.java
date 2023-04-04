@@ -16,9 +16,9 @@ public class GapUpBackTest extends BackTestWithDailyMgi {
 
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 12), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
-//                ZonedDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
-//                ZonedDateTime.of(LocalDate.of(2022, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2023, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+//                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
+//                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2021, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
         createRulesAndRunBackTest(series);
@@ -53,13 +53,20 @@ public class GapUpBackTest extends BackTestWithDailyMgi {
 
         /**
          * Results
-         *
          * buyingRule = new GapUpRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new LookAndFailAboveOvernightHighRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenGreaterThanPriorDayHighRule(series));
-         * ResultsAnalysis{EV= $4.75, Max Drawdown= 0.85%, Win%= 63.33%, #OfWins= 19.0, #OfLosses= 10.0}
+         *
+         * 01/01/2018 - 3/28/2023
+         * ResultsAnalysis{EV= -$0.68, Max Drawdown= 10.62%, Win%= 42.75%, #OfWins= 56.0, #OfLosses= 72.0}
+         *
+         * 01/01/2021 - 3/28/2023
+         * ResultsAnalysis{EV= $3.33, Max Drawdown= 1.43%, Win%= 52.0%, #OfWins= 26.0, #OfLosses= 22.0}
+         *
+         * 01/01/2023 - 3/28/2023
+         * ResultsAnalysis{EV= $4.43, Max Drawdown= 0.58%, Win%= 63.64%, #OfWins= 7.0, #OfLosses= 4.0}
          *
          */
         System.out.println("buyingRule = new GapUpRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new LookAndFailAboveOvernightHighRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenGreaterThanPriorDayHighRule(series));");
-        buyingRule = new GapUpRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new LookAndFailAboveOvernightHighRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenGreaterThanPriorDayHighRule(series));
+        buyingRule = new GapUpRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingAboveOvernightHighRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenGreaterThanPriorDayHighRule(series));
         run(series, buyingRule, sellingRule, Trade.TradeType.SELL);
         System.out.println("");
 

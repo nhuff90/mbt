@@ -33,4 +33,7 @@ public class TimeUtils {
     public static Boolean isAfterRange(ZonedDateTime time, MarketTimeRanges range)  {
         return time.toLocalTime().isAfter(range.endTime);
     }
+    public static Boolean isNew5MinCandle(ZonedDateTime time, MarketTimeRanges range)  {
+        return time.toLocalTime().isAfter(range.endTime);
+    }
 }

@@ -33,9 +33,6 @@ import org.ta4j.core.utils.TimeUtils;
 
 import java.time.LocalDate;
 
-/**
- * Satisfied when there is a gap up from yesterday's closed to today's open
- */
 public class RthOpenGreaterThanPriorDayHighRule extends AbstractRule {
     protected BarSeries series;
 
@@ -54,14 +51,5 @@ public class RthOpenGreaterThanPriorDayHighRule extends AbstractRule {
         traceIsSatisfied(index, satisfied);
 
         return satisfied;
-    }
-
-    /**
-     * Returns true if there is a gap up that is greater than or equal to minGapSize
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
     }
 }

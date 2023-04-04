@@ -60,6 +60,8 @@ public class GapUpRule extends AbstractRule {
 
     /**
      * Returns true if there is a gap up that is greater than or equal to minGapSize
+     * @param closePrice
+     * @param openPrice
      * @param minGapSize
      * @return
      */
