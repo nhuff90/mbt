@@ -60,7 +60,8 @@ public class FiveMinInsideCandleUpInRthBackTest extends BackTestWithDailyMgi {
          *
          */
         System.out.println("working.....");
-        buyingRule = new MarketTimeRangeRule(series, MarketTime.RTH_START_TIME, MarketTime.RTH_1500).and(new FiveMinuteInsideCandleRule(series));
+        buyingRule = new MarketTimeRangeRule(series, MarketTime.RTH_START_TIME, MarketTime.RTH_1500);
+//        buyingRule = new MarketTimeRangeRule(series, MarketTime.RTH_START_TIME, MarketTime.RTH_1500).and(new FiveMinuteInsideCandleRule(series));
         run(series, buyingRule, sellingRule, Trade.TradeType.BUY);
         System.out.println("");
 

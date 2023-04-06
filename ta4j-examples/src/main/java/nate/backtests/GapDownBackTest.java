@@ -56,14 +56,6 @@ public class GapDownBackTest extends BackTestWithDailyMgi {
          * Results
          * buyingRule = new GapDownRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingBelowOvernightLowRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenLessThanPriorDayLowRule(series));
          *
-         * 01/01/2018 - 3/28/2023
-         * ResultsAnalysis{EV= $2.48, Max Drawdown= 3.85%, Win%= 77.5%, #OfWins= 62.0, #OfLosses= 18.0}
-         *
-         * 01/01/2021 - 3/28/2023
-         * ResultsAnalysis{EV= $4.90, Max Drawdown= 1.34%, Win%= 82.05%, #OfWins= 32.0, #OfLosses= 7.0}
-         *
-         * 01/01/2023 - 3/28/2023
-         * ResultsAnalysis{EV= $6.25, Max Drawdown= 0.28%, Win%= 100.0%, #OfWins= 7.0, #OfLosses= 0.0}
          *
          */
         System.out.println("buyingRule = new GapDownRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingBelowOvernightLowRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenLessThanPriorDayLowRule(series));");

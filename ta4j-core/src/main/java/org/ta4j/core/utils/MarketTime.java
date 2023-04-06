@@ -1,7 +1,8 @@
 package org.ta4j.core.utils;
 
+import org.ta4j.core.Bar;
+
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -11,6 +12,7 @@ public enum MarketTime {
     // ETH Times
     ETH_START_TIME(LocalTime.parse( "15:59:00" )),
     ETH_0929(LocalTime.parse( "09:29:00" )),
+    ETH_1600(LocalTime.parse( "16:00:00" )),
     ETH_1601(LocalTime.parse( "16:01:00" )),
     ETH_2359(LocalTime.parse( "23:59:00" )),
     ETH_0000(LocalTime.parse( "00:00:00" )),
@@ -21,6 +23,10 @@ public enum MarketTime {
     RTH_0931(LocalTime.parse( "09:31:00" )),
     RTH_0935(LocalTime.parse( "09:35:00" )),
     RTH_1005(LocalTime.parse( "10:05:00" )),
+    RTH_1130(LocalTime.parse( "11:30:00" )),
+    RTH_1205(LocalTime.parse( "12:05:00" )),
+    RTH_1330(LocalTime.parse( "13:30:00" )),
+    RTH_1405(LocalTime.parse( "14:05:00" )),
     RTH_0945(LocalTime.parse( "09:45:00" )),
     RTH_1500(LocalTime.parse( "15:00:00" )),
     RTH_END_TIME(LocalTime.parse( "16:00:00" )),
@@ -73,6 +79,88 @@ public enum MarketTime {
     MarketTime(LocalTime localTime) {
         Objects.requireNonNull( localTime ) ;
         this.localTime = localTime ;
+    }
+
+    /*
+    Start/End of Sessions
+    */
+    public static boolean isStartOfRthSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime());
+    }
+
+    public static boolean isEndOfRthSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
+    }
+
+    public static boolean isStartOfAmSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime());
+    }
+
+    public static boolean isEndOfAmSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1005.getLocalTime());
+    }
+
+    public static boolean isStartOfMicroSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime());
+    }
+
+    public static boolean isEndOfMicroSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1205.getLocalTime());
+    }
+
+    public static boolean isStartOfPmSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime());
+    }
+
+    public static boolean isEndOfPmSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1405.getLocalTime());
+    }
+
+    public static boolean isStartOfOvernightSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.ETH_1600.getLocalTime());
+    }
+
+    public static boolean isEndOfOvernightSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.ETH_0929.getLocalTime());
+    }
+
+    /*
+    In Sessions
+     */
+    public static boolean isInRthSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
+    }
+
+    public static boolean isInAmSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME.getLocalTime(), MarketTime.RTH_1005.getLocalTime());
+    }
+
+    public static boolean isInMicroSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_1205.getLocalTime());
+    }
+
+    public static boolean isInPmSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_1405.getLocalTime());
+    }
+
+    public static boolean isInOvernightSession(Bar bar) {
+        return (TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.ETH_1601.getLocalTime(), MarketTime.ETH_2359.getLocalTime()) ||
+                TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.ETH_0000.getLocalTime(), MarketTime.ETH_0929.getLocalTime()));
+    }
+
+    /*
+    Post Sessions
+     */
+    public static boolean isPostAmSessionToRthEnd(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1005.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
+    }
+
+    public static boolean isPostMicroSessionToRthEnd(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1405.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
+    }
+
+    public static boolean isPostPmSessionToRthEnd(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1405.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime());
     }
 
     public LocalTime getLocalTime() {

@@ -38,7 +38,6 @@ public class OHLCIndicator {
     DateTimePrice close;
     Num midpoint;
 
-
     public OHLCIndicator() {
     }
 
@@ -89,5 +88,19 @@ public class OHLCIndicator {
     public void setLow(DateTimePrice low) {
         this.low = low;
         this.midpoint = calculateMidpoint();
+    }
+
+    /**
+     * Returns the price of the extension percent provided. If up flag is true
+     * the extension will be above the high. Otherwise it will be below the low.
+     * @param percentExtension
+     * @param up
+     * @return
+     */
+    public Num getExtensionOfRange(double percentExtension, boolean up) {
+        double highToLowDelta = this.high.getPrice().minus(this.low.getPrice()).doubleValue();
+        double extensionDelta = highToLowDelta * percentExtension;
+
+        return (up ? DecimalNum.valueOf(this.high.getPrice().doubleValue() + extensionDelta) : DecimalNum.valueOf(this.low.getPrice().doubleValue() - extensionDelta));
     }
 }
