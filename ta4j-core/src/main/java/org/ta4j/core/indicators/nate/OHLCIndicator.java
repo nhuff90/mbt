@@ -98,6 +98,9 @@ public class OHLCIndicator {
      * @return
      */
     public Num getExtensionOfRange(double percentExtension, boolean up) {
+        if (percentExtension == 0) {
+            return up ? this.high.getPrice() : this.low.getPrice();
+        }
         double highToLowDelta = this.high.getPrice().minus(this.low.getPrice()).doubleValue();
         double extensionDelta = highToLowDelta * percentExtension;
 

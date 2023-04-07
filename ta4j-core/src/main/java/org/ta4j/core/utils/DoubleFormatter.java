@@ -12,7 +12,16 @@ public class DoubleFormatter {
         return dollarFormatter.format(num);
     }
 
+    /**
+     * Default scale is 2
+     * @param num
+     * @return
+     */
     public static String formatPercent(Double num) {
-        return (new BigDecimal(num*100).setScale(2, RoundingMode.HALF_UP).doubleValue()) + "%";
+        return formatPercent(num, 2);
+    }
+
+    public static String formatPercent(Double num, int scale) {
+        return (new BigDecimal(num*100).setScale(scale, RoundingMode.HALF_UP).doubleValue()) + "%";
     }
 }
