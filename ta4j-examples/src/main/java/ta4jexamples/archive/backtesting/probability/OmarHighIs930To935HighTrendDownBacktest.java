@@ -66,7 +66,7 @@ public class OmarHighIs930To935HighTrendDownBacktest {
 
 
             System.out.println("OMAR HOD = 5 min Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
-            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
+            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_1558));
             System.out.println("");
         }
         

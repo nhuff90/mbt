@@ -1,7 +1,6 @@
 package org.ta4j.core.utils;
 
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -9,10 +8,10 @@ import java.util.Objects;
  */
 public enum MarketTimeRanges {
     // ETH Range
-    ETH(MarketTime.ETH_START_TIME.getLocalTime(), MarketTime.ETH_END_TIME.getLocalTime()),
+    ETH(MarketTime.ETH_START_TIME_1600.getLocalTime(), MarketTime.ETH_END_TIME_0929.getLocalTime()),
 
     // RTH
-    RTH(MarketTime.RTH_START_TIME.getLocalTime(), MarketTime.RTH_END_TIME.getLocalTime()),
+    RTH(MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime()),
 
     // AM Range
     AM_RANGE(MarketTime.AM_START_TIME.getLocalTime(), MarketTime.AM_END_TIME.getLocalTime()),

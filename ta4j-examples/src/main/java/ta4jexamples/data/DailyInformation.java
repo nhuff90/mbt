@@ -77,12 +77,12 @@ public class DailyInformation {
 
     private void generateData() {
         bars.forEach( bar -> {
-            rthDayRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.RTH_END_TIME);
-            rthEndAt1558DayRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.RTH_END_TIME_1558);
+            rthDayRange.setRangeValues(bar, MarketTime.RTH_START_TIME_0930, MarketTime.RTH_END_TIME_1559);
+            rthEndAt1558DayRange.setRangeValues(bar, MarketTime.RTH_START_TIME_0930, MarketTime.RTH_1558);
             amRange.setRangeValues(bar, MarketTime.AM_START_TIME, MarketTime.AM_END_TIME);
             microRange.setRangeValues(bar, MarketTime.MICRO_START_TIME, MarketTime.MICRO_END_TIME);
             pmRange.setRangeValues(bar, MarketTime.PM_START_TIME, MarketTime.PM_END_TIME);
-            rthToPMStartRange.setRangeValues(bar, MarketTime.RTH_START_TIME, MarketTime.PM_START_TIME);
+            rthToPMStartRange.setRangeValues(bar, MarketTime.RTH_START_TIME_0930, MarketTime.PM_START_TIME);
             powerHourRange.setRangeValues(bar, MarketTime.POWER_HOUR_START_TIME, MarketTime.POWER_HOUR_END_TIME);
             initialBalanceRange.setRangeValues(bar, MarketTime.INITIAL_BALANCE_START_TIME, MarketTime.INITIAL_BALANCE_END_TIME);
             openingDriveRange.setRangeValues(bar, MarketTime.OPENING_DRIVE_START_TIME, MarketTime.OPENING_DRIVE_END_TIME);
@@ -120,8 +120,8 @@ public class DailyInformation {
             AtomicInteger barCountBelowAmMid = new AtomicInteger();
             bars.forEach( bar -> {
                 // Only is RTH
-                if (!bar.getEndTime().toLocalTime().isBefore(MarketTime.RTH_START_TIME.getLocalTime()) &&
-                        !bar.getEndTime().toLocalTime().isAfter(MarketTime.RTH_END_TIME.getLocalTime())) {
+                if (!bar.getEndTime().toLocalTime().isBefore(MarketTime.RTH_START_TIME_0930.getLocalTime()) &&
+                        !bar.getEndTime().toLocalTime().isAfter(MarketTime.RTH_END_TIME_1559.getLocalTime())) {
                     if (bar.getOpenPrice().isGreaterThan(this.amRange.getMiddlePrice()) &&
                     bar.getClosePrice().isGreaterThan(this.amRange.getMiddlePrice())) {
                         barCountAboveAmMid.getAndIncrement();

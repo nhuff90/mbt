@@ -70,7 +70,7 @@ public class OmarLowIs930To935LowTrendUpBacktest {
 
 
             System.out.println("OMAR LOD = 5 min Range LOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
-            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
+            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_1558));
             System.out.println("");
         }
 

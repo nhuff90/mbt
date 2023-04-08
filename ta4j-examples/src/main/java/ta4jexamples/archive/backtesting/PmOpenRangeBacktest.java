@@ -72,7 +72,7 @@ public class PmOpenRangeBacktest {
         Rule buyingRule = new UpToPMOpenRangeRule(series, upToPMRangeIndicator, lowRangePercentage, highRangePercentage);
 
         // Sell Rule
-        List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(MarketTime.RTH_END_TIME_1558.getLocalTime(), MarketTime.RTH_END_TIME_1558.getLocalTime()));
+        List<TimeRangeRule.TimeRange> timeRanges = Collections.singletonList(new TimeRangeRule.TimeRange(MarketTime.RTH_1558.getLocalTime(), MarketTime.RTH_1558.getLocalTime()));
         DateTimeIndicator timeIndicator = new DateTimeIndicator(series);
         ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
         Rule sellingRule = new TimeRangeRule(timeRanges, timeIndicator);//.or(new StopGainRule(closePrice, 0.5).or(new StopLossRule(closePrice, 0.5))); // sell at close - todo - update?

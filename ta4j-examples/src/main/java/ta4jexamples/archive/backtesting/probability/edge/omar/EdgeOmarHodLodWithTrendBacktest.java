@@ -88,7 +88,7 @@ public class EdgeOmarHodLodWithTrendBacktest implements EdgeOmarHodLodTrendBackt
 
             System.out.println("OMAR HOD = 5 min Range HOD OPENING_5MINS_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_END_TIME_1558, TrendToTest.DOWN));
+                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_1558, TrendToTest.DOWN));
             System.out.println("");
 
             System.out.println("OMAR HOD = 5 min Range HOD OPENING_DRIVE_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
@@ -98,7 +98,7 @@ public class EdgeOmarHodLodWithTrendBacktest implements EdgeOmarHodLodTrendBackt
 
             System.out.println("OMAR HOD = 5 min Range HOD OPENING_DRIVE_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_DRIVE_RANGE, MarketTime.RTH_END_TIME_1558, TrendToTest.DOWN));
+                    MarketTimeRanges.OPENING_DRIVE_RANGE, MarketTime.RTH_1558, TrendToTest.DOWN));
             System.out.println("");
 
             System.out.println("OMAR LOD = 5 min Range LOD OPENING_5MINS_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
@@ -108,7 +108,7 @@ public class EdgeOmarHodLodWithTrendBacktest implements EdgeOmarHodLodTrendBackt
 
             System.out.println("OMAR LOD = 5 min Range LOD OPENING_5MINS_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_END_TIME_1558, TrendToTest.UP));
+                    MarketTimeRanges.OPENING_5MINS_RANGE, MarketTime.RTH_1558, TrendToTest.UP));
             System.out.println("");
 
             System.out.println("OMAR LOD = 5 min Range LOD OPENING_DRIVE_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + "x -- by AM close");
@@ -118,7 +118,7 @@ public class EdgeOmarHodLodWithTrendBacktest implements EdgeOmarHodLodTrendBackt
 
             System.out.println("OMAR LOD = 5 min Range LOD OPENING_DRIVE_RANGE -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
             reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit,
-                    MarketTimeRanges.OPENING_DRIVE_RANGE, MarketTime.RTH_END_TIME_1558, TrendToTest.UP));
+                    MarketTimeRanges.OPENING_DRIVE_RANGE, MarketTime.RTH_1558, TrendToTest.UP));
             System.out.println("");
         }
         

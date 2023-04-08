@@ -68,7 +68,7 @@ public class OmarHighIsOpeningDriveHighTrendDownBacktest {
 
 
             System.out.println("OMAR HOD = OD Range HOD -- rangeMultiplierTakeProfit: " + rangeMultiplierTakeProfit + " -- by EOD");
-            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_END_TIME_1558));
+            reportAnalysis(series, runOmarTradingRecord(series, rangeMultiplierTakeProfit, MarketTime.RTH_1558));
             System.out.println("");
         }
         

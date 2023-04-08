@@ -185,6 +185,14 @@ public class DailyMgiBuyRule {
         if (MarketTime.isPostAmSessionToRthEnd(series.getBar(index))) {
             setHighAndLowOfSession(previousIndex, postAmRangeOhlc);
         }
+
+        if (MarketTime.isPostMicroSessionToRthEnd(series.getBar(index))) {
+            setHighAndLowOfSession(previousIndex, postMicroRangeOhlc);
+        }
+
+        if (MarketTime.isPostPmSessionToRthEnd(series.getBar(index))) {
+            setHighAndLowOfSession(previousIndex, postPmRangeOhlc);
+        }
     }
 
     private static void setHighAndLowOfSession(int previousIndex, OHLCIndicator sessionOhlc) {

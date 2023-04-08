@@ -27,7 +27,7 @@ public class OmarHighLowTrendFrom930To945Backtest {
     }};
     static Map<MarketTime, String> marketTimeStringMap = new HashMap<MarketTime, String>() {{
         put(MarketTime.AM_END_TIME, "AM Range");
-        put(MarketTime.RTH_END_TIME_1558, "RTH Range");
+        put(MarketTime.RTH_1558, "RTH Range");
     }};
 
     static List<Double> rangeMultiplierTakeProfitList = Arrays.asList(0.5, 1.0, 1.5, 2.0, 3.0, 4.0);
@@ -52,9 +52,9 @@ public class OmarHighLowTrendFrom930To945Backtest {
             resultsAnalysisTrendDownAmRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
                     rangeToTest, MarketTime.AM_END_TIME, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
             resultsAnalysisTrendUpRthRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    rangeToTest, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
+                    rangeToTest, MarketTime.RTH_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.UP));
             resultsAnalysisTrendDownRthRangeList.add(runBacktests(series, rangeMultiplierTakeProfit,
-                    rangeToTest, MarketTime.RTH_END_TIME_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
+                    rangeToTest, MarketTime.RTH_1558, EdgeOmarHodLodTrendBacktest.TrendToTest.DOWN));
         }
 
         createAndPrintResults("Omar Low = " +
