@@ -1,6 +1,6 @@
-package nate.probabilities;
+package nate.stats;
 
-import nate.probabilities.domain.TrueFalseDailyMgiResults;
+import nate.stats.domain.TrueFalseDailyMgiResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
@@ -8,11 +8,14 @@ import org.ta4j.core.utils.DoubleFormatter;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AMBreakoutProbabilitiesTest extends ProbabilityTest {
+public class AMBreakoutStatsTest extends StatsTest {
 
     double EXTENSION_PERCENT_0 = 0.0;
     double EXTENSION_PERCENT_25 = 0.25;
@@ -479,13 +482,13 @@ public class AMBreakoutProbabilitiesTest extends ProbabilityTest {
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
         createRulesAndRunBackTest(series);
 
-        AMBreakoutProbabilitiesTest amBreakoutProbabilitiesTest = new AMBreakoutProbabilitiesTest();
-        amBreakoutProbabilitiesTest.evaluate();
+        AMBreakoutStatsTest amBreakoutStatsTest = new AMBreakoutStatsTest();
+        amBreakoutStatsTest.evaluate();
     }
 
 

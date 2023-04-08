@@ -1,4 +1,4 @@
-package nate.probabilities;
+package nate.stats;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.helper.DateTimePrice;
@@ -12,7 +12,7 @@ import ta4jexamples.loaders.CsvBarsLoader;
 import java.time.*;
 import java.util.*;
 
-public class HodLodByDayAndTimeProbabilitiesTest extends ProbabilityTest {
+public class HodLodByDayAndTimeStatsTest extends StatsTest {
 
     Map<String, int[]> map = new LinkedHashMap<>();
 
@@ -171,12 +171,12 @@ public class HodLodByDayAndTimeProbabilitiesTest extends ProbabilityTest {
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
         createRulesAndRunBackTest(series);
 
-        HodLodByDayAndTimeProbabilitiesTest amBreakoutProbabilitiesTest = new HodLodByDayAndTimeProbabilitiesTest();
+        HodLodByDayAndTimeStatsTest amBreakoutProbabilitiesTest = new HodLodByDayAndTimeStatsTest();
         amBreakoutProbabilitiesTest.evaluate();
     }
 

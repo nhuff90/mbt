@@ -1,4 +1,4 @@
-package nate.probabilities;
+package nate.stats;
 
 import nate.backtests.BackTestWithDailyMgi;
 import org.ta4j.core.*;
@@ -14,9 +14,9 @@ import java.time.ZonedDateTime;
 /**
  * abstract class for testing the % probability of given tests.
  */
-public abstract class ProbabilityTest extends BackTestWithDailyMgi {
+public abstract class StatsTest extends BackTestWithDailyMgi {
 
-    public ProbabilityTest() {
+    public StatsTest() {
     }
 
     abstract void evaluate();

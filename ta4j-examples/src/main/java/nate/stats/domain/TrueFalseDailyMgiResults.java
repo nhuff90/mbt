@@ -1,4 +1,4 @@
-package nate.probabilities.domain;
+package nate.stats.domain;
 
 import org.ta4j.core.rules.nate.DailyMgi;
 
