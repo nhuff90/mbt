@@ -28,11 +28,8 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.indicators.nate.helper.DateTimePrice;
 import org.ta4j.core.utils.MarketTime;
-import org.ta4j.core.utils.TimeUtils;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,9 +50,11 @@ public class DailyMgiBuyRule {
     protected static OHLCIndicator amRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator microRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator pmRangeOhlc = new OHLCIndicator();
+    protected static OHLCIndicator ibRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postAmRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postMicroRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postPmRangeOhlc = new OHLCIndicator();
+    protected static OHLCIndicator postIBRangeOhlc = new OHLCIndicator();
     // Initial Balance
 
     public static boolean dailyTradeTaken = false;
@@ -82,10 +81,12 @@ public class DailyMgiBuyRule {
             dailyMgi.setAmRangeOhlc(amRangeOhlc);
             dailyMgi.setMicroRangeOhlc(microRangeOhlc);
             dailyMgi.setPmRangeOhlc(pmRangeOhlc);
+            dailyMgi.setIbOhlc(ibRangeOhlc);
             dailyMgi.setOvernightRthOhlc(overnightRthOhlc);
             dailyMgi.setPostAmRangeOhlc(postAmRangeOhlc);
             dailyMgi.setPostMicroRangeOhlc(postMicroRangeOhlc);
             dailyMgi.setPostPmRangeOhlc(postPmRangeOhlc);
+            dailyMgi.setPostIbOhlc(postIBRangeOhlc);
             historicalDailyMgi.put(rthOhlc.getOpen().getDate(), dailyMgi);
 
             // Set current RTH OHLC to previous day OHLC
@@ -97,9 +98,11 @@ public class DailyMgiBuyRule {
             amRangeOhlc = new OHLCIndicator();
             microRangeOhlc = new OHLCIndicator();
             pmRangeOhlc = new OHLCIndicator();
+            ibRangeOhlc = new OHLCIndicator();
             postAmRangeOhlc = new OHLCIndicator();
             postMicroRangeOhlc = new OHLCIndicator();
             postPmRangeOhlc = new OHLCIndicator();
+            postIBRangeOhlc = new OHLCIndicator();
             overnightRthOhlc = new OHLCIndicator();
 
             dailyTradeTaken = false;
@@ -168,6 +171,18 @@ public class DailyMgiBuyRule {
             setHighAndLowOfSession(previousIndex, pmRangeOhlc);
         }
 
+        if (MarketTime.isStartOfIbSession(series.getBar(previousIndex))) {
+            ibRangeOhlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isEndOfIbSession(series.getBar(previousIndex))) {
+            ibRangeOhlc.setClose(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isInIbSession(series.getBar(previousIndex))) {
+            setHighAndLowOfSession(previousIndex, ibRangeOhlc);
+        }
+
         if (MarketTime.isStartOfOvernightSession(series.getBar(previousIndex))) {
             overnightRthOhlc = new OHLCIndicator();
             //Set open price
@@ -192,6 +207,10 @@ public class DailyMgiBuyRule {
 
         if (MarketTime.isPostPmSessionToRthEnd(series.getBar(index))) {
             setHighAndLowOfSession(previousIndex, postPmRangeOhlc);
+        }
+
+        if (MarketTime.isPostIbSessionToRthEnd(series.getBar(index))) {
+            setHighAndLowOfSession(previousIndex, postIBRangeOhlc);
         }
     }
 

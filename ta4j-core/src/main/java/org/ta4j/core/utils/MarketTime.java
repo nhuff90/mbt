@@ -140,6 +140,14 @@ public enum MarketTime {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1405.getLocalTime());
     }
 
+    public static boolean isStartOfIbSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
+    }
+
+    public static boolean isEndOfIbSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime());
+    }
+
     public static boolean isStartOfOvernightSession(Bar bar) {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.ETH_START_TIME_1600.getLocalTime());
     }
@@ -167,6 +175,10 @@ public enum MarketTime {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_1405.getLocalTime());
     }
 
+    public static boolean isInIbSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1030.getLocalTime());
+    }
+
     public static boolean isInOvernightSession(Bar bar) {
         return (TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.ETH_START_TIME_1600.getLocalTime(), MarketTime.ETH_2359.getLocalTime()) ||
                 TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.ETH_0000.getLocalTime(), MarketTime.ETH_END_TIME_0929.getLocalTime()));
@@ -185,6 +197,10 @@ public enum MarketTime {
 
     public static boolean isPostPmSessionToRthEnd(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1405.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isPostIbSessionToRthEnd(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
 
     public LocalTime getLocalTime() {
