@@ -22,6 +22,9 @@ public class DoubleFormatter {
     }
 
     public static String formatPercent(Double num, int scale) {
+        if (num.isNaN()) {
+            return "NaN";
+        }
         return (new BigDecimal(num*100).setScale(scale, RoundingMode.HALF_UP).doubleValue()) + "%";
     }
 }

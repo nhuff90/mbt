@@ -28,7 +28,7 @@ public enum MarketTime {
     RTH_1400(LocalTime.parse( "14:00:00" )),
     RTH_1430(LocalTime.parse( "14:30:00" )),
     RTH_1500(LocalTime.parse( "15:00:00" )),
-    RTH_1530(LocalTime.parse( "15:00:00" )),
+    RTH_1530(LocalTime.parse( "15:30:00" )),
     RTH_END_TIME_1559(LocalTime.parse( "15:59:00" )),
 
 
@@ -103,6 +103,10 @@ public enum MarketTime {
     MarketTime(LocalTime localTime) {
         Objects.requireNonNull( localTime ) ;
         this.localTime = localTime ;
+    }
+
+    public LocalTime getLocalTime() {
+        return localTime;
     }
 
     /*
@@ -203,7 +207,322 @@ public enum MarketTime {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
 
-    public LocalTime getLocalTime() {
-        return localTime;
+
+    /*
+    30m periods
+    Starts of 30 min periods
+     */
+    public static boolean isStartOfAPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
+    }
+
+    public static boolean isStartOfBPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1000.getLocalTime());
+    }
+
+    public static boolean isStartOfCPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime());
+    }
+
+    public static boolean isStartOfDPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1100.getLocalTime());
+    }
+
+    public static boolean isStartOfEPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime());
+    }
+
+    public static boolean isStartOfFPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime());
+    }
+
+    public static boolean isStartOfGPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1230.getLocalTime());
+    }
+
+    public static boolean isStartOfHPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1300.getLocalTime());
+    }
+
+    public static boolean isStartOfIPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime());
+    }
+
+    public static boolean isStartOfJPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1400.getLocalTime());
+    }
+
+    public static boolean isStartOfKPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1430.getLocalTime());
+    }
+
+    public static boolean isStartOfLPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1500.getLocalTime());
+    }
+
+    public static boolean isStartOfMPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime());
+    }
+
+    /*
+    Ends of 30m periods
+     */
+    public static boolean isEndOfAPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0959.getLocalTime());
+    }
+
+    public static boolean isEndOfBPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1029.getLocalTime());
+    }
+
+    public static boolean isEndOfCPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1059.getLocalTime());
+    }
+
+    public static boolean isEndOfDPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1129.getLocalTime());
+    }
+
+    public static boolean isEndOfEPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1159.getLocalTime());
+    }
+
+    public static boolean isEndOfFPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1229.getLocalTime());
+    }
+
+    public static boolean isEndOfGPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1259.getLocalTime());
+    }
+
+    public static boolean isEndOfHPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1329.getLocalTime());
+    }
+
+    public static boolean isEndOfIPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1359.getLocalTime());
+    }
+
+    public static boolean isEndOfJPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1429.getLocalTime());
+    }
+
+    public static boolean isEndOfKPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1459.getLocalTime());
+    }
+
+    public static boolean isEndOfLPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1529.getLocalTime());
+    }
+
+    public static boolean isEndOfMPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    /*
+    In 30m periods
+     */
+    public static boolean isInAPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0959.getLocalTime());
+    }
+
+    public static boolean isInBPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1000.getLocalTime(), MarketTime.RTH_1029.getLocalTime());
+    }
+
+    public static boolean isInCPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_1059.getLocalTime());
+    }
+
+    public static boolean isInDPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1100.getLocalTime(), MarketTime.RTH_1129.getLocalTime());
+    }
+    public static boolean isInEPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_1159.getLocalTime());
+    }
+
+    public static boolean isInFPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime(), MarketTime.RTH_1229.getLocalTime());
+    }
+
+    public static boolean isInGPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1230.getLocalTime(), MarketTime.RTH_1259.getLocalTime());
+    }
+
+    public static boolean isInHPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1300.getLocalTime(), MarketTime.RTH_1329.getLocalTime());
+    }
+
+    public static boolean isInIPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_1359.getLocalTime());
+    }
+
+    public static boolean isInJPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1400.getLocalTime(), MarketTime.RTH_1429.getLocalTime());
+    }
+
+    public static boolean isInKPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1430.getLocalTime(), MarketTime.RTH_1459.getLocalTime());
+    }
+
+    public static boolean isInLPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1500.getLocalTime(), MarketTime.RTH_1529.getLocalTime());
+    }
+
+    public static boolean isInMPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    /*
+    Start of pre-30m peridos
+     */
+    public static boolean isStartOfPreBPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1000.getLocalTime());
+    }
+
+    public static boolean isStartOfPreCPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime());
+    }
+
+    public static boolean isStartOfPreDPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1100.getLocalTime());
+    }
+
+    public static boolean isStartOfPreEPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime());
+    }
+
+    public static boolean isStartOfPreFPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime());
+    }
+
+    public static boolean isStartOfPreGPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1230.getLocalTime());
+    }
+
+    public static boolean isStartOfPreHPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1300.getLocalTime());
+    }
+
+    public static boolean isStartOfPreIPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime());
+    }
+
+    public static boolean isStartOfPreJPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1400.getLocalTime());
+    }
+
+    public static boolean isStartOfPreKPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1430.getLocalTime());
+    }
+
+    public static boolean isStartOfPreLPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1500.getLocalTime());
+    }
+
+    public static boolean isStartOfPreMPeriod(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime());
+    }
+
+    /*
+    In Pre-30m periods
+     */
+
+    public static boolean isInPreBPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0959.getLocalTime());
+    }
+
+    public static boolean isInPreCPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1029.getLocalTime());
+    }
+
+    public static boolean isInPreDPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1059.getLocalTime());
+    }
+    public static boolean isInPreEPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1129.getLocalTime());
+    }
+
+    public static boolean isInPreFPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1159.getLocalTime());
+    }
+
+    public static boolean isInPreGPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1229.getLocalTime());
+    }
+
+    public static boolean isInPreHPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1259.getLocalTime());
+    }
+
+    public static boolean isInPreIPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1329.getLocalTime());
+    }
+
+    public static boolean isInPreJPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1359.getLocalTime());
+    }
+
+    public static boolean isInPreKPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1429.getLocalTime());
+    }
+
+    public static boolean isInPreLPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1459.getLocalTime());
+    }
+
+    public static boolean isInPreMPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1529.getLocalTime());
+    }
+
+    /*
+    Is in Post-30m Periods
+     */
+
+    public static boolean isInPostAPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1000.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostBPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostCPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1100.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostDPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+    public static boolean isInPostEPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostFPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1230.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostGPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1300.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostHPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostIPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1400.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostJPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1430.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostKPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1500.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static boolean isInPostLPeriod(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
 }

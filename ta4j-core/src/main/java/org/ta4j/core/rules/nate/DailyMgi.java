@@ -41,6 +41,19 @@ public class DailyMgi {
     protected OHLCIndicator kPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator lPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator mPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preAPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preBPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preCPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preDPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preEPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preFPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preGPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preHPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preIPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preJPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preKPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preLPeriodOhlc = new OHLCIndicator();
+    protected OHLCIndicator preMPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator postAPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator postBPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator postCPeriodOhlc = new OHLCIndicator();
@@ -400,5 +413,109 @@ public class DailyMgi {
 
     public void setPostMPeriodOhlc(OHLCIndicator postMPeriodOhlc) {
         this.postMPeriodOhlc = postMPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreAPeriodOhlc() {
+        return preAPeriodOhlc;
+    }
+
+    public void setPreAPeriodOhlc(OHLCIndicator preAPeriodOhlc) {
+        this.preAPeriodOhlc = preAPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreBPeriodOhlc() {
+        return preBPeriodOhlc;
+    }
+
+    public void setPreBPeriodOhlc(OHLCIndicator preBPeriodOhlc) {
+        this.preBPeriodOhlc = preBPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreCPeriodOhlc() {
+        return preCPeriodOhlc;
+    }
+
+    public void setPreCPeriodOhlc(OHLCIndicator preCPeriodOhlc) {
+        this.preCPeriodOhlc = preCPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreDPeriodOhlc() {
+        return preDPeriodOhlc;
+    }
+
+    public void setPreDPeriodOhlc(OHLCIndicator preDPeriodOhlc) {
+        this.preDPeriodOhlc = preDPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreEPeriodOhlc() {
+        return preEPeriodOhlc;
+    }
+
+    public void setPreEPeriodOhlc(OHLCIndicator preEPeriodOhlc) {
+        this.preEPeriodOhlc = preEPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreFPeriodOhlc() {
+        return preFPeriodOhlc;
+    }
+
+    public void setPreFPeriodOhlc(OHLCIndicator preFPeriodOhlc) {
+        this.preFPeriodOhlc = preFPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreGPeriodOhlc() {
+        return preGPeriodOhlc;
+    }
+
+    public void setPreGPeriodOhlc(OHLCIndicator preGPeriodOhlc) {
+        this.preGPeriodOhlc = preGPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreHPeriodOhlc() {
+        return preHPeriodOhlc;
+    }
+
+    public void setPreHPeriodOhlc(OHLCIndicator preHPeriodOhlc) {
+        this.preHPeriodOhlc = preHPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreIPeriodOhlc() {
+        return preIPeriodOhlc;
+    }
+
+    public void setPreIPeriodOhlc(OHLCIndicator preIPeriodOhlc) {
+        this.preIPeriodOhlc = preIPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreJPeriodOhlc() {
+        return preJPeriodOhlc;
+    }
+
+    public void setPreJPeriodOhlc(OHLCIndicator preJPeriodOhlc) {
+        this.preJPeriodOhlc = preJPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreKPeriodOhlc() {
+        return preKPeriodOhlc;
+    }
+
+    public void setPreKPeriodOhlc(OHLCIndicator preKPeriodOhlc) {
+        this.preKPeriodOhlc = preKPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreLPeriodOhlc() {
+        return preLPeriodOhlc;
+    }
+
+    public void setPreLPeriodOhlc(OHLCIndicator preLPeriodOhlc) {
+        this.preLPeriodOhlc = preLPeriodOhlc;
+    }
+
+    public OHLCIndicator getPreMPeriodOhlc() {
+        return preMPeriodOhlc;
+    }
+
+    public void setPreMPeriodOhlc(OHLCIndicator preMPeriodOhlc) {
+        this.preMPeriodOhlc = preMPeriodOhlc;
     }
 }

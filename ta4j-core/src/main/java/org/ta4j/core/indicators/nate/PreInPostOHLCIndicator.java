@@ -21,37 +21,47 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.rules.nate;
+package org.ta4j.core.indicators.nate;
 
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.TradingRecord;
+import org.ta4j.core.indicators.nate.helper.DateTimePrice;
+import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
-import org.ta4j.core.rules.AbstractRule;
-
-import java.time.LocalDate;
 
 /**
- * Satisfied when there is a new high of day
+ * Stores a triple of pre, in, and post OHLC.
  */
-public class CrossAboveOvernightHighRule extends AbstractRule {
-    protected BarSeries series;
+public class PreInPostOHLCIndicator {
+    private OHLCIndicator preOhlc;
+    private OHLCIndicator ohlc;
+    private OHLCIndicator postOhlc;
 
-    public CrossAboveOvernightHighRule(BarSeries series) {
-        this.series = series;
+    public PreInPostOHLCIndicator(OHLCIndicator preOhlc, OHLCIndicator ohlc, OHLCIndicator postOhlc) {
+        this.preOhlc = preOhlc;
+        this.ohlc = ohlc;
+        this.postOhlc = postOhlc;
     }
 
-    @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
-        boolean satisfied = false;
+    public OHLCIndicator getPreOhlc() {
+        return preOhlc;
+    }
 
-        Num barHighPrice = series.getBar(index).getHighPrice();
-        if (DailyMgiBuyRule.overnightRthOhlc.getHigh() != null && DailyMgiBuyRule.overnightRthOhlc.getHigh().getPrice().isLessThan(barHighPrice)) {
-            satisfied = true;
-        }
+    public void setPreOhlc(OHLCIndicator preOhlc) {
+        this.preOhlc = preOhlc;
+    }
 
+    public OHLCIndicator getOhlc() {
+        return ohlc;
+    }
 
-        traceIsSatisfied(index, satisfied);
+    public void setOhlc(OHLCIndicator ohlc) {
+        this.ohlc = ohlc;
+    }
 
-        return satisfied;
+    public OHLCIndicator getPostOhlc() {
+        return postOhlc;
+    }
+
+    public void setPostOhlc(OHLCIndicator postOhlc) {
+        this.postOhlc = postOhlc;
     }
 }
