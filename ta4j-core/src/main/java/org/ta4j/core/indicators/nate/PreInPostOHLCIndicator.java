@@ -23,9 +23,11 @@
  */
 package org.ta4j.core.indicators.nate;
 
-import org.ta4j.core.indicators.nate.helper.DateTimePrice;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.Num;
+import org.ta4j.core.indicators.nate.helper.Period30m;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Stores a triple of pre, in, and post OHLC.
@@ -34,11 +36,13 @@ public class PreInPostOHLCIndicator {
     private OHLCIndicator preOhlc;
     private OHLCIndicator ohlc;
     private OHLCIndicator postOhlc;
+    private Map<Period30m, OHLCIndicator> period30mMap;
 
-    public PreInPostOHLCIndicator(OHLCIndicator preOhlc, OHLCIndicator ohlc, OHLCIndicator postOhlc) {
+    public PreInPostOHLCIndicator(OHLCIndicator preOhlc, OHLCIndicator ohlc, OHLCIndicator postOhlc, Map<Period30m, OHLCIndicator> period30mMap) {
         this.preOhlc = preOhlc;
         this.ohlc = ohlc;
         this.postOhlc = postOhlc;
+        this.period30mMap = period30mMap;
     }
 
     public OHLCIndicator getPreOhlc() {
@@ -63,5 +67,29 @@ public class PreInPostOHLCIndicator {
 
     public void setPostOhlc(OHLCIndicator postOhlc) {
         this.postOhlc = postOhlc;
+    }
+
+    public Map<Period30m, OHLCIndicator> getPeriod30mMap() {
+        return period30mMap;
+    }
+
+    public void setPeriod30mMap(Map<Period30m, OHLCIndicator> period30mMap) {
+        this.period30mMap = period30mMap;
+    }
+
+    public Map<Period30m, OHLCIndicator> getOhlcsAfterPeriod(Period30m period30m) {
+        Map<Period30m, OHLCIndicator> resultMap = new LinkedHashMap<>();
+        AtomicBoolean periodFound = new AtomicBoolean(false);
+        period30mMap.forEach((period, ohlc) -> {
+            if (periodFound.get()) {
+                resultMap.put(period, ohlc);
+            }
+
+            if (period.equals(period30m)) {
+                periodFound.set(true);
+            }
+        });
+
+        return resultMap;
     }
 }

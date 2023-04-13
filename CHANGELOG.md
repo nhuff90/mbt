@@ -109,7 +109,7 @@ Changelog for `ta4j`, roughly following [keepachangelog.com](http://keepachangel
 - **StopGainRule**: now correctly handles stops for sell orders
 - **StopLossRule**: now correctly handles stops for sell orders
 - **ProfitLossCriterion**: fixed to work properly for short trades
-- **PivotPointIndicator**: fixed possible npe if first bar is not in same period
+- **PivotPointIndicator**: fixed possible npe if first bar is not in same period30m
 - **`IchimokuChikouSpanIndicator`**: fixed calculations - applied correct formula.
 - **CloseLocationValueIndicator**: fixed special case, return zero instead of NaN if high price == low price
 
@@ -228,7 +228,7 @@ behaviour of criterions (entry/exit prices can differ from corresponding close p
 - **Decimal**: use `BigDecimal::valueof` instead of instantiating a new BigDecimal for double, int and long
     - now `Decimal` extends `Number`
 - **Strategy:** can now have a optional parameter "name".
-- **Tick:** `Tick` has been renamed to **`Bar`** for a more appropriate description of the price movement over a set period of time.
+- **Tick:** `Tick` has been renamed to **`Bar`** for a more appropriate description of the price movement over a set period30m of time.
 - **MMAIndicator**: restructured and moved from `helpers` to `indicators` package
 - **AverageTrueRangeIndicator**: renamed to **ATRIndicator**
 - **AverageDirectionalMovementDownIndicator**: renamed to **ADXIndicator**

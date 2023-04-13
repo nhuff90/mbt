@@ -1,108 +1,110 @@
 package org.ta4j.core.utils;
 
 import org.ta4j.core.Bar;
+import org.ta4j.core.indicators.nate.helper.Period30m;
 
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Key times during the day
  */
 public enum MarketTime {
     // ETH Times
-    ETH_END_TIME_0929(LocalTime.parse( "09:29:00" )),
-    ETH_START_TIME_1600(LocalTime.parse( "16:00:00" )),
-    ETH_2359(LocalTime.parse( "23:59:00" )),
-    ETH_0000(LocalTime.parse( "00:00:00" )),
+    ETH_END_TIME_0929(LocalTime.parse("09:29:00")),
+    ETH_START_TIME_1600(LocalTime.parse("16:00:00")),
+    ETH_2359(LocalTime.parse("23:59:00")),
+    ETH_0000(LocalTime.parse("00:00:00")),
 
     // RTH Times
-    RTH_START_TIME_0930(LocalTime.parse( "09:30:00" )),
-    RTH_1000(LocalTime.parse( "10:00:00" )),
-    RTH_1030(LocalTime.parse( "10:30:00" )),
-    RTH_1100(LocalTime.parse( "11:00:00" )),
-    RTH_1130(LocalTime.parse( "11:30:00" )),
-    RTH_1200(LocalTime.parse( "12:00:00" )),
-    RTH_1230(LocalTime.parse( "12:30:00" )),
-    RTH_1300(LocalTime.parse( "13:00:00" )),
-    RTH_1330(LocalTime.parse( "13:30:00" )),
-    RTH_1400(LocalTime.parse( "14:00:00" )),
-    RTH_1430(LocalTime.parse( "14:30:00" )),
-    RTH_1500(LocalTime.parse( "15:00:00" )),
-    RTH_1530(LocalTime.parse( "15:30:00" )),
-    RTH_END_TIME_1559(LocalTime.parse( "15:59:00" )),
+    RTH_START_TIME_0930(LocalTime.parse("09:30:00")),
+    RTH_1000(LocalTime.parse("10:00:00")),
+    RTH_1030(LocalTime.parse("10:30:00")),
+    RTH_1100(LocalTime.parse("11:00:00")),
+    RTH_1130(LocalTime.parse("11:30:00")),
+    RTH_1200(LocalTime.parse("12:00:00")),
+    RTH_1230(LocalTime.parse("12:30:00")),
+    RTH_1300(LocalTime.parse("13:00:00")),
+    RTH_1330(LocalTime.parse("13:30:00")),
+    RTH_1400(LocalTime.parse("14:00:00")),
+    RTH_1430(LocalTime.parse("14:30:00")),
+    RTH_1500(LocalTime.parse("15:00:00")),
+    RTH_1530(LocalTime.parse("15:30:00")),
+    RTH_END_TIME_1559(LocalTime.parse("15:59:00")),
 
 
     /*
     Other times below
      */
-    RTH_0959(LocalTime.parse( "09:59:00" )),
-    RTH_1029(LocalTime.parse( "10:29:00" )),
-    RTH_1059(LocalTime.parse( "10:59:00" )),
-    RTH_1129(LocalTime.parse( "11:29:00" )),
-    RTH_1159(LocalTime.parse( "11:59:00" )),
-    RTH_1229(LocalTime.parse( "12:29:00" )),
-    RTH_1259(LocalTime.parse( "12:59:00" )),
-    RTH_1329(LocalTime.parse( "13:29:00" )),
-    RTH_1359(LocalTime.parse( "13:59:00" )),
-    RTH_1429(LocalTime.parse( "14:29:00" )),
-    RTH_1459(LocalTime.parse( "14:59:00" )),
-    RTH_1529(LocalTime.parse( "15:29:00" )),
+    RTH_0959(LocalTime.parse("09:59:00")),
+    RTH_1029(LocalTime.parse("10:29:00")),
+    RTH_1059(LocalTime.parse("10:59:00")),
+    RTH_1129(LocalTime.parse("11:29:00")),
+    RTH_1159(LocalTime.parse("11:59:00")),
+    RTH_1229(LocalTime.parse("12:29:00")),
+    RTH_1259(LocalTime.parse("12:59:00")),
+    RTH_1329(LocalTime.parse("13:29:00")),
+    RTH_1359(LocalTime.parse("13:59:00")),
+    RTH_1429(LocalTime.parse("14:29:00")),
+    RTH_1459(LocalTime.parse("14:59:00")),
+    RTH_1529(LocalTime.parse("15:29:00")),
 
-    RTH_0931(LocalTime.parse( "09:31:00" )),
-    RTH_0935(LocalTime.parse( "09:35:00" )),
-    RTH_0945(LocalTime.parse( "09:45:00" )),
-    RTH_1005(LocalTime.parse( "10:05:00" )),
-    RTH_1205(LocalTime.parse( "12:05:00" )),
-    RTH_1405(LocalTime.parse( "14:05:00" )),
-    RTH_1558(LocalTime.parse( "15:58:00" )),
+    RTH_0931(LocalTime.parse("09:31:00")),
+    RTH_0935(LocalTime.parse("09:35:00")),
+    RTH_0945(LocalTime.parse("09:45:00")),
+    RTH_1005(LocalTime.parse("10:05:00")),
+    RTH_1205(LocalTime.parse("12:05:00")),
+    RTH_1405(LocalTime.parse("14:05:00")),
+    RTH_1558(LocalTime.parse("15:58:00")),
 
     // AM Range Times
-    AM_START_TIME(LocalTime.parse( "09:30:00" )),
-    AM_BOUNCE_START_TIME(LocalTime.parse( "10:03:00" )),
-    AM_BOUNCE_END_TIME(LocalTime.parse( "10:10:00" )),
-    AM_BOUNCE_STOP_LOSS_TIME(LocalTime.parse( "10:20:00" ) ),
-    AM_END_TIME(LocalTime.parse( "10:05:00" )),
+    AM_START_TIME(LocalTime.parse("09:30:00")),
+    AM_BOUNCE_START_TIME(LocalTime.parse("10:03:00")),
+    AM_BOUNCE_END_TIME(LocalTime.parse("10:10:00")),
+    AM_BOUNCE_STOP_LOSS_TIME(LocalTime.parse("10:20:00")),
+    AM_END_TIME(LocalTime.parse("10:05:00")),
 
     // Micro Range Times
-    MICRO_START_TIME(LocalTime.parse( "11:30:00" )),
-    MICRO_END_TIME(LocalTime.parse( "12:05:00" )),
+    MICRO_START_TIME(LocalTime.parse("11:30:00")),
+    MICRO_END_TIME(LocalTime.parse("12:05:00")),
 
     // PM Range Times
-    PM_START_TIME(LocalTime.parse( "13:30:00" )),
-    PM_BOUNCE_START_TIME(LocalTime.parse( "13:33:00" )),
-    PM_BOUNCE_END_TIME(LocalTime.parse( "14:10:00" )),
-    PM_BOUNCE_STOP_LOSS_TIME(LocalTime.parse( "14:20:00" ) ),
-    PM_END_TIME(LocalTime.parse( "14:05:00" )),
+    PM_START_TIME(LocalTime.parse("13:30:00")),
+    PM_BOUNCE_START_TIME(LocalTime.parse("13:33:00")),
+    PM_BOUNCE_END_TIME(LocalTime.parse("14:10:00")),
+    PM_BOUNCE_STOP_LOSS_TIME(LocalTime.parse("14:20:00")),
+    PM_END_TIME(LocalTime.parse("14:05:00")),
 
     // Power Hour -- up to 3:00 to 3:58 EST
-    POWER_HOUR_START_TIME(LocalTime.parse( "15:00:00" )),
-    POWER_HOUR_END_TIME(LocalTime.parse( "15:58:00" )),
+    POWER_HOUR_START_TIME(LocalTime.parse("15:00:00")),
+    POWER_HOUR_END_TIME(LocalTime.parse("15:58:00")),
 
     // Initial Balance Range
-    INITIAL_BALANCE_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    INITIAL_BALANCE_END_TIME(LocalTime.parse( "10:30:00" )),
+    INITIAL_BALANCE_START_TIME(LocalTime.parse("09:30:00")),
+    INITIAL_BALANCE_END_TIME(LocalTime.parse("10:30:00")),
 
     // First 30 mins Range
-    OPEN_TO_1000_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    OPEN_TO_1000_END_TIME(LocalTime.parse( "10:30:00" )),
+    OPEN_TO_1000_START_TIME(LocalTime.parse("09:30:00")),
+    OPEN_TO_1000_END_TIME(LocalTime.parse("10:30:00")),
 
     // Opening Drive Range -- todo - need to determine OD time. 930-935? 930-945?
-    OPENING_DRIVE_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    OPENING_DRIVE_END_TIME(LocalTime.parse( "09:45:00" )),
+    OPENING_DRIVE_START_TIME(LocalTime.parse("09:30:00")),
+    OPENING_DRIVE_END_TIME(LocalTime.parse("09:45:00")),
 
     // OMAR Range
-    OMAR_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    OMAR_END_TIME(LocalTime.parse( "09:30:00" )),
+    OMAR_START_TIME(LocalTime.parse("09:30:00")),
+    OMAR_END_TIME(LocalTime.parse("09:30:00")),
 
     // Opening 5 mins Range
-    OPENING_5MINS_START_TIME(LocalTime.parse( "09:30:00" ) ),
-    OPENING_5MINS_END_TIME(LocalTime.parse( "09:34:00" ));
+    OPENING_5MINS_START_TIME(LocalTime.parse("09:30:00")),
+    OPENING_5MINS_END_TIME(LocalTime.parse("09:34:00"));
 
-    private final LocalTime localTime ;
+    private final LocalTime localTime;
 
     MarketTime(LocalTime localTime) {
-        Objects.requireNonNull( localTime ) ;
-        this.localTime = localTime ;
+        Objects.requireNonNull(localTime);
+        this.localTime = localTime;
     }
 
     public LocalTime getLocalTime() {
@@ -323,54 +325,107 @@ public enum MarketTime {
     In 30m periods
      */
     public static boolean isInAPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0959.getLocalTime());
+        return isInAPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInBPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1000.getLocalTime(), MarketTime.RTH_1029.getLocalTime());
+        return isInBPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInCPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_1059.getLocalTime());
+        return isInCPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInDPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1100.getLocalTime(), MarketTime.RTH_1129.getLocalTime());
+        return isInDPeriod(bar.getEndTime().toLocalTime());
     }
+
     public static boolean isInEPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_1159.getLocalTime());
+        return isInEPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInFPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime(), MarketTime.RTH_1229.getLocalTime());
+        return isInFPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInGPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1230.getLocalTime(), MarketTime.RTH_1259.getLocalTime());
+        return isInGPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInHPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1300.getLocalTime(), MarketTime.RTH_1329.getLocalTime());
+        return isInHPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInIPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_1359.getLocalTime());
+        return isInIPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInJPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1400.getLocalTime(), MarketTime.RTH_1429.getLocalTime());
+        return isInJPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInKPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1430.getLocalTime(), MarketTime.RTH_1459.getLocalTime());
+        return isInKPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInLPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1500.getLocalTime(), MarketTime.RTH_1529.getLocalTime());
+        return isInLPeriod(bar.getEndTime().toLocalTime());
     }
 
     public static boolean isInMPeriod(Bar bar) {
-        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+        return isInMPeriod(bar.getEndTime().toLocalTime());
+    }
+
+    public static boolean isInAPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0959.getLocalTime());
+    }
+
+    public static boolean isInBPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1000.getLocalTime(), MarketTime.RTH_1029.getLocalTime());
+    }
+
+    public static boolean isInCPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1030.getLocalTime(), MarketTime.RTH_1059.getLocalTime());
+    }
+
+    public static boolean isInDPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1100.getLocalTime(), MarketTime.RTH_1129.getLocalTime());
+    }
+
+    public static boolean isInEPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_1159.getLocalTime());
+    }
+
+    public static boolean isInFPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1200.getLocalTime(), MarketTime.RTH_1229.getLocalTime());
+    }
+
+    public static boolean isInGPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1230.getLocalTime(), MarketTime.RTH_1259.getLocalTime());
+    }
+
+    public static boolean isInHPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1300.getLocalTime(), MarketTime.RTH_1329.getLocalTime());
+    }
+
+    public static boolean isInIPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1330.getLocalTime(), MarketTime.RTH_1359.getLocalTime());
+    }
+
+    public static boolean isInJPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1400.getLocalTime(), MarketTime.RTH_1429.getLocalTime());
+    }
+
+    public static boolean isInKPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1430.getLocalTime(), MarketTime.RTH_1459.getLocalTime());
+    }
+
+    public static boolean isInLPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1500.getLocalTime(), MarketTime.RTH_1529.getLocalTime());
+    }
+
+    public static boolean isInMPeriod(LocalTime localTime) {
+        return TimeUtils.isBetweenTimes(localTime, MarketTime.RTH_1530.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
 
     /*
@@ -439,6 +494,7 @@ public enum MarketTime {
     public static boolean isInPreDPeriod(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1059.getLocalTime());
     }
+
     public static boolean isInPreEPeriod(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1129.getLocalTime());
     }
@@ -494,6 +550,7 @@ public enum MarketTime {
     public static boolean isInPostDPeriod(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1130.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
+
     public static boolean isInPostEPeriod(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1200.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
     }
@@ -524,5 +581,36 @@ public enum MarketTime {
 
     public static boolean isInPostLPeriod(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_1530.getLocalTime(), MarketTime.RTH_END_TIME_1559.getLocalTime());
+    }
+
+    public static Optional<Period30m> get30mPeriodFromTime(LocalTime localTime) {
+        if (isInAPeriod(localTime)) {
+            return Optional.of(Period30m.A);
+        } else if (isInBPeriod(localTime)) {
+            return Optional.of(Period30m.B);
+        } else if (isInCPeriod(localTime)) {
+            return Optional.of(Period30m.C);
+        } else if (isInDPeriod(localTime)) {
+            return Optional.of(Period30m.D);
+        } else if (isInEPeriod(localTime)) {
+            return Optional.of(Period30m.E);
+        } else if (isInFPeriod(localTime)) {
+            return Optional.of(Period30m.F);
+        } else if (isInGPeriod(localTime)) {
+            return Optional.of(Period30m.G);
+        } else if (isInHPeriod(localTime)) {
+            return Optional.of(Period30m.H);
+        } else if (isInIPeriod(localTime)) {
+            return Optional.of(Period30m.I);
+        } else if (isInJPeriod(localTime)) {
+            return Optional.of(Period30m.J);
+        } else if (isInKPeriod(localTime)) {
+            return Optional.of(Period30m.K);
+        } else if (isInLPeriod(localTime)) {
+            return Optional.of(Period30m.L);
+        } else if (isInMPeriod(localTime)) {
+            return Optional.of(Period30m.M);
+        }
+            return Optional.empty();
     }
 }
