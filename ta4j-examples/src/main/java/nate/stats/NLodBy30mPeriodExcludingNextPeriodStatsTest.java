@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         evaluateNlodStats(dailyMgiMap);
     }

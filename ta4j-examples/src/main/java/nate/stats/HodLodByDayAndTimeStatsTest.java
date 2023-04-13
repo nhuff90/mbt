@@ -17,7 +17,7 @@ public class HodLodByDayAndTimeStatsTest extends StatsTest {
     Map<String, int[]> map = new LinkedHashMap<>();
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         initializeMap();
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         System.out.println("High of Day");

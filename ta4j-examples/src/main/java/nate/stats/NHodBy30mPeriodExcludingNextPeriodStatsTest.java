@@ -9,6 +9,7 @@ import org.ta4j.core.indicators.nate.helper.Period30m;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
 import org.ta4j.core.utils.DoubleFormatter;
+import org.ta4j.core.utils.MarketTime;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.LocalDate;
@@ -18,13 +19,15 @@ import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         evaluateNHodStats(dailyMgiMap);
     }
@@ -67,17 +70,43 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
         String line2 = sb2.substring(0, sb2.length() - 1);
         System.out.println(line2);
 
-//        // Most likely 30m period for NHod
-//        StringBuilder sb3 = new StringBuilder();
-//        sb.append("Count true/total,");
-//        periodResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
-//            LinkedHashMap<Period30m, Integer> map = new LinkedHashMap<>();
-//            sb3.append((int) trueFalseDailyMgiResults.getTrueMap().size() + "/" + (int) trueFalseDailyMgiResults.getTotalOfTrueAndFalseMaps());
-//            sb3.append(",");
-//        });
-//
-//        String line3 = sb3.substring(0, sb3.length() - 1);
-//        System.out.println(line3);
+        // Most likely 30m period for NHod
+        sb.append("Count true/total,");
+        periodResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+            AtomicInteger totalCount = new AtomicInteger();
+            StringBuilder sb3 = new StringBuilder();
+            sb3.append(period30m + ",");
+            LinkedHashMap<Period30m, Integer> periodsMap = new LinkedHashMap<>();
+            periodsMap.put(Period30m.A, 0);
+            periodsMap.put(Period30m.B, 0);
+            periodsMap.put(Period30m.C, 0);
+            periodsMap.put(Period30m.D, 0);
+            periodsMap.put(Period30m.E, 0);
+            periodsMap.put(Period30m.F, 0);
+            periodsMap.put(Period30m.G, 0);
+            periodsMap.put(Period30m.H, 0);
+            periodsMap.put(Period30m.I, 0);
+            periodsMap.put(Period30m.J, 0);
+            periodsMap.put(Period30m.K, 0);
+            periodsMap.put(Period30m.L, 0);
+            periodsMap.put(Period30m.M, 0);
+            trueFalseDailyMgiResults.getTrueMap().forEach((dailyMgi, ohlcIndicator) -> {
+                Optional<Period30m> nhodPeriod = MarketTime.get30mPeriodFromTime(ohlcIndicator.getHigh().getTime());
+                if (nhodPeriod.isPresent()) {
+                    Integer count = periodsMap.get(nhodPeriod.get());
+                    count++;
+                    periodsMap.put(nhodPeriod.get(), count);
+                    totalCount.getAndIncrement();
+                }
+            });
+            periodsMap.forEach((period, periodCount) -> {
+                double percentTrue = (double) periodCount / (double) totalCount.get();
+                sb3.append(DoubleFormatter.formatPercent(percentTrue, 0));
+                sb3.append(",");
+            });
+            String line3 = sb3.substring(0, sb3.length() - 1);
+            System.out.println(line3);
+        });
     }
 
     private PeriodNhodResultsMap calculatePeriodHodStats(Map<LocalDate, DailyMgi> dailyMgiMap) {
@@ -122,7 +151,7 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
                         // New HoD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         postOhlcs.forEach((period, postPeriodOhlc) -> {
-                            if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh()  != null &&
+                            if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
                                     postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice()) &&
                                     period30m.next().isPresent() && !period30m.next().get().equals(period)) {
                                 nhodFound.set(true);
@@ -150,7 +179,7 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
 //                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
 
         createRulesAndRunBackTest(series);

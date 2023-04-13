@@ -29,7 +29,7 @@ public class NLodBy30mPeriodStatsTest extends StatsTest {
     }
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         evaluateNLodStats(dailyMgiMap);
     }

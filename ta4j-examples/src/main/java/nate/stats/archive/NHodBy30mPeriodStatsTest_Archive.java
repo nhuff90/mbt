@@ -1,10 +1,11 @@
-package nate.stats;
+package nate.stats.archive;
 
-import org.ta4j.core.indicators.nate.helper.Period30m;
+import nate.stats.StatsTest;
 import nate.stats.domain.TrueFalseDailyMgiResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.indicators.nate.PreInPostOHLCIndicator;
+import org.ta4j.core.indicators.nate.helper.Period30m;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
 import org.ta4j.core.utils.DoubleFormatter;
@@ -18,10 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NHodBy30mPeriodStatsTest extends StatsTest {
+public class NHodBy30mPeriodStatsTest_Archive extends StatsTest {
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         evaluateNHodStats(dailyMgiMap);
     }
@@ -155,7 +156,7 @@ public class NHodBy30mPeriodStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NHodBy30mPeriodStatsTest nHodBy30mPeriodStatsTest = new NHodBy30mPeriodStatsTest();
+        NHodBy30mPeriodStatsTest_Archive nHodBy30mPeriodStatsTest = new NHodBy30mPeriodStatsTest_Archive();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

@@ -31,7 +31,7 @@ public class MicroBreakoutStatsTest extends StatsTest {
             EXTENSION_PERCENT_100, EXTENSION_PERCENT_150, EXTENSION_PERCENT_200, EXTENSION_PERCENT_300, EXTENSION_PERCENT_400};
 
     @Override
-    void evaluate() {
+    public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         evaluateMicroHighBreach(dailyMgiMap);
         evaluateMicroLowBreach(dailyMgiMap);

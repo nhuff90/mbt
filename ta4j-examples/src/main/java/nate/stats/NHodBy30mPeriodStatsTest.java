@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
+public class NHodBy30mPeriodStatsTest extends StatsTest {
 
     @Override
     public void evaluate() {
@@ -72,8 +72,9 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
         // Most likely 30m period for NHod
         sb.append("Count true/total,");
-        AtomicInteger totalCount = new AtomicInteger();
+
         periodResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+            AtomicInteger totalCount = new AtomicInteger();
             StringBuilder sb3 = new StringBuilder();
             sb3.append(period30m + ",");
             LinkedHashMap<Period30m, Integer> periodsMap = new LinkedHashMap<>();
@@ -152,8 +153,7 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         postOhlcs.forEach((period, postPeriodOhlc) -> {
                             if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
-                                    postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice()) &&
-                                    period30m.next().isPresent() && !period30m.next().get().equals(period)) {
+                                    postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice())) {
                                 nhodFound.set(true);
                                 nhodOhlc.set(postPeriodOhlc);
                                 return;
@@ -184,7 +184,7 @@ public class NHodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NHodBy30mPeriodExcludingNextPeriodStatsTest nHodBy30mPeriodStatsTest = new NHodBy30mPeriodExcludingNextPeriodStatsTest();
+        NHodBy30mPeriodStatsTest nHodBy30mPeriodStatsTest = new NHodBy30mPeriodStatsTest();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

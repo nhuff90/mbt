@@ -19,7 +19,7 @@ public abstract class StatsTest extends BackTestWithDailyMgi {
     public StatsTest() {
     }
 
-    abstract void evaluate();
+    public abstract void evaluate();
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
@@ -52,7 +52,7 @@ public abstract class StatsTest extends BackTestWithDailyMgi {
      * Generic backtest to load daily MGI data
      * @param series
      */
-    static void createRulesAndRunBackTest(BarSeries series) {
+    protected static void createRulesAndRunBackTest(BarSeries series) {
         Rule buyingRule;
         Rule sellingRule = new OutsideOfMarketTimeRangeRule(series, MarketTime.RTH_0935, MarketTime.RTH_1500);
         buyingRule = new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500);
