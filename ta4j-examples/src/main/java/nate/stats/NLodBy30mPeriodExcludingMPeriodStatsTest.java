@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
+public class NLodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
 
     PeriodNhodResultsMap periodNLODResultsMap = new PeriodNhodResultsMap();
 
@@ -207,15 +207,17 @@ public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
                         AtomicReference<OHLCIndicator> nlodOhlc = new AtomicReference<>(new OHLCIndicator());
                         // NLOD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
-                        postOhlcs.forEach((period, postPeriodOhlc) -> {
+                        for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
+                            Period30m period = entry.getKey();
+                            OHLCIndicator postPeriodOhlc = entry.getValue();
                             if (postPeriodOhlc.getLow() != null && periodOhlc.getLow() != null &&
                                     postPeriodOhlc.getLow().getPrice().isLessThan(periodOhlc.getLow().getPrice()) &&
-                                    period30m.next().isPresent() && !period30m.next().get().equals(period)) {
+                                    !period.equals(Period30m.M)) {
                                 nlodFound.set(true);
                                 nlodOhlc.set(postPeriodOhlc);
-                                return;
+                                break;
                             }
-                        });
+                        }
                         if (nlodFound.get()) {
                             periodNLODResultsMap.addToNlodAfterIsTrueMap(period30m, nlodOhlc.get(), dailyMgi);
                         } else {
@@ -227,18 +229,16 @@ public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
                          */
                         AtomicBoolean nhodFound = new AtomicBoolean(false);
                         AtomicReference<OHLCIndicator> nhodOhlcR = new AtomicReference<>(new OHLCIndicator());
-                        for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
-                            Period30m period = entry.getKey();
-                            OHLCIndicator postPeriodOhlc = entry.getValue();
+                        postOhlcs.forEach((period, postPeriodOhlc) -> {
                             if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
                                     postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice()) &&
                                     postPeriodOhlc.getHigh().getPrice().isGreaterThan(prePeriodOhlc.getHigh().getPrice()) &&
-                                    period30m.next().isPresent() && !period30m.next().get().equals(period)) {
+                                    !period.equals(Period30m.M)) {
                                 nhodFound.set(true);
                                 nhodOhlcR.set(postPeriodOhlc);
-                                break;
+                                return;
                             }
-                        }
+                        });
                         if (nhodFound.get()) {
                             periodNLODResultsMap.addToNhodAfterIsTrueMap(period30m, nhodOhlcR.get(), dailyMgi);
                         } else {
@@ -263,7 +263,7 @@ public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NLodBy30mPeriodExcludingNextPeriodStatsTest nHodBy30mPeriodStatsTest = new NLodBy30mPeriodExcludingNextPeriodStatsTest();
+        NLodBy30mPeriodExcludingMPeriodStatsTest nHodBy30mPeriodStatsTest = new NLodBy30mPeriodExcludingMPeriodStatsTest();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 
