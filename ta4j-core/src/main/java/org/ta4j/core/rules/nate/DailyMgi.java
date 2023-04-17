@@ -541,4 +541,23 @@ public class DailyMgi {
 
         return period30mMap;
     }
+
+    public OHLCIndicator getOhlcOfPeriod(Period30m period30m) {
+        Map<Period30m, OHLCIndicator> period30mMap = new LinkedHashMap<>();
+        period30mMap.put(Period30m.A, aPeriodOhlc);
+        period30mMap.put(Period30m.B, bPeriodOhlc);
+        period30mMap.put(Period30m.C, cPeriodOhlc);
+        period30mMap.put(Period30m.D, dPeriodOhlc);
+        period30mMap.put(Period30m.E, ePeriodOhlc);
+        period30mMap.put(Period30m.F, fPeriodOhlc);
+        period30mMap.put(Period30m.G, gPeriodOhlc);
+        period30mMap.put(Period30m.H, hPeriodOhlc);
+        period30mMap.put(Period30m.I, iPeriodOhlc);
+        period30mMap.put(Period30m.J, jPeriodOhlc);
+        period30mMap.put(Period30m.K, kPeriodOhlc);
+        period30mMap.put(Period30m.L, lPeriodOhlc);
+        period30mMap.put(Period30m.M, mPeriodOhlc);
+
+        return period30mMap.get(period30m);
+    }
 }

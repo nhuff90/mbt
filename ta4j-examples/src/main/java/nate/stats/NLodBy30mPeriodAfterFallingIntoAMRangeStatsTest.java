@@ -205,24 +205,24 @@ public class NLodBy30mPeriodAfterFallingIntoAMRangeStatsTest extends StatsTest {
                          */
                         AtomicBoolean nlodFound = new AtomicBoolean(false);
                         AtomicReference<OHLCIndicator> nlodOhlc = new AtomicReference<>(new OHLCIndicator());
-                        AtomicBoolean fellBackIntoAPeriodAfterNLOD = new AtomicBoolean(false);
-                        OHLCIndicator fellBackIntoAPeriodOhlc = new OHLCIndicator();
+                        AtomicBoolean fellBackIntoAMRAngeAfterNLOD = new AtomicBoolean(false);
+                        OHLCIndicator fellBackIntoAMRangeOhlc = new OHLCIndicator();
                         // NLOD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
-                            Period30m period = entry.getKey();
+                            Period30m postPeriod = entry.getKey();
                             OHLCIndicator postPeriodOhlc = entry.getValue();
                             if (postPeriodOhlc.getHigh() != null && postPeriodOhlc.getHigh().getPrice().isGreaterThan(dailyMgi.getAmRangeOhlc().getLow().getPrice())) {
-                                if (!fellBackIntoAPeriodAfterNLOD.get()) {
-                                    fellBackIntoAPeriodAfterNLOD.set(true);
-                                    fellBackIntoAPeriodOhlc = postPeriodOhlc;
+                                if (!fellBackIntoAMRAngeAfterNLOD.get()) {
+                                    fellBackIntoAMRAngeAfterNLOD.set(true);
+                                    fellBackIntoAMRangeOhlc = postPeriodOhlc;
                                 }
                             }
 
-                            if (fellBackIntoAPeriodAfterNLOD.get() &&
+                            if (fellBackIntoAMRAngeAfterNLOD.get() &&
                                     postPeriodOhlc.getLow() != null && periodOhlc.getLow() != null &&
                                     postPeriodOhlc.getLow().getPrice().isLessThan(periodOhlc.getLow().getPrice())) {
-                                if (fellBackIntoAPeriodOhlc.getHigh().getTime().isBefore(postPeriodOhlc.getLow().getTime())) {
+                                if (fellBackIntoAMRangeOhlc.getHigh().getTime().isBefore(postPeriodOhlc.getLow().getTime())) {
                                     nlodFound.set(true);
                                     nlodOhlc.set(postPeriodOhlc);
                                     break;
@@ -270,8 +270,6 @@ public class NLodBy30mPeriodAfterFallingIntoAMRangeStatsTest extends StatsTest {
 //                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(startDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-
-        System.out.println("Start Date: " + startDate);
 
         createRulesAndRunBackTest(series);
 

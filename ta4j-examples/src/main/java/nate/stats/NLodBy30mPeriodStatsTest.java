@@ -208,7 +208,7 @@ public class NLodBy30mPeriodStatsTest extends StatsTest {
                         // NLOD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
-                            Period30m period = entry.getKey();
+                            Period30m postPeriod = entry.getKey();
                             OHLCIndicator postPeriodOhlc = entry.getValue();
                             if (postPeriodOhlc.getLow() != null && periodOhlc.getLow() != null &&
                                     postPeriodOhlc.getLow().getPrice().isLessThan(periodOhlc.getLow().getPrice())) {
@@ -258,8 +258,6 @@ public class NLodBy30mPeriodStatsTest extends StatsTest {
 //                ZonedDateTime.of(LocalDate.of(2020, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(startDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-
-        System.out.println("Start Date: " + startDate);
 
         createRulesAndRunBackTest(series);
 

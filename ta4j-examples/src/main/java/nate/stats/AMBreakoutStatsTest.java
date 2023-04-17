@@ -485,8 +485,6 @@ public class AMBreakoutStatsTest extends StatsTest {
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(startDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 
-        System.out.println("Start Date: " + startDate);
-
         createRulesAndRunBackTest(series);
 
         AMBreakoutStatsTest amBreakoutStatsTest = new AMBreakoutStatsTest();

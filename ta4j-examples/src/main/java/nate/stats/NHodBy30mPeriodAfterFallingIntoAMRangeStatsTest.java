@@ -194,24 +194,24 @@ public class NHodBy30mPeriodAfterFallingIntoAMRangeStatsTest extends StatsTest {
                         NHOD continuation
                          */
                         AtomicBoolean nhodFound = new AtomicBoolean(false);
-                        AtomicBoolean fellBackIntoAPeriodAfterNHODCont = new AtomicBoolean(false);
+                        AtomicBoolean fellBackIntoAMRangeAfterNHODCont = new AtomicBoolean(false);
                         AtomicReference<OHLCIndicator> nhodOhlc = new AtomicReference<>(new OHLCIndicator());
-                        OHLCIndicator fellBackIntoAPeriodOhlc = new OHLCIndicator();
+                        OHLCIndicator fellBackIntoAMRangeOhlc = new OHLCIndicator();
                         // New HoD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
                             Period30m postPeriod = entry.getKey();
                             OHLCIndicator postPeriodOhlc = entry.getValue();
                             if (postPeriodOhlc.getLow() != null && postPeriodOhlc.getLow().getPrice().isLessThan(dailyMgi.getAmRangeOhlc().getHigh().getPrice())) {
-                                if (!fellBackIntoAPeriodAfterNHODCont.get()) {
-                                    fellBackIntoAPeriodAfterNHODCont.set(true);
-                                    fellBackIntoAPeriodOhlc = postPeriodOhlc;
+                                if (!fellBackIntoAMRangeAfterNHODCont.get()) {
+                                    fellBackIntoAMRangeAfterNHODCont.set(true);
+                                    fellBackIntoAMRangeOhlc = postPeriodOhlc;
                                 }
                             }
-                            if (fellBackIntoAPeriodAfterNHODCont.get() &&
+                            if (fellBackIntoAMRangeAfterNHODCont.get() &&
                                     postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
                                     postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice())) {
-                                if (fellBackIntoAPeriodOhlc.getLow().getTime().isBefore(postPeriodOhlc.getHigh().getTime())) {
+                                if (fellBackIntoAMRangeOhlc.getLow().getTime().isBefore(postPeriodOhlc.getHigh().getTime())) {
                                     // make sure NHOD is after falling into AM Range
                                     nhodFound.set(true);
                                     nhodOhlc.set(postPeriodOhlc);
@@ -262,7 +262,6 @@ public class NHodBy30mPeriodAfterFallingIntoAMRangeStatsTest extends StatsTest {
 //                ZonedDateTime.of(LocalDate.of(2021, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
         BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(startDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 
-        System.out.println("Start Date: " + startDate);
         createRulesAndRunBackTest(series);
 
         NHodBy30mPeriodAfterFallingIntoAMRangeStatsTest nHodBy30mPeriodStatsTest = new NHodBy30mPeriodAfterFallingIntoAMRangeStatsTest();
