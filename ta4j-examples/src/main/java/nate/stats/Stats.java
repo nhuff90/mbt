@@ -14,9 +14,9 @@ import java.time.ZonedDateTime;
 /**
  * abstract class for testing the % probability of given tests.
  */
-public abstract class StatsTest extends BackTestWithDailyMgi {
+public abstract class Stats extends BackTestWithDailyMgi {
 
-    public StatsTest() {
+    public Stats() {
     }
 
     public abstract void evaluate();

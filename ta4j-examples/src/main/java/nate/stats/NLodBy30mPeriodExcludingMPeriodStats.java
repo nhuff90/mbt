@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
+public class NLodBy30mPeriodExcludingMPeriodStats extends Stats {
 
-    PeriodNhodResultsMap periodNHODResultsMap = new PeriodNhodResultsMap();
+    PeriodNhodResultsMap periodNLODResultsMap = new PeriodNhodResultsMap();
 
     @Override
     public void evaluate() {
@@ -42,11 +42,11 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
 
     private void periodResultsMap() {
         /*
-        Print NHODs
+        Print NLODs
          */
         StringBuilder sb = new StringBuilder();
-        sb.append("% Chance for NHod after Period (continuation),");
-        periodNHODResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+        sb.append("% Chance for NLod after Period (continuation),");
+        periodNLODResultsMap.getPeriodNlodAndNlodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
 //            trueFalseDailyMgiResults.getFalseDailyMgiList().forEach(s -> {
 //                System.out.println(period + " period false dates: " + s.getRthOhlc().getOpen().getDate());
 //            });
@@ -63,11 +63,11 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
         System.out.println(line);
 
         /*
-        Print out NHOD counts
+        Print out NLOD counts
          */
         StringBuilder sb2 = new StringBuilder();
         sb2.append("Count true/total,");
-        periodNHODResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+        periodNLODResultsMap.getPeriodNlodAndNlodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
             sb2.append((int) trueFalseDailyMgiResults.getTrueMap().size() + "/" + (int) trueFalseDailyMgiResults.getTotalOfTrueAndFalseMaps());
             sb2.append(",");
         });
@@ -75,11 +75,11 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
         System.out.println(line2);
 
         /*
-        Print NLODs
+        Print NHODs
          */
         StringBuilder sb3 = new StringBuilder();
-        sb2.append("% Chance for NLod after Period (reversal),");
-        periodNHODResultsMap.getPeriodNhodAndNlodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+        sb3.append("% Chance for NHod after Period (reversal),");
+        periodNLODResultsMap.getPeriodNlodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
 //            trueFalseDailyMgiResults.getFalseDailyMgiList().forEach(s -> {
 //                System.out.println(period + " period false dates: " + s.getRthOhlc().getOpen().getDate());
 //            });
@@ -96,17 +96,28 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
         System.out.println(line3);
 
         /*
-        Print NLOD counts
+        Print out NHOD counts
          */
+
         StringBuilder sb4 = new StringBuilder();
         sb4.append("Count true/total,");
-        periodNHODResultsMap.getPeriodNhodAndNlodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+        periodNLODResultsMap.getPeriodNlodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
             sb4.append((int) trueFalseDailyMgiResults.getTrueMap().size() + "/" + (int) trueFalseDailyMgiResults.getTotalOfTrueAndFalseMaps());
             sb4.append(",");
         });
 
         String line4 = sb4.substring(0, sb4.length() - 1);
         System.out.println(line4);
+
+        /*
+        Print out counts
+         */
+//        StringBuilder sb2 = new StringBuilder();
+//        sb.append("Count true/total,");
+//        periodResultsMap.getPeriodNhodAndNhodAfterResultsMap().forEach((period30m, trueFalseDailyMgiResults) -> {
+//            sb2.append((int) trueFalseDailyMgiResults.getTrueMap().size() + "/" + (int) trueFalseDailyMgiResults.getTotalOfTrueAndFalseMaps());
+//            sb2.append(",");
+//        });
 
         /*
         Print % of NHOD period
@@ -179,59 +190,59 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
                     OHLCIndicator prePeriodOhlc = dailyOhlcs.getPreOhlc();
                     OHLCIndicator periodOhlc = dailyOhlcs.getOhlc();
 
-                    if (prePeriodOhlc.getHigh() == null || periodOhlc.getHigh() == null) {
+                    if (prePeriodOhlc.getLow() == null || periodOhlc.getLow() == null) {
 //                        System.out.println("Bad date: " + dailyMgi.getRthOhlc().getOpen().getDate());
                         return;
-                    } else if (!prePeriodOhlc.getHigh().getDate().isEqual(periodOhlc.getHigh().getDate())) {
+                    } else if (!prePeriodOhlc.getLow().getDate().isEqual(periodOhlc.getLow().getDate())) {
                         // Dates do not match. Most likely a shortened trading day or bad data.
 //                        System.out.println("Bad date: " + dailyMgi.getRthOhlc().getOpen().getDate());
                         return;
                     }
 
-                    if (periodOhlc.getHigh().getPrice().isGreaterThan(prePeriodOhlc.getHigh().getPrice())) {
+                    if (periodOhlc.getLow().getPrice().isLessThan(prePeriodOhlc.getLow().getPrice())) {
                         /*
-                        NHOD continuation
+                        NLOD continuation
                          */
-                        AtomicBoolean nhodFound = new AtomicBoolean(false);
-                        AtomicReference<OHLCIndicator> nhodOhlc = new AtomicReference<>(new OHLCIndicator());
-                        // New HoD in this period
+                        AtomicBoolean nlodFound = new AtomicBoolean(false);
+                        AtomicReference<OHLCIndicator> nlodOhlc = new AtomicReference<>(new OHLCIndicator());
+                        // NLOD in this period
                         Map<Period30m, OHLCIndicator> postOhlcs = dailyOhlcs.getOhlcsAfterPeriod(period30m);
                         for (Map.Entry<Period30m, OHLCIndicator> entry : postOhlcs.entrySet()) {
                             Period30m postPeriod = entry.getKey();
                             OHLCIndicator postPeriodOhlc = entry.getValue();
-                            if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
-                                    postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice()) &&
+                            if (postPeriodOhlc.getLow() != null && periodOhlc.getLow() != null &&
+                                    postPeriodOhlc.getLow().getPrice().isLessThan(periodOhlc.getLow().getPrice()) &&
                                     !postPeriod.equals(Period30m.M)) {
-                                nhodFound.set(true);
-                                nhodOhlc.set(postPeriodOhlc);
+                                nlodFound.set(true);
+                                nlodOhlc.set(postPeriodOhlc);
                                 break;
                             }
                         }
-                        if (nhodFound.get()) {
-                            periodNHODResultsMap.addToNhodAfterIsTrueMap(period30m, nhodOhlc.get(), dailyMgi);
+                        if (nlodFound.get()) {
+                            periodNLODResultsMap.addToNlodAfterIsTrueMap(period30m, nlodOhlc.get(), dailyMgi);
                         } else {
-                            periodNHODResultsMap.addToNhodAfterIsFalseMap(period30m, dailyMgi);
+                            periodNLODResultsMap.addToNlodAfterIsFalseMap(period30m, dailyMgi);
                         }
 
                         /*
-                        NLOD Reversal
+                        NHOD Reversal
                          */
-                        AtomicBoolean nlodFound = new AtomicBoolean(false);
-                        AtomicReference<OHLCIndicator> nlodOhlc = new AtomicReference<>(new OHLCIndicator());
+                        AtomicBoolean nhodFound = new AtomicBoolean(false);
+                        AtomicReference<OHLCIndicator> nhodOhlcR = new AtomicReference<>(new OHLCIndicator());
                         postOhlcs.forEach((period, postPeriodOhlc) -> {
-                            if (postPeriodOhlc.getLow() != null && periodOhlc.getLow() != null &&
-                                    postPeriodOhlc.getLow().getPrice().isLessThan(periodOhlc.getLow().getPrice()) &&
-                                    postPeriodOhlc.getLow().getPrice().isLessThan(prePeriodOhlc.getLow().getPrice()) &&
+                            if (postPeriodOhlc.getHigh() != null && periodOhlc.getHigh() != null &&
+                                    postPeriodOhlc.getHigh().getPrice().isGreaterThan(periodOhlc.getHigh().getPrice()) &&
+                                    postPeriodOhlc.getHigh().getPrice().isGreaterThan(prePeriodOhlc.getHigh().getPrice()) &&
                                     !period.equals(Period30m.M)) {
-                                nlodFound.set(true);
-                                nlodOhlc.set(postPeriodOhlc);
+                                nhodFound.set(true);
+                                nhodOhlcR.set(postPeriodOhlc);
                                 return;
                             }
                         });
-                        if (nlodFound.get()) {
-                            periodNHODResultsMap.addToNlodAfterIsTrueMap(period30m, nlodOhlc.get(), dailyMgi);
+                        if (nhodFound.get()) {
+                            periodNLODResultsMap.addToNhodAfterIsTrueMap(period30m, nhodOhlcR.get(), dailyMgi);
                         } else {
-                            periodNHODResultsMap.addToNlodAfterIsFalseMap(period30m, dailyMgi);
+                            periodNLODResultsMap.addToNhodAfterIsFalseMap(period30m, dailyMgi);
                         }
                     }
                 }
@@ -252,74 +263,74 @@ public class NHodBy30mPeriodExcludingMPeriodStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NHodBy30mPeriodExcludingMPeriodStatsTest nHodBy30mPeriodStatsTest = new NHodBy30mPeriodExcludingMPeriodStatsTest();
+        NLodBy30mPeriodExcludingMPeriodStats nHodBy30mPeriodStatsTest = new NLodBy30mPeriodExcludingMPeriodStats();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 
     private class PeriodNhodResultsMap {
-        Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> periodNhodAndNhodAfterResultsMap = new LinkedHashMap<>();
-        Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> periodNhodAndNlodAfterResultsMap = new LinkedHashMap<>();
+        Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> periodNlodAndNlodAfterResultsMap = new LinkedHashMap<>();
+        Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> periodNlodAndNhodAfterResultsMap = new LinkedHashMap<>();
 
         public PeriodNhodResultsMap() {
-            periodNhodAndNhodAfterResultsMap.put(Period30m.A, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.B, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.C, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.D, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.E, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.F, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.G, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.H, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.I, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.J, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.K, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.L, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNhodAfterResultsMap.put(Period30m.M, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.A, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.B, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.C, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.D, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.E, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.F, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.G, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.H, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.I, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.J, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.K, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.L, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNlodAfterResultsMap.put(Period30m.M, new TrueFalseDailyMgiAndPeriodOhlcResults());
 
-            periodNhodAndNlodAfterResultsMap.put(Period30m.A, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.B, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.C, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.D, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.E, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.F, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.G, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.H, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.I, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.J, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.K, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.L, new TrueFalseDailyMgiAndPeriodOhlcResults());
-            periodNhodAndNlodAfterResultsMap.put(Period30m.M, new TrueFalseDailyMgiAndPeriodOhlcResults());
-        }
-
-        public void addToNhodAfterIsTrueMap(Period30m period30m, OHLCIndicator nhod30mOhlc, DailyMgi dailyMgi) {
-            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNhodAndNhodAfterResultsMap.get(period30m);
-            trueFalseDailyMgiResults.addToTrueMap(dailyMgi, nhod30mOhlc);
-            periodNhodAndNhodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
-        }
-
-        public void addToNhodAfterIsFalseMap(Period30m period30m, DailyMgi dailyMgi) {
-            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNhodAndNhodAfterResultsMap.get(period30m);
-            trueFalseDailyMgiResults.addToFalseMap(dailyMgi, null);
-            periodNhodAndNhodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
+            periodNlodAndNhodAfterResultsMap.put(Period30m.A, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.B, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.C, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.D, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.E, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.F, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.G, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.H, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.I, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.J, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.K, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.L, new TrueFalseDailyMgiAndPeriodOhlcResults());
+            periodNlodAndNhodAfterResultsMap.put(Period30m.M, new TrueFalseDailyMgiAndPeriodOhlcResults());
         }
 
         public void addToNlodAfterIsTrueMap(Period30m period30m, OHLCIndicator nhod30mOhlc, DailyMgi dailyMgi) {
-            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNhodAndNlodAfterResultsMap.get(period30m);
+            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNlodAndNlodAfterResultsMap.get(period30m);
             trueFalseDailyMgiResults.addToTrueMap(dailyMgi, nhod30mOhlc);
-            periodNhodAndNlodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
+            periodNlodAndNlodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
         }
 
         public void addToNlodAfterIsFalseMap(Period30m period30m, DailyMgi dailyMgi) {
-            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNhodAndNlodAfterResultsMap.get(period30m);
+            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNlodAndNlodAfterResultsMap.get(period30m);
             trueFalseDailyMgiResults.addToFalseMap(dailyMgi, null);
-            periodNhodAndNlodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
+            periodNlodAndNlodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
         }
 
-        public Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> getPeriodNhodAndNhodAfterResultsMap() {
-            return periodNhodAndNhodAfterResultsMap;
+        public void addToNhodAfterIsTrueMap(Period30m period30m, OHLCIndicator nhod30mOhlc, DailyMgi dailyMgi) {
+            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNlodAndNhodAfterResultsMap.get(period30m);
+            trueFalseDailyMgiResults.addToTrueMap(dailyMgi, nhod30mOhlc);
+            periodNlodAndNhodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
         }
 
-        public Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> getPeriodNhodAndNlodAfterResultsMap() {
-            return periodNhodAndNlodAfterResultsMap;
+        public void addToNhodAfterIsFalseMap(Period30m period30m, DailyMgi dailyMgi) {
+            TrueFalseDailyMgiAndPeriodOhlcResults trueFalseDailyMgiResults = periodNlodAndNhodAfterResultsMap.get(period30m);
+            trueFalseDailyMgiResults.addToFalseMap(dailyMgi, null);
+            periodNlodAndNhodAfterResultsMap.put(period30m, trueFalseDailyMgiResults);
+        }
+
+        public Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> getPeriodNlodAndNlodAfterResultsMap() {
+            return periodNlodAndNlodAfterResultsMap;
+        }
+
+        public Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> getPeriodNlodAndNhodAfterResultsMap() {
+            return periodNlodAndNhodAfterResultsMap;
         }
     }
 }

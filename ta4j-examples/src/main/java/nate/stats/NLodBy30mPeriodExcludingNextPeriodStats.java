@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
+public class NLodBy30mPeriodExcludingNextPeriodStats extends Stats {
 
     PeriodNhodResultsMap periodNLODResultsMap = new PeriodNhodResultsMap();
 
@@ -263,7 +263,7 @@ public class NLodBy30mPeriodExcludingNextPeriodStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NLodBy30mPeriodExcludingNextPeriodStatsTest nHodBy30mPeriodStatsTest = new NLodBy30mPeriodExcludingNextPeriodStatsTest();
+        NLodBy30mPeriodExcludingNextPeriodStats nHodBy30mPeriodStatsTest = new NLodBy30mPeriodExcludingNextPeriodStats();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

@@ -12,7 +12,7 @@ import ta4jexamples.loaders.CsvBarsLoader;
 import java.time.*;
 import java.util.*;
 
-public class HodLodByDayAndTimeStatsTest extends StatsTest {
+public class HodLodByDayAndTimeStats extends Stats {
 
     Map<String, int[]> map = new LinkedHashMap<>();
 
@@ -176,7 +176,7 @@ public class HodLodByDayAndTimeStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        HodLodByDayAndTimeStatsTest amBreakoutProbabilitiesTest = new HodLodByDayAndTimeStatsTest();
+        HodLodByDayAndTimeStats amBreakoutProbabilitiesTest = new HodLodByDayAndTimeStats();
         amBreakoutProbabilitiesTest.evaluate();
     }
 

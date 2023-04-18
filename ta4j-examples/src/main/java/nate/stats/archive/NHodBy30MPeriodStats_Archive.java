@@ -1,6 +1,6 @@
 package nate.stats.archive;
 
-import nate.stats.StatsTest;
+import nate.stats.Stats;
 import nate.stats.domain.TrueFalseDailyMgiResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
@@ -19,7 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NHodBy30mPeriodStatsTest_Archive extends StatsTest {
+public class NHodBy30MPeriodStats_Archive extends Stats {
 
     @Override
     public void evaluate() {
@@ -156,7 +156,7 @@ public class NHodBy30mPeriodStatsTest_Archive extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        NHodBy30mPeriodStatsTest_Archive nHodBy30mPeriodStatsTest = new NHodBy30mPeriodStatsTest_Archive();
+        NHodBy30MPeriodStats_Archive nHodBy30mPeriodStatsTest = new NHodBy30MPeriodStats_Archive();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

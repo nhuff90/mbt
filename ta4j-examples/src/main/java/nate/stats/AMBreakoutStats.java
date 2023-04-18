@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AMBreakoutStatsTest extends StatsTest {
+public class AMBreakoutStats extends Stats {
 
     double EXTENSION_PERCENT_0 = 0.0;
     double EXTENSION_PERCENT_25 = 0.25;
@@ -487,8 +487,8 @@ public class AMBreakoutStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        AMBreakoutStatsTest amBreakoutStatsTest = new AMBreakoutStatsTest();
-        amBreakoutStatsTest.evaluate();
+        AMBreakoutStats amBreakoutStats = new AMBreakoutStats();
+        amBreakoutStats.evaluate();
     }
 
 

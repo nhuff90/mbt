@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class IBBreakoutStatsTest extends StatsTest {
+public class IBBreakoutStats extends Stats {
 
     double EXTENSION_PERCENT_0 = 0.0;
     double EXTENSION_PERCENT_25 = 0.25;
@@ -335,8 +335,8 @@ public class IBBreakoutStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        IBBreakoutStatsTest ibBreakoutStatsTest = new IBBreakoutStatsTest();
-        ibBreakoutStatsTest.evaluate();
+        IBBreakoutStats ibBreakoutStats = new IBBreakoutStats();
+        ibBreakoutStats.evaluate();
     }
 
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PmBreakoutStatsTest extends StatsTest {
+public class PmBreakoutStats extends Stats {
 
     double EXTENSION_PERCENT_0 = 0.0;
     double EXTENSION_PERCENT_25 = 0.25;
@@ -336,7 +336,7 @@ public class PmBreakoutStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        PmBreakoutStatsTest microBreakoutProbabilitiesTest = new PmBreakoutStatsTest();
+        PmBreakoutStats microBreakoutProbabilitiesTest = new PmBreakoutStats();
         microBreakoutProbabilitiesTest.evaluate();
     }
 

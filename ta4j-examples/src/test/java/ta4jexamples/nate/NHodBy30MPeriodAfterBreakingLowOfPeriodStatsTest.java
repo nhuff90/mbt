@@ -23,7 +23,7 @@
  */
 package ta4jexamples.nate;
 
-import nate.stats.NHodBy30mPeriodAfterBreakingLowOfPeriodStatsTest;
+import nate.stats.NHodBy30mPeriodAfterBreakingLowOfPeriodStats;
 import nate.stats.domain.TrueFalseDailyMgiAndPeriodOhlcResults;
 import org.junit.Test;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
@@ -33,15 +33,15 @@ import org.ta4j.core.rules.nate.DailyMgi;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class NHodBy30mPeriodAfterBreakingLowOfPeriodStatsTestTest {
+public class NHodBy30MPeriodAfterBreakingLowOfPeriodStatsTest {
 
     @Test
     public void test() throws InterruptedException {
 
-        NHodBy30mPeriodAfterBreakingLowOfPeriodStatsTest.main(null);
+        NHodBy30mPeriodAfterBreakingLowOfPeriodStats.main(null);
 
         final Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> periodNHODResultsMap =
-                NHodBy30mPeriodAfterBreakingLowOfPeriodStatsTest.periodNHODResultsMap.getPeriodNhodAndNhodAfterResultsMap();
+                NHodBy30mPeriodAfterBreakingLowOfPeriodStats.periodNHODResultsMap.getPeriodNhodAndNhodAfterResultsMap();
 
         // True Tests
         assert isOhlcPresent(periodNHODResultsMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 29));

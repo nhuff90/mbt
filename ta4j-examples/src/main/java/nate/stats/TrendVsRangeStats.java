@@ -1,14 +1,11 @@
 package nate.stats;
 
 import nate.stats.domain.TrueFalseDailyMgiAndPeriodOhlcResults;
-import nate.stats.domain.TrueFalseDailyMgiResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
-import org.ta4j.core.indicators.nate.PreInPostOHLCIndicator;
 import org.ta4j.core.indicators.nate.helper.Period30m;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
-import org.ta4j.core.utils.DoubleFormatter;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.TimeUtils;
 import ta4jexamples.loaders.CsvBarsLoader;
@@ -18,14 +15,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class TrendVsRangeStatsTest extends StatsTest {
+public class TrendVsRangeStats extends Stats {
 
     public static PeriodNhodResultsMap periodNHODResultsMap = new PeriodNhodResultsMap();
 
@@ -75,7 +67,7 @@ public class TrendVsRangeStatsTest extends StatsTest {
 
         createRulesAndRunBackTest(series);
 
-        TrendVsRangeStatsTest nHodBy30mPeriodStatsTest = new TrendVsRangeStatsTest();
+        TrendVsRangeStats nHodBy30mPeriodStatsTest = new TrendVsRangeStats();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 
