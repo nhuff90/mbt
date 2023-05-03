@@ -16,9 +16,14 @@ public enum MarketTime {
     ETH_START_TIME_1600(LocalTime.parse("16:00:00")),
     ETH_2359(LocalTime.parse("23:59:00")),
     ETH_0000(LocalTime.parse("00:00:00")),
+    ETH_0900(LocalTime.parse("09:00:00")),
+    ETH_0915(LocalTime.parse("09:15:00")),
+    ETH_0929(LocalTime.parse("09:29:00")),
 
     // RTH Times
     RTH_START_TIME_0930(LocalTime.parse("09:30:00")),
+    RTH_0939(LocalTime.parse("09:39:00")),
+    RTH_0944(LocalTime.parse("09:44:00")),
     RTH_1000(LocalTime.parse("10:00:00")),
     RTH_1030(LocalTime.parse("10:30:00")),
     RTH_1100(LocalTime.parse("11:00:00")),
@@ -154,6 +159,22 @@ public enum MarketTime {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_1030.getLocalTime());
     }
 
+    public static boolean isStartOfOpening15mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
+    }
+
+    public static boolean isEndOfOpening15mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0944.getLocalTime());
+    }
+
+    public static boolean isStartOfOpening5mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
+    }
+
+    public static boolean isEndOfOpening5mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0939.getLocalTime());
+    }
+
     public static boolean isStartOfOvernightSession(Bar bar) {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.ETH_START_TIME_1600.getLocalTime());
     }
@@ -183,6 +204,14 @@ public enum MarketTime {
 
     public static boolean isInIbSession(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_1030.getLocalTime());
+    }
+
+    public static boolean isInOpening15mSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0944.getLocalTime());
+    }
+
+    public static boolean isInOpening5mSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0939.getLocalTime());
     }
 
     public static boolean isInOvernightSession(Bar bar) {
@@ -611,6 +640,14 @@ public enum MarketTime {
         } else if (isInMPeriod(localTime)) {
             return Optional.of(Period30m.M);
         }
-            return Optional.empty();
+        return Optional.empty();
+    }
+
+    public static boolean isInBetweenTimes(Bar bar, LocalTime startTime, LocalTime endTime) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), startTime, endTime);
+    }
+
+    public static boolean isTime(Bar bar, LocalTime time) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), time);
     }
 }

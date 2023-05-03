@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DailyMgi {
+    DailyTrend dailyTrend = DailyTrend.RANGE;
+
+    // Sessions
     protected OHLCIndicator rthOhlc = new OHLCIndicator();
     protected OHLCIndicator priorDayRthOhlc = new OHLCIndicator();
     protected OHLCIndicator overnightRthOhlc = new OHLCIndicator();
@@ -31,7 +34,9 @@ public class DailyMgi {
 
     protected OHLCIndicator pmRangeOhlc = new OHLCIndicator();
     protected OHLCIndicator postPmRangeOhlc = new OHLCIndicator();
+    // End of Sessions
 
+    // 30m Periods
     protected OHLCIndicator aPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator bPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator cPeriodOhlc = new OHLCIndicator();
@@ -71,6 +76,11 @@ public class DailyMgi {
     protected OHLCIndicator postKPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator postLPeriodOhlc = new OHLCIndicator();
     protected OHLCIndicator postMPeriodOhlc = new OHLCIndicator();
+    // End of 30m Periods
+
+    // Other Time Ranges
+    protected OHLCIndicator preMarket0915To0929Ohlc = new OHLCIndicator();
+    // End of Other Time Ranges
 
     public DailyMgi() {
     }
@@ -201,6 +211,7 @@ public class DailyMgi {
 
     public void setPmRangeOhlc(OHLCIndicator pmRangeOhlc) {
         this.pmRangeOhlc = pmRangeOhlc;
+        calculateAndSetDailyTrend();
     }
 
     public OHLCIndicator getPostPmRangeOhlc() {
@@ -542,6 +553,18 @@ public class DailyMgi {
         return period30mMap;
     }
 
+    public OHLCIndicator getPreMarket0915To0929Ohlc() {
+        return preMarket0915To0929Ohlc;
+    }
+
+    public void setPreMarket0915To0929Ohlc(OHLCIndicator preMarket0915To0929Ohlc) {
+        this.preMarket0915To0929Ohlc = preMarket0915To0929Ohlc;
+    }
+
+    public DailyTrend getDailyTrend() {
+        return dailyTrend;
+    }
+
     public OHLCIndicator getOhlcOfPeriod(Period30m period30m) {
         Map<Period30m, OHLCIndicator> period30mMap = new LinkedHashMap<>();
         period30mMap.put(Period30m.A, aPeriodOhlc);
@@ -559,5 +582,38 @@ public class DailyMgi {
         period30mMap.put(Period30m.M, mPeriodOhlc);
 
         return period30mMap.get(period30m);
+    }
+
+    private void calculateAndSetDailyTrend() {
+        if (rthOhlc.getHigh() != null && rthOhlc.getLow() != null) {
+                /*
+                Trend up
+                1. AMH < MicroH < PMH
+                2. Open < PML
+                 */
+                /*
+                Trend down
+                1. AML > MicroL > PMH
+                2. Open > PMH
+                 */
+            if (amRangeOhlc.getLow() != null && microRangeOhlc.getLow() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
+                    amRangeOhlc.getLow().getPrice().isGreaterThan(microRangeOhlc.getLow().getPrice()) &&
+                    microRangeOhlc.getLow().getPrice().isGreaterThan(pmRangeOhlc.getLow().getPrice()) &&
+                    rthOhlc.getOpen().getPrice().isGreaterThan(pmRangeOhlc.getHigh().getPrice())) {
+//                    System.out.println(date + " Trend_Down");
+                dailyTrend = DailyTrend.TREND_DOWN;
+
+            } else if (amRangeOhlc.getHigh() != null && microRangeOhlc.getHigh() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
+                    amRangeOhlc.getHigh().getPrice().isLessThan(microRangeOhlc.getHigh().getPrice()) &&
+                    microRangeOhlc.getHigh().getPrice().isLessThan(pmRangeOhlc.getHigh().getPrice()) &&
+                    rthOhlc.getOpen().getPrice().isLessThan(pmRangeOhlc.getLow().getPrice())) {
+//                    System.out.println(date + " Trend_Up");
+                dailyTrend = DailyTrend.TREND_UP;
+
+            } else {
+//                    System.out.println(date + " Range");
+                dailyTrend = DailyTrend.RANGE;
+            }
+        }
     }
 }

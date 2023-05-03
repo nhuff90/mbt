@@ -43,6 +43,7 @@ public class DailyMgiBuyRule {
     // todo - store all daily MGI in map.
     protected static Map<LocalDate, DailyMgi> historicalDailyMgi = new LinkedHashMap<>();
 
+    // Sessions
     protected static OHLCIndicator rthOhlc = new OHLCIndicator();
     protected static OHLCIndicator priorDayRthOhlc = new OHLCIndicator();
     protected static OHLCIndicator omarOhlc = new OHLCIndicator();
@@ -51,10 +52,15 @@ public class DailyMgiBuyRule {
     protected static OHLCIndicator microRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator pmRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator ibRangeOhlc = new OHLCIndicator();
+    protected static OHLCIndicator opening15mRangeOhlc = new OHLCIndicator();
+    protected static OHLCIndicator opening5mRangeOhlc = new OHLCIndicator();
+
+    // Post Sessions
     protected static OHLCIndicator postAmRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postMicroRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postPmRangeOhlc = new OHLCIndicator();
     protected static OHLCIndicator postIBRangeOhlc = new OHLCIndicator();
+    // End of Session
 
     // 30 min ranges
     protected static OHLCIndicator aPeriodOhlc = new OHLCIndicator();
@@ -95,6 +101,10 @@ public class DailyMgiBuyRule {
     protected static OHLCIndicator postKPeriodOhlc = new OHLCIndicator();
     protected static OHLCIndicator postLPeriodOhlc = new OHLCIndicator();
     // End 30 min ranges
+
+    // Other time ranges
+    protected static OHLCIndicator preMarket0915To0929Ohlc = new OHLCIndicator();
+    // End of other time ranges.
 
     public static boolean dailyTradeTaken = false;
 
@@ -191,6 +201,36 @@ public class DailyMgiBuyRule {
             setHighAndLowOfSession(previousIndex, ibRangeOhlc);
         }
 
+        if (MarketTime.isStartOfOpening15mSession(series.getBar(previousIndex))) {
+            opening15mRangeOhlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isEndOfOpening15mSession(series.getBar(previousIndex))) {
+            opening15mRangeOhlc.setClose(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+
+            // Set post-AM Session Open
+//            postAmRangeOhlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isStartOfOpening5mSession(series.getBar(previousIndex))) {
+            opening5mRangeOhlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isEndOfOpening5mSession(series.getBar(previousIndex))) {
+            opening5mRangeOhlc.setClose(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+
+            // Set post-AM Session Open
+//            postAmRangeOhlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isInOpening15mSession(series.getBar(previousIndex))) {
+            setHighAndLowOfSession(previousIndex, opening15mRangeOhlc);
+        }
+
+        if (MarketTime.isInOpening5mSession(series.getBar(previousIndex))) {
+            setHighAndLowOfSession(previousIndex, opening5mRangeOhlc);
+        }
+
         if (MarketTime.isStartOfOvernightSession(series.getBar(previousIndex))) {
             overnightRthOhlc = new OHLCIndicator();
             //Set open price
@@ -221,12 +261,42 @@ public class DailyMgiBuyRule {
             setHighAndLowOfSession(previousIndex, postIBRangeOhlc);
         }
 
+        if (MarketTime.isEndOfAmSession(series.getBar(previousIndex))) {
+            amRangeOhlc.setClose(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+
+        setOtherTimeRanges(previousIndex);
+
         setAll30mPeriod(previousIndex);
 
+        /*
+        Keep this as last in the function
+         */
         if (MarketTime.isEndOfRthSession(series.getBar(previousIndex))) {
             rthEndActions();
         }
 
+    }
+
+    private static void setOtherTimeRanges(int previousIndex) {
+        /*
+        0915-0929 Session
+         */
+        if (MarketTime.isInBetweenTimes(series.getBar(previousIndex), MarketTime.ETH_0915.getLocalTime(), MarketTime.ETH_END_TIME_0929.getLocalTime())) {
+            setHighAndLowOfSession(previousIndex, preMarket0915To0929Ohlc);
+        }
+
+        if (MarketTime.isTime(series.getBar(previousIndex), MarketTime.ETH_0915.getLocalTime())) {
+            preMarket0915To0929Ohlc.setOpen(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+
+        if (MarketTime.isTime(series.getBar(previousIndex), MarketTime.ETH_END_TIME_0929.getLocalTime())) {
+            preMarket0915To0929Ohlc.setClose(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()));
+        }
+        /*
+        END 0915-0929 Session
+         */
     }
 
     private static void setAll30mPeriod(int previousIndex) {
@@ -527,6 +597,9 @@ public class DailyMgiBuyRule {
         microRangeOhlc = new OHLCIndicator();
         pmRangeOhlc = new OHLCIndicator();
         ibRangeOhlc = new OHLCIndicator();
+        opening15mRangeOhlc = new OHLCIndicator();
+        opening5mRangeOhlc = new OHLCIndicator();
+
         postAmRangeOhlc = new OHLCIndicator();
         postMicroRangeOhlc = new OHLCIndicator();
         postPmRangeOhlc = new OHLCIndicator();
@@ -586,10 +659,14 @@ public class DailyMgiBuyRule {
         dailyMgi.setPmRangeOhlc(pmRangeOhlc);
         dailyMgi.setIbOhlc(ibRangeOhlc);
         dailyMgi.setOvernightRthOhlc(overnightRthOhlc);
+        dailyMgi.setOpening15MinRangeOhlc(opening15mRangeOhlc);
+        dailyMgi.setOpening5MinRangeOhlc(opening5mRangeOhlc);
+
         dailyMgi.setPostAmRangeOhlc(postAmRangeOhlc);
         dailyMgi.setPostMicroRangeOhlc(postMicroRangeOhlc);
         dailyMgi.setPostPmRangeOhlc(postPmRangeOhlc);
         dailyMgi.setPostIbOhlc(postIBRangeOhlc);
+        dailyMgi.setPreMarket0915To0929Ohlc(preMarket0915To0929Ohlc);
 
         dailyMgi.setaPeriodOhlc(aPeriodOhlc);
         dailyMgi.setbPeriodOhlc(bPeriodOhlc);
@@ -643,11 +720,15 @@ public class DailyMgiBuyRule {
         microRangeOhlc = new OHLCIndicator();
         pmRangeOhlc = new OHLCIndicator();
         ibRangeOhlc = new OHLCIndicator();
+        opening15mRangeOhlc = new OHLCIndicator();
+        opening5mRangeOhlc = new OHLCIndicator();
+
         postAmRangeOhlc = new OHLCIndicator();
         postMicroRangeOhlc = new OHLCIndicator();
         postPmRangeOhlc = new OHLCIndicator();
         postIBRangeOhlc = new OHLCIndicator();
         overnightRthOhlc = new OHLCIndicator();
+        preMarket0915To0929Ohlc = new OHLCIndicator();
 
         aPeriodOhlc = new OHLCIndicator();
         bPeriodOhlc = new OHLCIndicator();
