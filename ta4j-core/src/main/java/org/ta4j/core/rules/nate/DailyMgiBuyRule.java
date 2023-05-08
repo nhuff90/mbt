@@ -30,7 +30,9 @@ import org.ta4j.core.indicators.nate.helper.DateTimePrice;
 import org.ta4j.core.utils.MarketTime;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +41,7 @@ import java.util.Map;
 public class DailyMgiBuyRule {
 
     public static BarSeries series;
+    static List<OHLCIndicator> oneMinOhlcList = new ArrayList<>();
 
     // todo - store all daily MGI in map.
     protected static Map<LocalDate, DailyMgi> historicalDailyMgi = new LinkedHashMap<>();
@@ -124,6 +127,13 @@ public class DailyMgiBuyRule {
         if (MarketTime.isStartOfRthSession(series.getBar(previousIndex))) {
             // Clear Ohlc's that should be reset at start of Rth
             rthStartActions();
+        }
+
+        if (MarketTime.isInRthSession(series.getBar(previousIndex))) {
+            oneMinOhlcList.add(new OHLCIndicator(new DateTimePrice(series.getBar(previousIndex).getOpenPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()),
+                    new DateTimePrice(series.getBar(previousIndex).getHighPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()),
+                    new DateTimePrice(series.getBar(previousIndex).getLowPrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime()),
+                    new DateTimePrice(series.getBar(previousIndex).getClosePrice(), series.getBar(previousIndex).getEndTime().toLocalDate(), series.getBar(previousIndex).getEndTime().toLocalTime())));
         }
 
         if (MarketTime.isStartOfRthSession(series.getBar(previousIndex))) {
@@ -645,6 +655,8 @@ public class DailyMgiBuyRule {
         postKPeriodOhlc = new OHLCIndicator();
         postLPeriodOhlc = new OHLCIndicator();
 
+        oneMinOhlcList = new ArrayList<>();
+
         dailyTradeTaken = false;
     }
 
@@ -707,6 +719,8 @@ public class DailyMgiBuyRule {
         dailyMgi.setPostJPeriodOhlc(postJPeriodOhlc);
         dailyMgi.setPostKPeriodOhlc(postKPeriodOhlc);
         dailyMgi.setPostLPeriodOhlc(postLPeriodOhlc);
+
+        dailyMgi.setOneMinOhlcList(oneMinOhlcList);
 
         historicalDailyMgi.put(rthOhlc.getOpen().getDate(), dailyMgi);
 

@@ -3,10 +3,14 @@ package org.ta4j.core.rules.nate;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.indicators.nate.helper.Period30m;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DailyMgi {
+    List<OHLCIndicator> oneMinOhlcList = new ArrayList<>();
+
     DailyTrend dailyTrend = DailyTrend.RANGE;
 
     // Sessions
@@ -534,6 +538,18 @@ public class DailyMgi {
         this.preMPeriodOhlc = preMPeriodOhlc;
     }
 
+    public List<OHLCIndicator> getOneMinOhlcList() {
+        return oneMinOhlcList;
+    }
+
+    public void setOneMinOhlcList(List<OHLCIndicator> oneMinOhlcList) {
+        this.oneMinOhlcList = oneMinOhlcList;
+    }
+
+    public void setDailyTrend(DailyTrend dailyTrend) {
+        this.dailyTrend = dailyTrend;
+    }
+
     public Map<Period30m, OHLCIndicator> getMapOf30mPeriods() {
         Map<Period30m, OHLCIndicator> period30mMap = new LinkedHashMap<>();
         period30mMap.put(Period30m.A, aPeriodOhlc);
@@ -600,18 +616,15 @@ public class DailyMgi {
                     amRangeOhlc.getLow().getPrice().isGreaterThan(microRangeOhlc.getLow().getPrice()) &&
                     microRangeOhlc.getLow().getPrice().isGreaterThan(pmRangeOhlc.getLow().getPrice()) &&
                     rthOhlc.getOpen().getPrice().isGreaterThan(pmRangeOhlc.getHigh().getPrice())) {
-//                    System.out.println(date + " Trend_Down");
                 dailyTrend = DailyTrend.TREND_DOWN;
 
             } else if (amRangeOhlc.getHigh() != null && microRangeOhlc.getHigh() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
                     amRangeOhlc.getHigh().getPrice().isLessThan(microRangeOhlc.getHigh().getPrice()) &&
                     microRangeOhlc.getHigh().getPrice().isLessThan(pmRangeOhlc.getHigh().getPrice()) &&
                     rthOhlc.getOpen().getPrice().isLessThan(pmRangeOhlc.getLow().getPrice())) {
-//                    System.out.println(date + " Trend_Up");
                 dailyTrend = DailyTrend.TREND_UP;
 
             } else {
-//                    System.out.println(date + " Range");
                 dailyTrend = DailyTrend.RANGE;
             }
         }

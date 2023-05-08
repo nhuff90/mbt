@@ -21,6 +21,9 @@ public class TimeUtils {
     public static Boolean isAfter(ZonedDateTime time, MarketTime marketTime)  {
         return time.toLocalTime().isAfter( marketTime.getLocalTime());
     }
+    public static Boolean isAfter(LocalTime time, MarketTime marketTime)  {
+        return time.isAfter( marketTime.getLocalTime());
+    }
 
     public static boolean isStartOfRange(ZonedDateTime time, MarketTimeRanges range) {
         return TimeUtils.is(time.toLocalTime(), range.startTime);

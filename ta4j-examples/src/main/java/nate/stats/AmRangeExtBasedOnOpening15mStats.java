@@ -3,8 +3,11 @@ package nate.stats;
 import nate.stats.domain.TrendVsRangeDailyMgiOhlcResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
+import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
+import org.ta4j.core.utils.MarketTime;
+import org.ta4j.core.utils.TimeUtils;
 import ta4jexamples.loaders.CsvBarsLoader;
 
 import java.time.*;
@@ -13,8 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
-
+public class AmRangeExtBasedOnOpening15mStats extends TrendVsRangeStats {
     //todo - Create unit test!!
 
     public static TrendVsRangeDailyMgiOhlcResults trendMap = new TrendVsRangeDailyMgiOhlcResults();
@@ -24,6 +26,70 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         trendMap = populateTrendMap(dailyMgiMap);
         printResults();
+    }
+
+    protected TrendVsRangeDailyMgiOhlcResults populateTrendMap(Map<LocalDate, DailyMgi> dailyMgiMap) {
+        TrendVsRangeDailyMgiOhlcResults trendMap = new TrendVsRangeDailyMgiOhlcResults();
+        dailyMgiMap.forEach((date, dailyMgi) -> {
+
+            if (dailyMgi.getRthOhlc().getHigh() != null && dailyMgi.getRthOhlc().getLow() != null) {
+                /*
+                Trend up
+                1. AM 150% extension after AM Range Close
+                 */
+                /*
+                Trend down
+                1. AM -150% extension after AM Range Close
+                 */
+                if (dailyMgi.getAmRangeOhlc().getHigh() != null && dailyMgi.getPostAmRangeOhlc().getHigh() != null &&
+                        dailyMgi.getPostAmRangeOhlc().getHigh().getPrice().isGreaterThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, true)) &&
+                        dailyMgi.getAmRangeOhlc().getLow() != null && dailyMgi.getPostAmRangeOhlc().getLow() != null &&
+                        dailyMgi.getPostAmRangeOhlc().getLow().getPrice().isLessThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, false))) {
+                    // High and Low extensions met. Pick the first
+                    //todo - figure this out
+                    Boolean breakIsUp = isFirstPriceBreakAfterTimeUp(dailyMgi, dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, true), dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, false), MarketTime.RTH_1005);
+
+                    if (breakIsUp != null && breakIsUp) {
+                        System.out.println(date + " Trend_Up");
+                        trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
+                    } else if (breakIsUp != null && !breakIsUp) {
+                        System.out.println(date + " Trend_Down");
+                        trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
+                    }
+
+                } else if (dailyMgi.getAmRangeOhlc().getHigh() != null && dailyMgi.getPostAmRangeOhlc().getHigh() != null &&
+                        dailyMgi.getPostAmRangeOhlc().getHigh().getPrice().isGreaterThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, true))) {
+                    System.out.println(date + " Trend_Up");
+                    trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                } else if (dailyMgi.getAmRangeOhlc().getLow() != null && dailyMgi.getPostAmRangeOhlc().getLow() != null &&
+                        dailyMgi.getPostAmRangeOhlc().getLow().getPrice().isLessThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, false))) {
+                    System.out.println(date + " Trend_Down");
+                    trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                }
+
+                if (!trendMap.getTrendDownMap().containsKey(dailyMgi) && !trendMap.getTrendUpMap().containsKey(dailyMgi)) {
+                    System.out.println(date + " Range");
+                    trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                }
+            }
+        });
+        return trendMap;
+    }
+
+    private Boolean isFirstPriceBreakAfterTimeUp(DailyMgi dailyMgi, Num priceToBreakUp, Num priceToBreakDown, MarketTime startTime) {
+        for (OHLCIndicator ohlcIndicator : dailyMgi.getOneMinOhlcList()) {
+            if (TimeUtils.isAfter(ohlcIndicator.getOpen().getTime(), startTime)) {
+                if (ohlcIndicator.getHigh().getPrice().isGreaterThanOrEqual(priceToBreakUp)) {
+                    return true;
+                } else if (ohlcIndicator.getLow().getPrice().isLessThanOrEqual(priceToBreakDown)) {
+                    return false;
+                }
+            }
+        }
+        return null;
     }
 
     private void printResults() {
@@ -85,12 +151,82 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
         rangeSb.append((double) rangeDayMap.get(DayOfWeek.FRIDAY).size() / (double) totalFris);
         System.out.println(rangeSb);
 
-        printO15mEqIbRange();
-        printO15mEqAmRange();
+        printEqIbRange();
+        printEqAmRange();
     }
 
-    private void printO15mEqIbRange() {
+    private void printEqAmRange() {
+        List<DailyMgi> highEqAMH = new ArrayList<>();
+        List<DailyMgi> lowEqAML = new ArrayList<>();
+        for (Map.Entry<DailyMgi, OHLCIndicator> entry : trendMap.getAllMap().entrySet()) {
+            DailyMgi dailyMgi = entry.getKey();
+            if (dailyMgi.getOpening15MinRangeOhlc().getHigh().getPrice().isEqual(dailyMgi.getAmRangeOhlc().getHigh().getPrice())) {
+                highEqAMH.add(dailyMgi);
+            }
+            if (dailyMgi.getOpening15MinRangeOhlc().getLow().getPrice().isEqual(dailyMgi.getAmRangeOhlc().getLow().getPrice())) {
+                lowEqAML.add(dailyMgi);
+            }
+        }
 
+        /*
+        High = High
+         */
+
+        List<DailyMgi> highEqAMHTrendUp = new ArrayList<>();
+        List<DailyMgi> highEqAMHTrendDown = new ArrayList<>();
+        List<DailyMgi> highEqAMHRange = new ArrayList<>();
+        highEqAMH.forEach(dailyMgi -> {
+            if (trendMap.getTrendUpMap().containsKey(dailyMgi)) {
+                highEqAMHTrendUp.add(dailyMgi);
+            } else if (trendMap.getTrendDownMap().containsKey(dailyMgi)) {
+                highEqAMHTrendDown.add(dailyMgi);
+            } else if (trendMap.getRangeMap().containsKey(dailyMgi)) {
+                highEqAMHRange.add(dailyMgi);
+            }
+        });
+        System.out.println("Trend Up, Trend Down, Range, Total, Trend Up %, Trend Down %, Range %");
+        System.out.println("O15mH=AMH");
+        StringBuilder highEqAMHSb = new StringBuilder();
+        highEqAMHSb.append(highEqAMHTrendUp.size());
+        highEqAMHSb.append(",");
+        highEqAMHSb.append(highEqAMHTrendDown.size());
+        highEqAMHSb.append(",");
+        highEqAMHSb.append(highEqAMHRange.size());
+        highEqAMHSb.append(",");
+        highEqAMHSb.append(highEqAMH.size());
+
+        System.out.println(highEqAMHSb);
+
+
+        /*
+        Low = Low
+         */
+        List<DailyMgi> lowEqAMLTrendUp = new ArrayList<>();
+        List<DailyMgi> lowEqAMLTrendDown = new ArrayList<>();
+        List<DailyMgi> lowEqAMLRange = new ArrayList<>();
+        lowEqAML.forEach(dailyMgi -> {
+            if (trendMap.getTrendUpMap().containsKey(dailyMgi)) {
+                lowEqAMLTrendUp.add(dailyMgi);
+            } else if (trendMap.getTrendDownMap().containsKey(dailyMgi)) {
+                lowEqAMLTrendDown.add(dailyMgi);
+            } else if (trendMap.getRangeMap().containsKey(dailyMgi)) {
+                lowEqAMLRange.add(dailyMgi);
+            }
+        });
+        System.out.println("O15mL=AML");
+        StringBuilder lowEqAMLSb = new StringBuilder();
+        lowEqAMLSb.append(lowEqAMLTrendUp.size());
+        lowEqAMLSb.append(",");
+        lowEqAMLSb.append(lowEqAMLTrendDown.size());
+        lowEqAMLSb.append(",");
+        lowEqAMLSb.append(lowEqAMLRange.size());
+        lowEqAMLSb.append(",");
+        lowEqAMLSb.append(lowEqAML.size());
+
+        System.out.println(lowEqAMLSb);
+    }
+
+    private void printEqIbRange() {
         List<DailyMgi> highEq = new ArrayList<>();
         List<DailyMgi> lowEq = new ArrayList<>();
         for (Map.Entry<DailyMgi, OHLCIndicator> entry : trendMap.getAllMap().entrySet()) {
@@ -103,6 +239,9 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
             }
         }
 
+        /*
+        High = High
+         */
         List<DailyMgi> highEqTrendUp = new ArrayList<>();
         List<DailyMgi> highEqTrendDown = new ArrayList<>();
         List<DailyMgi> highEqRange = new ArrayList<>();
@@ -116,7 +255,7 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
             }
         });
         System.out.println("Trend Up, Trend Down, Range, Total, Trend Up %, Trend Down %, Range %");
-        System.out.println("O15m=IBH");
+        System.out.println("O15mH=IBH");
         StringBuilder highEqSb = new StringBuilder();
         highEqSb.append(highEqTrendUp.size());
         highEqSb.append(",");
@@ -128,6 +267,10 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
 
         System.out.println(highEqSb);
 
+
+        /*
+        Low = Low
+         */
         List<DailyMgi> lowEqTrendUp = new ArrayList<>();
         List<DailyMgi> lowEqTrendDown = new ArrayList<>();
         List<DailyMgi> lowEqRange = new ArrayList<>();
@@ -140,7 +283,7 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
                 lowEqRange.add(dailyMgi);
             }
         });
-        System.out.println("O15m=IBL");
+        System.out.println("O15mL=IBL");
         StringBuilder lowEqSb = new StringBuilder();
         lowEqSb.append(lowEqTrendUp.size());
         lowEqSb.append(",");
@@ -152,71 +295,6 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
 
         System.out.println(lowEqSb);
     }
-
-    private void printO15mEqAmRange() {
-
-        List<DailyMgi> highEq = new ArrayList<>();
-        List<DailyMgi> lowEq = new ArrayList<>();
-        for (Map.Entry<DailyMgi, OHLCIndicator> entry : trendMap.getAllMap().entrySet()) {
-            DailyMgi dailyMgi = entry.getKey();
-            if (dailyMgi.getOpening15MinRangeOhlc().getHigh().getPrice().isEqual(dailyMgi.getAmRangeOhlc().getHigh().getPrice())) {
-                highEq.add(dailyMgi);
-            }
-            if (dailyMgi.getOpening15MinRangeOhlc().getLow().getPrice().isEqual(dailyMgi.getAmRangeOhlc().getLow().getPrice())) {
-                lowEq.add(dailyMgi);
-            }
-        }
-
-        List<DailyMgi> highEqTrendUp = new ArrayList<>();
-        List<DailyMgi> highEqTrendDown = new ArrayList<>();
-        List<DailyMgi> highEqRange = new ArrayList<>();
-        highEq.forEach(dailyMgi -> {
-            if (trendMap.getTrendUpMap().containsKey(dailyMgi)) {
-                highEqTrendUp.add(dailyMgi);
-            } else if (trendMap.getTrendDownMap().containsKey(dailyMgi)) {
-                highEqTrendDown.add(dailyMgi);
-            } else if (trendMap.getRangeMap().containsKey(dailyMgi)) {
-                highEqRange.add(dailyMgi);
-            }
-        });
-        System.out.println("Trend Up, Trend Down, Range, Total, Trend Up %, Trend Down %, Range %");
-        System.out.println("O15m=AMH");
-        StringBuilder highEqSb = new StringBuilder();
-        highEqSb.append(highEqTrendUp.size());
-        highEqSb.append(",");
-        highEqSb.append(highEqTrendDown.size());
-        highEqSb.append(",");
-        highEqSb.append(highEqRange.size());
-        highEqSb.append(",");
-        highEqSb.append(highEq.size());
-
-        System.out.println(highEqSb);
-
-        List<DailyMgi> lowEqTrendUp = new ArrayList<>();
-        List<DailyMgi> lowEqTrendDown = new ArrayList<>();
-        List<DailyMgi> lowEqRange = new ArrayList<>();
-        lowEq.forEach(dailyMgi -> {
-            if (trendMap.getTrendUpMap().containsKey(dailyMgi)) {
-                lowEqTrendUp.add(dailyMgi);
-            } else if (trendMap.getTrendDownMap().containsKey(dailyMgi)) {
-                lowEqTrendDown.add(dailyMgi);
-            } else if (trendMap.getRangeMap().containsKey(dailyMgi)) {
-                lowEqRange.add(dailyMgi);
-            }
-        });
-        System.out.println("O15m=AML");
-        StringBuilder lowEqSb = new StringBuilder();
-        lowEqSb.append(lowEqTrendUp.size());
-        lowEqSb.append(",");
-        lowEqSb.append(lowEqTrendDown.size());
-        lowEqSb.append(",");
-        lowEqSb.append(lowEqRange.size());
-        lowEqSb.append(",");
-        lowEqSb.append(lowEq.size());
-
-        System.out.println(lowEqSb);
-    }
-
 
     private Map<DayOfWeek, List<DailyMgi>> convertMapToDaysMap(Map<DailyMgi, OHLCIndicator> trendUpMap) {
         Map<DayOfWeek, List<DailyMgi>> daysToTrendMap = new LinkedHashMap<>();
@@ -235,15 +313,16 @@ public class TrendVsRangeBasedOnOpening15mStats extends TrendVsRangeStats {
         return daysToTrendMap;
     }
 
+
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 2, 13), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 24), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        TrendVsRangeBasedOnOpening15mStats nHodBy30mPeriodStatsTest = new TrendVsRangeBasedOnOpening15mStats();
+        AmRangeExtBasedOnOpening15mStats nHodBy30mPeriodStatsTest = new AmRangeExtBasedOnOpening15mStats();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 }

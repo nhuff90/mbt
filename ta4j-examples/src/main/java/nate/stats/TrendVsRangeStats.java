@@ -1,71 +1,44 @@
 package nate.stats;
 
-import nate.stats.domain.TrueFalseDailyMgiAndPeriodOhlcResults;
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.indicators.nate.OHLCIndicator;
-import org.ta4j.core.indicators.nate.helper.Period30m;
+import nate.stats.domain.TrendVsRangeDailyMgiOhlcResults;
 import org.ta4j.core.rules.nate.DailyMgi;
-import org.ta4j.core.rules.nate.DailyMgiBuyRule;
-import org.ta4j.core.utils.MarketTime;
-import org.ta4j.core.utils.TimeUtils;
-import ta4jexamples.loaders.CsvBarsLoader;
+import org.ta4j.core.rules.nate.DailyTrend;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class TrendVsRangeStats extends Stats {
+public abstract class TrendVsRangeStats extends Stats {
 
-    @Override
-    public void evaluate() {
-        Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
-        runStats(dailyMgiMap);
-    }
-
-    private void runStats(Map<LocalDate, DailyMgi> dailyMgiMap) {
-        printTrendVsRange(dailyMgiMap);
-    }
-
-    private void printTrendVsRange(Map<LocalDate, DailyMgi> dailyMgiMap) {
-        Map<LocalDate, String> dateToTrendVsRangeMap = new LinkedHashMap<>();
+    TrendVsRangeDailyMgiOhlcResults populateTrendMap(Map<LocalDate, DailyMgi> dailyMgiMap) {
+        TrendVsRangeDailyMgiOhlcResults trendMap = new TrendVsRangeDailyMgiOhlcResults();
         dailyMgiMap.forEach((date, dailyMgi) -> {
 
             if (dailyMgi.getRthOhlc().getHigh() != null && dailyMgi.getRthOhlc().getLow() != null) {
-                if (TimeUtils.isBetweenTimes(dailyMgi.getRthOhlc().getHigh().getTime(),
-                        MarketTime.RTH_START_TIME_0930.getLocalTime(),
-                        MarketTime.RTH_1030.getLocalTime()) &&
-                        TimeUtils.isBetweenTimes(dailyMgi.getRthOhlc().getLow().getTime(),
-                                MarketTime.RTH_1500.getLocalTime(),
-                                MarketTime.RTH_END_TIME_1559.getLocalTime())) {
+                /*
+                Trend up
+                1. AMH < MicroH < PMH
+                2. Open < PML
+                 */
+                /*
+                Trend down
+                1. AML > MicroL > PMH
+                2. Open > PMH
+                 */
+                if (dailyMgi.getDailyTrend() == DailyTrend.TREND_DOWN) {
                     System.out.println(date + " Trend_Down");
-                } else if (TimeUtils.isBetweenTimes(dailyMgi.getRthOhlc().getLow().getTime(),
-                        MarketTime.RTH_START_TIME_0930.getLocalTime(),
-                        MarketTime.RTH_1030.getLocalTime()) &&
-                        TimeUtils.isBetweenTimes(dailyMgi.getRthOhlc().getHigh().getTime(),
-                                MarketTime.RTH_1500.getLocalTime(),
-                                MarketTime.RTH_END_TIME_1559.getLocalTime())) {
-                    System.out.println(date + " Trend_Up");
+                    trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
 
-                } else {
+                } else if (dailyMgi.getDailyTrend() == DailyTrend.TREND_UP) {
+                    System.out.println(date + " Trend_Up");
+                    trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                } else if (dailyMgi.getDailyTrend() == DailyTrend.RANGE) {
                     System.out.println(date + " Range");
+                    trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
+
                 }
             }
         });
-    }
-
-
-    public static void main(String[] args) throws InterruptedException {
-        // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 2, 13), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-
-
-        createRulesAndRunBackTest(series);
-
-        TrendVsRangeStats nHodBy30mPeriodStatsTest = new TrendVsRangeStats();
-        nHodBy30mPeriodStatsTest.evaluate();
+        return trendMap;
     }
 }
