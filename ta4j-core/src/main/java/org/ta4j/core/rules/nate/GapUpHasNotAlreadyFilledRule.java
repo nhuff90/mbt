@@ -25,19 +25,12 @@ package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.DecimalNum;
-import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 
-import java.time.LocalDate;
+public class GapUpHasNotAlreadyFilledRule extends AbstractRule {
+    protected BarSeries series;
 
-/**
- * Satisfied when there is a gap up of more than 5 points from prior day high to today's open
- */
-public class GapUpRule extends AbstractRule {
-    private final BarSeries series;
-
-    public GapUpRule(BarSeries series) {
+    public GapUpHasNotAlreadyFilledRule(BarSeries series) {
         this.series = series;
     }
 
@@ -45,37 +38,13 @@ public class GapUpRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-//        // Gap up from PDH to RTH Open
-//        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() == null || DailyMgiBuyRule.rthOhlc.getOpen() == null || DailyMgiBuyRule.dailyTradeTaken) {
-//            return false;
-//        }
-//
-//        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && isValidGap(DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
-//            satisfied = true;
-//        }
-
-        // Gap up from PDC to RTH Open
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() == null || DailyMgiBuyRule.rthOhlc.getOpen() == null || DailyMgiBuyRule.dailyTradeTaken) {
-            return false;
-        }
-
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() != null && isValidGap(DailyMgiBuyRule.priorDayRthOhlc.getClose().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
+        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && DailyMgiBuyRule.rthOhlc.getLow() != null &&
+                DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice().isLessThan(DailyMgiBuyRule.rthOhlc.getLow().getPrice())) {
             satisfied = true;
         }
 
         traceIsSatisfied(index, satisfied);
 
         return satisfied;
-    }
-
-    /**
-     * Returns true if there is a gap up that is greater than or equal to minGapSize
-     * @param closePrice
-     * @param openPrice
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
     }
 }

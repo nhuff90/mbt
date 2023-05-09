@@ -5,10 +5,13 @@ import org.ta4j.core.analysis.ResultsAnalysis;
 
 public abstract class BackTestWithDailyMgi {
 
+    public static TradingRecord tradingRecord;
+    public static BarSeries series;
+
     protected static TradingRecord run(BarSeries series, Rule buyingRules, Rule sellingRules, Trade.TradeType tradeType) {
         // Run backtest
         BarSeriesWithDailyMgiManager seriesManager = new BarSeriesWithDailyMgiManager(series);
-        TradingRecord tradingRecord = seriesManager.run(new BaseStrategy(buyingRules, sellingRules), tradeType);
+        tradingRecord = seriesManager.run(new BaseStrategy(buyingRules, sellingRules), tradeType);
         reportAnalysis(series, tradingRecord);
         return tradingRecord;
     }

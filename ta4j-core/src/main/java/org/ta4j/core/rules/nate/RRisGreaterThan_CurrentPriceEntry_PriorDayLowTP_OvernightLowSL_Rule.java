@@ -24,58 +24,44 @@
 package org.ta4j.core.rules.nate;
 
 import org.ta4j.core.BarSeries;
+import org.ta4j.core.Trade;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.AbstractRule;
 
-import java.time.LocalDate;
-
 /**
- * Satisfied when there is a gap up of more than 5 points from prior day high to today's open
+ * Satisfied when the OpeningPrintEntry to PriorDayHighStopLoss rr is greater than the provided rr.
  */
-public class GapUpRule extends AbstractRule {
-    private final BarSeries series;
+public class RRisGreaterThan_CurrentPriceEntry_PriorDayLowTP_OvernightLowSL_Rule extends AbstractRule {
+    protected BarSeries series;
+    protected double rr;
 
-    public GapUpRule(BarSeries series) {
+    public RRisGreaterThan_CurrentPriceEntry_PriorDayLowTP_OvernightLowSL_Rule(BarSeries series, double rr) {
         this.series = series;
+        this.rr = rr;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
 
-//        // Gap up from PDH to RTH Open
-//        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() == null || DailyMgiBuyRule.rthOhlc.getOpen() == null || DailyMgiBuyRule.dailyTradeTaken) {
-//            return false;
-//        }
-//
-//        if (DailyMgiBuyRule.priorDayRthOhlc.getHigh() != null && isValidGap(DailyMgiBuyRule.priorDayRthOhlc.getHigh().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
-//            satisfied = true;
-//        }
+        if (series.getBar(index)!= null &&
+                DailyMgiBuyRule.priorDayRthOhlc.getLow() != null &&
+                DailyMgiBuyRule.overnightRthOhlc.getLow() != null) {
+            Num currentBarHighPrice = series.getBar(index).getHighPrice();
+            Num priorDayLowPrice = DailyMgiBuyRule.priorDayRthOhlc.getLow().getPrice();
+            Num overnightLowPrice = DailyMgiBuyRule.overnightRthOhlc.getLow().getPrice();
 
-        // Gap up from PDC to RTH Open
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() == null || DailyMgiBuyRule.rthOhlc.getOpen() == null || DailyMgiBuyRule.dailyTradeTaken) {
-            return false;
-        }
+            Num possibleProfit = priorDayLowPrice.minus(currentBarHighPrice);
+            Num possibleLoss = currentBarHighPrice.minus(overnightLowPrice);
 
-        if (DailyMgiBuyRule.priorDayRthOhlc.getClose() != null && isValidGap(DailyMgiBuyRule.priorDayRthOhlc.getClose().getPrice(), DailyMgiBuyRule.rthOhlc.getOpen().getPrice(), 5)) {
-            satisfied = true;
+            if ((possibleProfit.doubleValue()) > (possibleLoss.doubleValue() * rr)) {
+                satisfied = true;
+            }
         }
 
         traceIsSatisfied(index, satisfied);
 
         return satisfied;
-    }
-
-    /**
-     * Returns true if there is a gap up that is greater than or equal to minGapSize
-     * @param closePrice
-     * @param openPrice
-     * @param minGapSize
-     * @return
-     */
-    private boolean isValidGap(Num closePrice, Num openPrice, int minGapSize) {
-        return openPrice.minus(closePrice).isGreaterThanOrEqual(DecimalNum.valueOf(minGapSize));
     }
 }

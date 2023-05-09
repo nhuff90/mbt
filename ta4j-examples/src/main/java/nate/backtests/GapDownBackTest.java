@@ -14,16 +14,10 @@ import java.time.ZonedDateTime;
 
 public class GapDownBackTest extends BackTestWithDailyMgi {
     public static void main(String[] args) throws InterruptedException {
-        // Getting a bar series (from any provider: CSV, web service, etc.)
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2022, 10, 12), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesBetweenYears(
-//                ZonedDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")),
-//                ZonedDateTime.of(LocalDate.of(2022, 12, 31), LocalTime.of(16, 00), ZoneId.of("America/New_York")));
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear( ZonedDateTime.of ( LocalDate.of ( 2023, 1, 1 ), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeries();
-
-    createRulesAndRunBackTest(series);
+        createRulesAndRunBackTest(series);
     }
 
     private static void createRulesAndRunBackTest(BarSeries series) {
@@ -49,7 +43,7 @@ public class GapDownBackTest extends BackTestWithDailyMgi {
         Rule buyingRule;
 
         // Sell Rule
-        Rule sellingRule = new GapDownFillRule(series, 1.0).or(new OutsideOfMarketTimeRangeRule(series, MarketTime.RTH_0935, MarketTime.RTH_1500)).or(new NewHighOfDayRule(series));
+        Rule sellingRule = new GapDownFillRule(series, 0.75).or(new OutsideOfMarketTimeRangeRule(series, MarketTime.RTH_0935, MarketTime.RTH_1500)).or(new NewLowOfDayRule(series));
 
 
         /**
@@ -59,7 +53,15 @@ public class GapDownBackTest extends BackTestWithDailyMgi {
          *
          */
         System.out.println("buyingRule = new GapDownRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingBelowOvernightLowRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenLessThanPriorDayLowRule(series));");
-        buyingRule = new GapDownRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingBelowOvernightLowRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenLessThanPriorDayLowRule(series));
+//        buyingRule = new GapDownRule(series).and(new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1500)).and(new CrossingBelowOvernightLowRule(series)).and(new CrossingBelowRthOpenRule(series)).and(new RthOpenLessThanPriorDayLowRule(series));
+        buyingRule = new MarketTimeRangeRule(series, MarketTime.RTH_1005, MarketTime.RTH_1130)
+                .and(new GapDownRule(series))
+                .and(new CrossingBelowOvernightLowRule(series))
+                .and(new CrossingAboveRthOpenRule(series))
+                .and(new RthOpenLessThanPriorDayLowRule(series))
+                .and(new GapDownHasNotAlreadyFilledRule(series))
+                .and(new RRisGreaterThan_CurrentPriceEntry_PriorDayLowTP_OvernightLowSL_Rule(series, 4)
+                );
         run(series, buyingRule, sellingRule, Trade.TradeType.BUY);
         System.out.println("");
 

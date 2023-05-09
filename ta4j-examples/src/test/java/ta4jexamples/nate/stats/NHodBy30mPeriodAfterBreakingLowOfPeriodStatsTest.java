@@ -21,9 +21,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ta4jexamples.nate;
+package ta4jexamples.nate.stats;
 
-import nate.stats.NLodBy30mPeriodStats;
+import nate.stats.NHodBy30mPeriodAfterBreakingLowOfPeriodStats;
 import nate.stats.domain.TrueFalseDailyMgiAndPeriodOhlcResults;
 import org.junit.Test;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
@@ -33,43 +33,49 @@ import org.ta4j.core.rules.nate.DailyMgi;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class NLodBy30mPeriodStatsTest {
+public class NHodBy30mPeriodAfterBreakingLowOfPeriodStatsTest {
 
     @Test
     public void test() throws InterruptedException {
 
-        NLodBy30mPeriodStats.main(null);
+        NHodBy30mPeriodAfterBreakingLowOfPeriodStats.main(null);
 
         /*
         Continuation Tests
          */
         final Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> continuationMap =
-                NLodBy30mPeriodStats.resultMap.getPeriodContinuationMap();
+                NHodBy30mPeriodAfterBreakingLowOfPeriodStats.resultMap.getPeriodContinuationMap();
 
         // True Tests
-        assert isOhlcPresent(continuationMap.get(Period30m.D).getTrueMap(), LocalDate.of ( 2023, 3, 27));
+        assert isOhlcPresent(continuationMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 29));
+        assert isOhlcPresent(continuationMap.get(Period30m.J).getTrueMap(), LocalDate.of ( 2023, 3, 22));
+        assert isOhlcPresent(continuationMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 21));
+        assert isOhlcPresent(continuationMap.get(Period30m.D).getTrueMap(), LocalDate.of ( 2023, 2, 13));
         // False Tests
-        assert isOhlcPresent(continuationMap.get(Period30m.E).getFalseMap(), LocalDate.of ( 2023, 3, 27));
+        assert isOhlcPresent(continuationMap.get(Period30m.B).getFalseMap(), LocalDate.of ( 2023, 3, 28));
+        assert isOhlcPresent(continuationMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 14));
+        assert isOhlcPresent(continuationMap.get(Period30m.E).getFalseMap(), LocalDate.of ( 2023, 3, 10));
+        assert isOhlcPresent(continuationMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 13));
+        assert isOhlcPresent(continuationMap.get(Period30m.B).getFalseMap(), LocalDate.of ( 2023, 2, 27));
         // No NHOD/NLOD tests
-        assert !isOhlcPresent(continuationMap.get(Period30m.G).getFalseMap(), LocalDate.of ( 2023, 3, 27));
+        assert !isOhlcPresent(continuationMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 29));
+        assert !isOhlcPresent(continuationMap.get(Period30m.C).getFalseMap(), LocalDate.of ( 2023, 3, 1));
+        assert !isOhlcPresent(continuationMap.get(Period30m.B).getFalseMap(), LocalDate.of ( 2023, 3, 9));
 
         /*
         Reversal Tests
          */
         final Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> reversalMap =
-                NLodBy30mPeriodStats.resultMap.getPeriodReversalMap();
+                NHodBy30mPeriodAfterBreakingLowOfPeriodStats.resultMap.getPeriodReversalMap();
         // True Tests
-        assert isOhlcPresent(reversalMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 8));
-        assert isOhlcPresent(reversalMap.get(Period30m.G).getTrueMap(), LocalDate.of ( 2023, 3, 15));
+        assert isOhlcPresent(reversalMap.get(Period30m.J).getTrueMap(), LocalDate.of ( 2023, 3, 22));
+        assert isOhlcPresent(reversalMap.get(Period30m.D).getTrueMap(), LocalDate.of ( 2023, 3, 10));
         // False Tests
-        assert isOhlcPresent(reversalMap.get(Period30m.E).getFalseMap(), LocalDate.of ( 2023, 3, 7));
-        assert isOhlcPresent(reversalMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 1));
+        assert isOhlcPresent(reversalMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 13));
+        assert isOhlcPresent(reversalMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 2));
         // No NHOD/NLOD Tests
-        assert !isOhlcPresent(reversalMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 10));
-        assert !isOhlcPresent(reversalMap.get(Period30m.E).getTrueMap(), LocalDate.of ( 2023, 3, 2));
-
-
-
+        assert !isOhlcPresent(reversalMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 27));
+        assert !isOhlcPresent(reversalMap.get(Period30m.D).getTrueMap(), LocalDate.of ( 2023, 3, 3));
     }
 
     private boolean isOhlcPresent(Map<DailyMgi, OHLCIndicator> periodNHODResultsMap, LocalDate date) {

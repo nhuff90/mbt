@@ -42,7 +42,7 @@ import ta4jexamples.data.DailyInformation;
 public class CsvBarsLoader {
 
     private static String ES_1_MIN_FILENAME = "data/es/1min/es-1min-master.csv";
-//    private static String ES_1_MIN_FILENAME = "data/es/1min/es-1min-master-2022-temp.csv";
+//    private static String ES_1_MIN_FILENAME = "data/es/1min/es-1min-master-temp.csv";
 //    private static String ES_1_MIN_FILENAME = "data/es/1min/es-1min-master-2022.csv";
 //    private static String ES_1_MIN_FILENAME = "data/es/1min/es-1min-master-2021-temp.csv";
 
