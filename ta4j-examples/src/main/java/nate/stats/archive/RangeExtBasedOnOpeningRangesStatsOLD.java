@@ -1,26 +1,22 @@
-package nate.stats;
+package nate.stats.archive;
 
+import nate.stats.TrendVsRangeStats;
 import nate.stats.domain.TrendVsRangeDailyMgiOhlcResults;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.rules.nate.DailyMgi;
 import org.ta4j.core.rules.nate.DailyMgiBuyRule;
-import org.ta4j.core.utils.DoubleFormatter;
 import org.ta4j.core.utils.MarketTime;
 import org.ta4j.core.utils.TimeUtils;
 import ta4jexamples.loaders.CsvBarsLoader;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
+public class RangeExtBasedOnOpeningRangesStatsOLD extends TrendVsRangeStats {
     //todo - Create unit test!!
 
     public static TrendVsRangeDailyMgiOhlcResults ibExtensionMap = new TrendVsRangeDailyMgiOhlcResults();
@@ -42,16 +38,13 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
 
     public static HighLowEqualsResults omarO5mHighLowEqualsResults = new HighLowEqualsResults();
 
-    private static Map<String, String> highEqHighMapToPrint = new LinkedHashMap<String, String>();
-    private static Map<String, String> lowEqLowMapToPrint = new LinkedHashMap<String, String>();
-
-    double percentExtensionToTest = 0.5;
+    double percentExtensionToTest = 1;
 
     @Override
     public void evaluate() {
         Map<LocalDate, DailyMgi> dailyMgiMap = DailyMgiBuyRule.getHistoricalDailyMgi();
         populateTrendMaps(dailyMgiMap);
-        addResultsToMapToPrint();
+        printResults();
     }
 
     protected void populateTrendMaps(Map<LocalDate, DailyMgi> dailyMgiMap) {
@@ -71,13 +64,13 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
                 Boolean breakIsUp = isFirstPriceBreakAfterTimeUp(dailyMgi, rangeToTest.getExtensionOfRange(percentExtensionToTest, true), rangeToTest.getExtensionOfRange(percentExtensionToTest, false), MarketTime.RTH_1005);
 
                 if (breakIsUp == null) {
-//                    System.out.println(date + " Range");
+                    System.out.println(date + " Range");
                     trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
                 } else if (breakIsUp) {
-//                    System.out.println(date + " Trend_Up");
+                    System.out.println(date + " Trend_Up");
                     trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
                 } else {
-//                    System.out.println(date + " Trend_Down");
+                    System.out.println(date + " Trend_Down");
                     trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
                 }
             }
@@ -97,40 +90,46 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
         return null;
     }
 
-    private void addResultsToMapToPrint() {
+    private void printResults() {
+        System.out.println("IB - Hits, Total Days");
+        System.out.println(ibExtensionMap.getTrendUpMap().size() + ", " + ibExtensionMap.getTotalEntries());
+        System.out.println(ibExtensionMap.getTrendDownMap().size() + ", " + ibExtensionMap.getTotalEntries());
+        System.out.println(ibExtensionMap.getRangeMap().size() + ", " + ibExtensionMap.getTotalEntries());
+        System.out.println("AM - Hits, Total Days");
+        System.out.println(amExtensionMap.getTrendUpMap().size() + ", " + amExtensionMap.getTotalEntries());
+        System.out.println(amExtensionMap.getTrendDownMap().size() + ", " + amExtensionMap.getTotalEntries());
+        System.out.println(amExtensionMap.getRangeMap().size() + ", " + amExtensionMap.getTotalEntries());
+        System.out.println("O15m - Hits, Total Days");
+        System.out.println(o15mExtensionMap.getTrendUpMap().size() + ", " + o15mExtensionMap.getTotalEntries());
+        System.out.println(o15mExtensionMap.getTrendDownMap().size() + ", " + o15mExtensionMap.getTotalEntries());
+        System.out.println(o15mExtensionMap.getRangeMap().size() + ", " + o15mExtensionMap.getTotalEntries());
+        System.out.println("O5m - Hits, Total Days");
+        System.out.println(o5mExtensionMap.getTrendUpMap().size() + ", " + o5mExtensionMap.getTotalEntries());
+        System.out.println(o5mExtensionMap.getTrendDownMap().size() + ", " + o5mExtensionMap.getTotalEntries());
+        System.out.println(o5mExtensionMap.getRangeMap().size() + ", " + o5mExtensionMap.getTotalEntries());
         /*
         Print
          */
-        System.out.println("Extension = " + DoubleFormatter.formatPercent(percentExtensionToTest) + ", Ext Up Hit 1st, Ext Down Hit 1st, Neither Hit, " +
-                "Total, Ext Up Hit First %, Ext Down Hit First %, Neither Hit %");
+        System.out.println("~~~~~ OMAR Tests - Testing Extension: " + percentExtensionToTest + "% ~~~~~");
         printOmarEqIbRange(ibExtensionMap);
         printOmarEqAmRange(amExtensionMap);
         printOmarEqO15mRange(o15mExtensionMap);
         printOmarEqO5mRange(o5mExtensionMap);
 
-//        System.out.println("");
+        System.out.println("");
+        System.out.println("~~~~~ O5m Tests - Testing Extension: " + percentExtensionToTest + "% ~~~~~");
         printO5mEqIBRange(ibExtensionMap);
         printO5mEqAmRange(amExtensionMap);
         printO5mEqO15mRange(o15mExtensionMap);
 
-//        System.out.println("");
+        System.out.println("");
+        System.out.println("~~~~~ O15m Tests - Testing Extension: " + percentExtensionToTest + "% ~~~~~");
         printO15mEqIbRange(ibExtensionMap);
         printO15mEqAmRange(amExtensionMap);
 
-//        System.out.println("");
+        System.out.println("");
+        System.out.println("~~~~~ AM Tests - Testing Extension: " + percentExtensionToTest + "% ~~~~~");
         printAmRangeEqIbRange(ibExtensionMap);
-
-        printMaps();
-    }
-
-    private void printMaps() {
-        highEqHighMapToPrint.forEach((str, str2) -> {
-            System.out.println(str + ", " + str2);
-        });
-
-        lowEqLowMapToPrint.forEach((str, str2) -> {
-            System.out.println(str + ", " + str2);
-        });
     }
 
     private void printO15mEqAmRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
@@ -146,7 +145,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEqAMH, "O15mH=AMH", lowEqAML, "O15mL=AML",o15mAmHighLowEqualsResults);
+        printResults(extensionMap, highEqAMH, "O15mH=AMH", lowEqAML, "O15mL=AML", o15mAmHighLowEqualsResults);
     }
     private void printO5mEqAmRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEqAMH = new ArrayList<>();
@@ -161,7 +160,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEqAMH, "O5mH=AMH", lowEqAML, "O5mL=AML",o5mAmHighLowEqualsResults);
+        printResults(extensionMap, highEqAMH, "O5mH=AMH", lowEqAML, "O5mL=AML", o5mAmHighLowEqualsResults);
     }
     private void printOmarEqAmRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEqAMH = new ArrayList<>();
@@ -176,7 +175,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEqAMH, "OMARH=AMH", lowEqAML, "OMARL=AML",omarAmHighLowEqualsResults);
+        printResults(extensionMap, highEqAMH, "OMARH=AMH", lowEqAML, "OMAR=AML", omarAmHighLowEqualsResults);
     }
     private void printO15mEqIbRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -191,7 +190,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "O15mH=IBH", lowEq, "O15mL=IBL",o15mIbHighLowEqualsResults);
+        printResults(extensionMap, highEq, "O15mH=IBH", lowEq, "O15mL=IBL", o15mIbHighLowEqualsResults);
     }
     private void printO5mEqIBRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -206,7 +205,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "O5mH=IBH", lowEq, "O5mL=IBL",o5mIbHighLowEqualsResults);
+        printResults(extensionMap, highEq, "O5mH=IBH", lowEq, "O5mL=IBL", o5mIbHighLowEqualsResults);
     }
     private void printAmRangeEqIbRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -221,7 +220,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "AMH=IBH", lowEq, "AML=IBL",amIbHighLowEqualsResults);
+        printResults(extensionMap, highEq, "AMH=IBH", lowEq, "AML=IBL", amIbHighLowEqualsResults);
     }
     private void printOmarEqIbRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -236,7 +235,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "OMARH=IBH", lowEq, "OMARL=IBL",omarIbHighLowEqualsResults);
+        printResults(extensionMap, highEq, "OMARH=IBH", lowEq, "OMARL=IBL", omarIbHighLowEqualsResults);
     }
     private void printOmarEqO15mRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -251,7 +250,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "OMARH=O15mH", lowEq, "OMARL=O15mL",omarO15mHighLowEqualsResults);
+        printResults(extensionMap, highEq, "OmarH=O15mH", lowEq, "OmarL=O15mL", omarO15mHighLowEqualsResults);
     }
     private void printO5mEqO15mRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -266,7 +265,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "O5mH=O15mH", lowEq, "O5mL=O15mL", o5mO15mHighLowEqualsResults);
+        printResults(extensionMap, highEq, "O5mH=O15mH", lowEq, "O5mL=O15mL", o5mO15mHighLowEqualsResults);
     }
     private void printOmarEqO5mRange(TrendVsRangeDailyMgiOhlcResults extensionMap) {
         List<DailyMgi> highEq = new ArrayList<>();
@@ -281,12 +280,10 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
             }
         }
 
-        addResultsToMapToPrint(extensionMap, highEq, "OMARH=O5mH", lowEq, "OMARL=O5mL", omarO5mHighLowEqualsResults);
+        printResults(extensionMap, highEq, "OMARH=O5mH", lowEq, "OMARL=O5mL", omarO5mHighLowEqualsResults);
     }
 
-    private void addResultsToMapToPrint(TrendVsRangeDailyMgiOhlcResults extensionMap, List<DailyMgi> highEqAMH,
-                                        String str, List<DailyMgi> lowEqAML, String str2,
-                                        HighLowEqualsResults highLowEqualsResults) {
+    private void printResults(TrendVsRangeDailyMgiOhlcResults extensionMap, List<DailyMgi> highEqAMH, String str, List<DailyMgi> lowEqAML, String str2, HighLowEqualsResults highLowEqualsResults) {
         /*
         High = High
          */
@@ -300,7 +297,8 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
                 highLowEqualsResults.highEqRange.add(dailyMgi);
             }
         });
-
+        System.out.println("Trend Up, Trend Down, Range, Total, Trend Up %, Trend Down %, Range %");
+        System.out.print(str + ",");
         StringBuilder highEqAMHSb = new StringBuilder();
         highEqAMHSb.append(highLowEqualsResults.highEqTrendUp.size());
         highEqAMHSb.append(",");
@@ -310,7 +308,8 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
         highEqAMHSb.append(",");
         highEqAMHSb.append(highEqAMH.size());
 
-        highEqHighMapToPrint.put(str, highEqAMHSb.toString());
+        System.out.println(highEqAMHSb);
+
 
         /*
         Low = Low
@@ -324,6 +323,7 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
                 highLowEqualsResults.lowEqRange.add(dailyMgi);
             }
         });
+        System.out.print(str2 + ",");
         StringBuilder lowEqAMLSb = new StringBuilder();
         lowEqAMLSb.append(highLowEqualsResults.lowEqTrendUp.size());
         lowEqAMLSb.append(",");
@@ -333,18 +333,18 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
         lowEqAMLSb.append(",");
         lowEqAMLSb.append(lowEqAML.size());
 
-        lowEqLowMapToPrint.put(str2, lowEqAMLSb.toString());
+        System.out.println(lowEqAMLSb);
     }
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        RangeExtBasedOnOpeningRangesStats nHodBy30mPeriodStatsTest = new RangeExtBasedOnOpeningRangesStats();
+        RangeExtBasedOnOpeningRangesStatsOLD nHodBy30mPeriodStatsTest = new RangeExtBasedOnOpeningRangesStatsOLD();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

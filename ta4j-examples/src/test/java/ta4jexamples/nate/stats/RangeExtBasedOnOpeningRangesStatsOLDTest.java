@@ -25,15 +25,12 @@ package ta4jexamples.nate.stats;
 
 import nate.stats.RangeExtBasedOnOpeningRangesStats;
 import org.junit.Test;
-import org.ta4j.core.indicators.nate.OHLCIndicator;
-import org.ta4j.core.indicators.nate.helper.Period30m;
 import org.ta4j.core.rules.nate.DailyMgi;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
-public class RangeExtBasedOnOpeningRangesStatsTest {
+public class RangeExtBasedOnOpeningRangesStatsOLDTest {
 
     @Test
     public void test() throws InterruptedException {
@@ -44,8 +41,6 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
         runO15mTests();
         runO5mTests();
         runOMARTests();
-
-
     }
 
     private void runAMTests() {
@@ -214,8 +209,8 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
         End o5m+AM Tests
          */
 
-                /*
-        o5m+AM Tests
+        /*
+        o5m+o15m Tests
          */
         final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mO15mHighLowEqualsResults =
                 RangeExtBasedOnOpeningRangesStats.o5mO15mHighLowEqualsResults;
@@ -238,7 +233,7 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
         assert !isOhlcPresent(o5mO15mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 2, 24));
         assert !isOhlcPresent(o5mO15mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 2, 22));
         /*
-        End o5m+AM Tests
+        End o5m+o15m Tests
          */
 
     }
@@ -300,7 +295,7 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
          */
 
                 /*
-        omar+AM Tests
+        omar+o15m Tests
          */
         final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO15mHighLowEqualsResults =
                 RangeExtBasedOnOpeningRangesStats.omarO15mHighLowEqualsResults;
@@ -322,11 +317,11 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
         // Highs/Lows != Highs/Lows (neg test)
         assert !isOhlcPresent(omarO15mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 2, 10));
         /*
-        End omar+AM Tests
+        End omar+o15m Tests
          */
 
                         /*
-        omar+AM Tests
+        omar+o5m Tests
          */
         final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO5mHighLowEqualsResults =
                 RangeExtBasedOnOpeningRangesStats.omarO5mHighLowEqualsResults;
@@ -348,7 +343,7 @@ public class RangeExtBasedOnOpeningRangesStatsTest {
         // Highs/Lows != Highs/Lows (neg test)
         assert !isOhlcPresent(omarO5mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 2, 10));
         /*
-        End omar+AM Tests
+        End omar+o5m Tests
          */
 
     }
