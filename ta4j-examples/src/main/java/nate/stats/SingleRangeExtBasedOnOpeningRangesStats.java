@@ -20,8 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
-    //todo - Create unit test!!
+public class SingleRangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
 
     public static TrendVsRangeDailyMgiOhlcResults ibExtensionMap = new TrendVsRangeDailyMgiOhlcResults();
     public static TrendVsRangeDailyMgiOhlcResults amExtensionMap = new TrendVsRangeDailyMgiOhlcResults();
@@ -338,13 +337,13 @@ public class RangeExtBasedOnOpeningRangesStats extends TrendVsRangeStats {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        RangeExtBasedOnOpeningRangesStats nHodBy30mPeriodStatsTest = new RangeExtBasedOnOpeningRangesStats();
+        SingleRangeExtBasedOnOpeningRangesStats nHodBy30mPeriodStatsTest = new SingleRangeExtBasedOnOpeningRangesStats();
         nHodBy30mPeriodStatsTest.evaluate();
     }
 

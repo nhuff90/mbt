@@ -22,6 +22,7 @@ public enum MarketTime {
 
     // RTH Times
     RTH_START_TIME_0930(LocalTime.parse("09:30:00")),
+    RTH_0934(LocalTime.parse("09:34:00")),
     RTH_0939(LocalTime.parse("09:39:00")),
     RTH_0944(LocalTime.parse("09:44:00")),
     RTH_1000(LocalTime.parse("10:00:00")),
@@ -167,12 +168,20 @@ public enum MarketTime {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0944.getLocalTime());
     }
 
+    public static boolean isStartOfOpening10mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
+    }
+
+    public static boolean isEndOfOpening10mSession(Bar bar) {
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0939.getLocalTime());
+    }
+
     public static boolean isStartOfOpening5mSession(Bar bar) {
         return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime());
     }
 
     public static boolean isEndOfOpening5mSession(Bar bar) {
-        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0939.getLocalTime());
+        return TimeUtils.is(bar.getEndTime().toLocalTime(), MarketTime.RTH_0934.getLocalTime());
     }
 
     public static boolean isStartOfOvernightSession(Bar bar) {
@@ -210,8 +219,12 @@ public enum MarketTime {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0944.getLocalTime());
     }
 
-    public static boolean isInOpening5mSession(Bar bar) {
+    public static boolean isInOpening10mSession(Bar bar) {
         return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0939.getLocalTime());
+    }
+
+    public static boolean isInOpening5mSession(Bar bar) {
+        return TimeUtils.isBetweenTimes(bar.getEndTime().toLocalTime(), MarketTime.RTH_START_TIME_0930.getLocalTime(), MarketTime.RTH_0934.getLocalTime());
     }
 
     public static boolean isInOvernightSession(Bar bar) {

@@ -25,15 +25,15 @@ public abstract class TrendVsRangeStats extends Stats {
                 2. Open > PMH
                  */
                 if (dailyMgi.getDailyTrend() == DailyTrend.TREND_DOWN) {
-                    System.out.println(date + " Trend_Down");
+//                    System.out.println(date + " Trend_Down");
                     trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 } else if (dailyMgi.getDailyTrend() == DailyTrend.TREND_UP) {
-                    System.out.println(date + " Trend_Up");
+//                    System.out.println(date + " Trend_Up");
                     trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 } else if (dailyMgi.getDailyTrend() == DailyTrend.RANGE) {
-                    System.out.println(date + " Range");
+//                    System.out.println(date + " Range");
                     trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 }

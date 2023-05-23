@@ -4,10 +4,7 @@ import org.ta4j.core.AnalysisCriterion;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.analysis.criteria.MaximumDrawdownCriterion;
-import org.ta4j.core.analysis.criteria.NumberOfLosingPositionsCriterion;
-import org.ta4j.core.analysis.criteria.NumberOfWinningPositionsCriterion;
-import org.ta4j.core.analysis.criteria.WinningPositionsRatioCriterion;
+import org.ta4j.core.analysis.criteria.*;
 import org.ta4j.core.analysis.criteria.pnl.AverageLossCriterion;
 import org.ta4j.core.analysis.criteria.pnl.AverageProfitCriterion;
 import org.ta4j.core.analysis.criteria.pnl.ProfitLossCriterion;
@@ -31,6 +28,7 @@ public class ResultsAnalysis {
     AnalysisCriterion averageLossCriterion;
     AnalysisCriterion numberOfWinningPositionsCriterion;
     AnalysisCriterion numberOfLosingPositionsCriterion;
+    AnalysisCriterion returnOverMaxDrawdownCriterion;
 
     // P/L
     AnalysisCriterion profitCriterion;
@@ -54,6 +52,7 @@ public class ResultsAnalysis {
         this.profitCriterion = new ProfitLossCriterion();
         this.maximumDrawdownCriterion = new MaximumDrawdownCriterion();
         this.winningPositionsRatio = new WinningPositionsRatioCriterion();
+        this.returnOverMaxDrawdownCriterion = new ReturnOverMaxDrawdownCriterion();
     }
 
     public double getEv() {
@@ -73,8 +72,16 @@ public class ResultsAnalysis {
         return maximumDrawdownCriterion.calculate(series, tradingRecord).doubleValue();
     }
 
+    private double getReturnOverMaxDrawdownCriterion() {
+        return returnOverMaxDrawdownCriterion.calculate(series, tradingRecord).doubleValue();
+    }
+
     public String getMaxDrawdownAsString() {
         return DoubleFormatter.formatPercent(getMaxDrawdown());
+    }
+
+    private String getReturnOverMaxDrawdownCriterionAsString() {
+        return "" + getReturnOverMaxDrawdownCriterion();
     }
 
     public double getWinPercentage() {
@@ -97,8 +104,9 @@ public class ResultsAnalysis {
     public String toString() {
         return "ResultsAnalysis{" +
                 "EV= " + getEvAsString() +
-                ", Max Drawdown= " + getMaxDrawdownAsString() +
                 ", Win%= " + getWinPercentageAsString() +
+                ", Max Drawdown= " + getMaxDrawdownAsString() +
+                ", returnOverMaxDrawdownCriterion= " + getLosingTradeCount() +
                 ", #OfWins= " + getWinningTradeCount() +
                 ", #OfLosses= " + getLosingTradeCount() +
                 '}';
@@ -106,23 +114,48 @@ public class ResultsAnalysis {
 
     public String toStringValuesOnly() {
         return  getEvAsString() +
-                ", " + getMaxDrawdownAsString() +
                 ", " + getWinPercentageAsString() +
+                ", " + getMaxDrawdownAsString() +
+                ", " + getReturnOverMaxDrawdownCriterionAsString() +
                 ", " + getWinningTradeCount() +
                 ", " + getLosingTradeCount() ;
     }
 
     public void printResults() {
-        printResults(null, null, null);
+        printResults(null, null, null, null, null);
     }
 
-    public void printResults(Double ev, Double maxDrawdown, Double winPercent) {
+    public void printResultsWithLabels() {
+        printResultsWithLabels(null, null, null, null, null);
+    }
+
+    public void printResults(String buyingRulesStr, String sellingRulesStr) {
+        printResults(buyingRulesStr, sellingRulesStr, null, null, null);
+    }
+
+    public void printResultsWithLabels(String buyingRulesStr, String sellingRulesStr) {
+        printResultsWithLabels(buyingRulesStr, sellingRulesStr, null, null, null);
+    }
+
+    public void printResultsWithLabels(String buyingRulesStr, String sellingRulesStr, Double ev, Double maxDrawdown, Double winPercent) {
         // If null, just set to the calculated value so it will not be filtered out.
         ev = (ev != null ? ev : getEv());
         maxDrawdown = (maxDrawdown != null ? maxDrawdown : getMaxDrawdown());
         winPercent = (winPercent != null ? winPercent : getWinPercentage());
+        String rules = (buyingRulesStr != null && sellingRulesStr != null) ? buyingRulesStr + "," + sellingRulesStr + ", " : "";
         if (ev <= getEv() && maxDrawdown <= getMaxDrawdown() && winPercent <= getWinPercentage()) {
-            System.out.println(toString());
+            System.out.println(rules + toString());
+        }
+    }
+
+    public void printResults(String buyingRulesStr, String sellingRulesStr, Double ev, Double maxDrawdown, Double winPercent) {
+        // If null, just set to the calculated value so it will not be filtered out.
+        ev = (ev != null ? ev : getEv());
+        maxDrawdown = (maxDrawdown != null ? maxDrawdown : getMaxDrawdown());
+        winPercent = (winPercent != null ? winPercent : getWinPercentage());
+        String rules = (buyingRulesStr != null && sellingRulesStr != null) ? buyingRulesStr + "," + sellingRulesStr + ", " : "";
+        if (ev <= getEv() && maxDrawdown <= getMaxDrawdown() && winPercent <= getWinPercentage()) {
+            System.out.println(rules + toStringValuesOnly());
         }
     }
 

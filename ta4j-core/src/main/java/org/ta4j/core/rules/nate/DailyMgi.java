@@ -27,6 +27,9 @@ public class DailyMgi {
     protected OHLCIndicator opening15MinRangeOhlc = new OHLCIndicator();
     protected OHLCIndicator postOpening15MinRangeOhlc = new OHLCIndicator();
 
+    protected OHLCIndicator opening10MinRangeOhlc = new OHLCIndicator();
+    protected OHLCIndicator postOpening10MinRangeOhlc = new OHLCIndicator();
+
     protected OHLCIndicator ibOhlc = new OHLCIndicator();
     protected OHLCIndicator postIbOhlc = new OHLCIndicator();
 
@@ -151,6 +154,14 @@ public class DailyMgi {
 
     public void setOpening15MinRangeOhlc(OHLCIndicator opening15MinRangeOhlc) {
         this.opening15MinRangeOhlc = opening15MinRangeOhlc;
+    }
+
+    public OHLCIndicator getOpening10MinRangeOhlc() {
+        return opening10MinRangeOhlc;
+    }
+
+    public void setOpening10MinRangeOhlc(OHLCIndicator opening10MinRangeOhlc) {
+        this.opening10MinRangeOhlc = opening10MinRangeOhlc;
     }
 
     public OHLCIndicator getPostOpening15MinRangeOhlc() {
@@ -602,16 +613,24 @@ public class DailyMgi {
 
     private void calculateAndSetDailyTrend() {
         if (rthOhlc.getHigh() != null && rthOhlc.getLow() != null) {
-                /*
-                Trend up
-                1. AMH < MicroH < PMH
-                2. Open < PML
-                 */
-                /*
-                Trend down
-                1. AML > MicroL > PMH
-                2. Open > PMH
-                 */
+            /*
+            Trend up
+            1. AMH < MicroH < PMH
+            2. Open < PML
+            */
+            /*
+            Trend down
+            1. AML > MicroL > PMH
+            2. Open > PMH
+            */
+            /*
+            Am Ext Up
+            1. 150% AM Extension Hit
+            */
+            /*
+            Am Ext Down
+            1. 150% AM Extension Hit
+            */
             if (amRangeOhlc.getLow() != null && microRangeOhlc.getLow() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
                     amRangeOhlc.getLow().getPrice().isGreaterThan(microRangeOhlc.getLow().getPrice()) &&
                     microRangeOhlc.getLow().getPrice().isGreaterThan(pmRangeOhlc.getLow().getPrice()) &&
@@ -624,6 +643,12 @@ public class DailyMgi {
                     rthOhlc.getOpen().getPrice().isLessThan(pmRangeOhlc.getLow().getPrice())) {
                 dailyTrend = DailyTrend.TREND_UP;
 
+            } else if (amRangeOhlc.getLow() != null && rthOhlc.getOpen() != null &&
+                    rthOhlc.getHigh().getPrice().isLessThanOrEqual(amRangeOhlc.getExtensionOfRange(1.5, false))) {
+                dailyTrend = DailyTrend.AM_EXT_DOWN;
+            } else if (amRangeOhlc.getLow() != null && rthOhlc.getOpen() != null &&
+                    rthOhlc.getHigh().getPrice().isLessThanOrEqual(amRangeOhlc.getExtensionOfRange(1.5, false))) {
+                dailyTrend = DailyTrend.AM_EXT_DOWN;
             } else {
                 dailyTrend = DailyTrend.RANGE;
             }

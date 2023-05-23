@@ -117,7 +117,7 @@ public class AmRetraceOffHighBacktest {
         } else {
             ResultsAnalysis resultsAnalysis = new ResultsAnalysis(series, tradingRecord);
 //            resultsAnalysis.printResults();
-            resultsAnalysis.printResults(0.0, null, 0.5);
+            resultsAnalysis.printResults();
         }
     }
 

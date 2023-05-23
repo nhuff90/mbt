@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GapUpStatsStats extends TrendVsRangeStats {
+public class GapDownStatsStats extends TrendVsRangeStats {
     //todo - Create unit test!!
 
-    //Gap up to gap close list
+    //Gap down to gap close list
     List<DateTimePriceTriplet> gapList = new ArrayList<>();
 
 
@@ -30,26 +30,26 @@ public class GapUpStatsStats extends TrendVsRangeStats {
     protected void populateMap(Map<LocalDate, DailyMgi> dailyMgiMap) {
         dailyMgiMap.forEach((date, dailyMgi) -> {
             if (dailyMgi.getPriorDayRthOhlc().getClose() != null && dailyMgi.getRthOhlc().getOpen() != null &&
-                    dailyMgi.getRthOhlc().getOpen().getPrice().isGreaterThan(dailyMgi.getPriorDayRthOhlc().getClose().getPrice()) &&
-                    dailyMgi.getRthOhlc().getOpen().getPrice().isGreaterThan(dailyMgi.getPriorDayRthOhlc().getHigh().getPrice())) {
-                // Gap up
+                    dailyMgi.getRthOhlc().getOpen().getPrice().isLessThan(dailyMgi.getPriorDayRthOhlc().getClose().getPrice()) &&
+                    dailyMgi.getRthOhlc().getOpen().getPrice().isLessThan(dailyMgi.getPriorDayRthOhlc().getLow().getPrice())) {
+                // Gap down
                 DateTimePriceTriplet dateTimePriceTriplet = new DateTimePriceTriplet();
                 dateTimePriceTriplet.setGapStart(dailyMgi.getPriorDayRthOhlc().getClose());
                 dateTimePriceTriplet.setGapEnd(dailyMgi.getRthOhlc().getOpen());
-                dateTimePriceTriplet.setGapClosedEnd(findGapUpClose(dailyMgi.getRthOhlc().getOpen(),
+                dateTimePriceTriplet.setGapClosedEnd(findGapDownClose(dailyMgi.getRthOhlc().getOpen(),
                         dailyMgi.getPriorDayRthOhlc().getClose(), dailyMgiMap));
                 gapList.add(dateTimePriceTriplet);
             }
         });
     }
 
-    private DateTimePrice findGapUpClose(DateTimePrice gapClose, DateTimePrice gapOpen, Map<LocalDate, DailyMgi> dailyMgiMap) {
+    private DateTimePrice findGapDownClose(DateTimePrice gapClose, DateTimePrice gapOpen, Map<LocalDate, DailyMgi> dailyMgiMap) {
         for (Map.Entry<LocalDate, DailyMgi> entry : dailyMgiMap.entrySet()) {
             if (entry.getKey().isAfter(gapOpen.getDate())) {
                 for (OHLCIndicator ohlcIndicator : entry.getValue().getOneMinOhlcList()) {
                     if (ZonedDateTime.of(ohlcIndicator.getOpen().getDate(), ohlcIndicator.getOpen().getTime(), ZoneId.of("America/New_York"))
                             .isAfter(ZonedDateTime.of(gapClose.getDate(), gapClose.getTime(), ZoneId.of("America/New_York"))) &&
-                            ohlcIndicator.getLow().getPrice().isLessThanOrEqual(gapOpen.getPrice())) {
+                            ohlcIndicator.getHigh().getPrice().isGreaterThanOrEqual(gapOpen.getPrice())) {
                         return new DateTimePrice(ohlcIndicator.getLow().getPrice(), ohlcIndicator.getLow().getDate(), ohlcIndicator.getLow().getTime());
                     }
                 }
@@ -58,7 +58,7 @@ public class GapUpStatsStats extends TrendVsRangeStats {
         }
         return null;
     }
-
+    
     private void printResults() {
         double sum = 0;
         int count = 0;
@@ -96,8 +96,8 @@ public class GapUpStatsStats extends TrendVsRangeStats {
 
         createRulesAndRunBackTest(series);
 
-        GapUpStatsStats gapUpStatsStats = new GapUpStatsStats();
-        gapUpStatsStats.evaluate();
+        GapDownStatsStats gapDownStatsStats = new GapDownStatsStats();
+        gapDownStatsStats.evaluate();
     }
 
 }

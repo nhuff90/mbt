@@ -50,27 +50,27 @@ public class AmRangeExtBasedOnOpening5mStats extends TrendVsRangeStats {
                     Boolean breakIsUp = isFirstPriceBreakAfterTimeUp(dailyMgi, dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, true), dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, false), MarketTime.RTH_1005);
 
                     if (breakIsUp != null && breakIsUp) {
-                        System.out.println(date + " Trend_Up");
+//                        System.out.println(date + " Trend_Up");
                         trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
                     } else if (breakIsUp != null && !breakIsUp) {
-                        System.out.println(date + " Trend_Down");
+//                        System.out.println(date + " Trend_Down");
                         trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
                     }
 
                 } else if (dailyMgi.getAmRangeOhlc().getHigh() != null && dailyMgi.getPostAmRangeOhlc().getHigh() != null &&
                         dailyMgi.getPostAmRangeOhlc().getHigh().getPrice().isGreaterThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, true))) {
-                    System.out.println(date + " Trend_Up");
+//                    System.out.println(date + " Trend_Up");
                     trendMap.addToTrendUpMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 } else if (dailyMgi.getAmRangeOhlc().getLow() != null && dailyMgi.getPostAmRangeOhlc().getLow() != null &&
                         dailyMgi.getPostAmRangeOhlc().getLow().getPrice().isLessThanOrEqual(dailyMgi.getAmRangeOhlc().getExtensionOfRange(0.5, false))) {
-                    System.out.println(date + " Trend_Down");
+//                    System.out.println(date + " Trend_Down");
                     trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 }
 
                 if (!trendMap.getTrendDownMap().containsKey(dailyMgi) && !trendMap.getTrendUpMap().containsKey(dailyMgi)) {
-                    System.out.println(date + " Range");
+//                    System.out.println(date + " Range");
                     trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 }

@@ -23,19 +23,19 @@
  */
 package ta4jexamples.nate.stats;
 
-import nate.stats.RangeExtBasedOnOpeningRangesStats;
+import nate.stats.SingleRangeExtBasedOnOpeningRangesStats;
 import org.junit.Test;
 import org.ta4j.core.rules.nate.DailyMgi;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class RangeExtBasedOnOpeningRangesStatsOLDTest {
+public class SingleRangeExtBasedOnOpeningRangesStatsTest {
 
     @Test
     public void test() throws InterruptedException {
 
-        RangeExtBasedOnOpeningRangesStats.main(null);
+        SingleRangeExtBasedOnOpeningRangesStats.main(null);
 
         runAMTests();
         runO15mTests();
@@ -47,8 +47,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         AM+IB Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults amIbHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.amIbHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults amIbHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.amIbHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(amIbHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 15));
@@ -83,8 +83,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         o15m+IB Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o15mIbHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.o15mIbHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o15mIbHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.o15mIbHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(o15mIbHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 15));
@@ -116,8 +116,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         o15m+AM Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o15mAmHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.o15mAmHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o15mAmHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.o15mAmHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(o15mAmHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 22));
@@ -157,8 +157,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         o5m+IB Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mIbHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.o5mIbHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mIbHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.o5mIbHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(o5mIbHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 10));
@@ -185,8 +185,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         o5m+AM Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mAmHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.o5mAmHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mAmHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.o5mAmHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(o5mAmHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 10));
@@ -212,8 +212,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         o5m+o15m Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mO15mHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.o5mO15mHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults o5mO15mHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.o5mO15mHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(o5mO15mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 10));
@@ -242,8 +242,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         omar+IB Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarIbHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.omarIbHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarIbHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.omarIbHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(omarIbHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2022, 11, 2));
@@ -270,8 +270,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
         /*
         omar+AM Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarAmHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.omarAmHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarAmHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.omarAmHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(omarAmHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 22));
@@ -297,8 +297,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
                 /*
         omar+o15m Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO15mHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.omarO15mHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO15mHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.omarO15mHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(omarO15mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 28));
@@ -323,8 +323,8 @@ public class RangeExtBasedOnOpeningRangesStatsOLDTest {
                         /*
         omar+o5m Tests
          */
-        final RangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO5mHighLowEqualsResults =
-                RangeExtBasedOnOpeningRangesStats.omarO5mHighLowEqualsResults;
+        final SingleRangeExtBasedOnOpeningRangesStats.HighLowEqualsResults omarO5mHighLowEqualsResults =
+                SingleRangeExtBasedOnOpeningRangesStats.omarO5mHighLowEqualsResults;
 
         // Highs Eq - Trend Up
         assert isOhlcPresent(omarO5mHighLowEqualsResults.getHighEqTrendUp(), LocalDate.of(2023, 3, 28));

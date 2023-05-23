@@ -106,4 +106,21 @@ public class OHLCIndicator {
 
         return (up ? DecimalNum.valueOf(this.high.getPrice().doubleValue() + extensionDelta) : DecimalNum.valueOf(this.low.getPrice().doubleValue() - extensionDelta));
     }
+
+    /**
+     * Returns the price of the retracement percent provided. If up flag is true
+     * the retracement will be above the high. Otherwise it will be below the low.
+     * @param percentRetracement
+     * @param up
+     * @return
+     */
+    public Num getRetracementOfRange(double percentRetracement, boolean up) {
+        if (percentRetracement == 0) {
+            return up ? this.high.getPrice() : this.low.getPrice();
+        }
+        double highToLowDelta = this.high.getPrice().minus(this.low.getPrice()).doubleValue();
+        double retracementDelta = highToLowDelta * percentRetracement;
+
+        return (up ? DecimalNum.valueOf(this.high.getPrice().doubleValue() - retracementDelta) : DecimalNum.valueOf(this.low.getPrice().doubleValue() + retracementDelta));
+    }
 }
