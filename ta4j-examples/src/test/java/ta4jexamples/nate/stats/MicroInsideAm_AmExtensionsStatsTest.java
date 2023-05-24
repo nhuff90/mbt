@@ -23,60 +23,45 @@
  */
 package ta4jexamples.nate.stats;
 
-import nate.stats.NLodBy30mPeriodStats;
-import nate.stats.domain.TrueFalseDailyMgiAndPeriodOhlcResults;
+import nate.stats.MicroInsideAm_AmExtensionsStats;
 import org.junit.Test;
 import org.ta4j.core.indicators.nate.OHLCIndicator;
-import org.ta4j.core.indicators.nate.helper.Period30m;
 import org.ta4j.core.rules.nate.DailyMgi;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-public class NLodBy30mPeriodStatsTest {
+public class MicroInsideAm_AmExtensionsStatsTest {
 
     @Test
     public void test() throws InterruptedException {
 
-        NLodBy30mPeriodStats.main(null);
+        Double extensionToTest = 0.5;
+        MicroInsideAm_AmExtensionsStats.main(Arrays.asList(extensionToTest));
 
-        /*
-        Continuation Tests
-         */
-        final Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> continuationMap =
-                NLodBy30mPeriodStats.resultMap.getPeriodContinuationMap();
+        final MicroInsideAm_AmExtensionsStats.Results results =
+                MicroInsideAm_AmExtensionsStats.microInsideAmResultMap.get(MicroInsideAm_AmExtensionsStats.getExtensionString(extensionToTest));
 
-        // True Tests
-        assert isOhlcPresent(continuationMap.get(Period30m.D).getTrueMap(), LocalDate.of ( 2023, 3, 27));
-        // False Tests
-        assert isOhlcPresent(continuationMap.get(Period30m.E).getFalseMap(), LocalDate.of ( 2023, 3, 27));
-        // No NHOD/NLOD tests
-        assert !isOhlcPresent(continuationMap.get(Period30m.G).getFalseMap(), LocalDate.of ( 2023, 3, 27));
+        // Up Extension Hit Tests
+        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 3, 15));
+        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 1, 10));
 
-        /*
-        Reversal Tests
-         */
-        final Map<Period30m, TrueFalseDailyMgiAndPeriodOhlcResults> reversalMap =
-                NLodBy30mPeriodStats.resultMap.getPeriodReversalMap();
-        // True Tests
-        assert isOhlcPresent(reversalMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 8));
-        assert isOhlcPresent(reversalMap.get(Period30m.G).getTrueMap(), LocalDate.of ( 2023, 3, 15));
-        // False Tests
-        assert isOhlcPresent(reversalMap.get(Period30m.E).getFalseMap(), LocalDate.of ( 2023, 3, 7));
-        assert isOhlcPresent(reversalMap.get(Period30m.D).getFalseMap(), LocalDate.of ( 2023, 3, 1));
-        // No NHOD/NLOD Tests
-        assert !isOhlcPresent(reversalMap.get(Period30m.B).getTrueMap(), LocalDate.of ( 2023, 3, 10));
-        assert !isOhlcPresent(reversalMap.get(Period30m.E).getTrueMap(), LocalDate.of ( 2023, 3, 2));
+        // Down Extension Hit Tests
+        assert isPresent(results.getTrendDown(), LocalDate.of(2022, 11, 15));
+        assert isPresent(results.getTrendDown(), LocalDate.of(2022, 11, 9));
 
+        // Neither Extension Hit Tests
+        assert isPresent(results.getRange(), LocalDate.of(2023, 1, 12));
+        assert isPresent(results.getRange(), LocalDate.of(2023, 1, 26));
 
 
     }
 
-    private boolean isOhlcPresent(Map<DailyMgi, OHLCIndicator> periodNHODResultsMap, LocalDate date) {
-        for (Map.Entry<DailyMgi, OHLCIndicator> entry : periodNHODResultsMap.entrySet()) {
-            DailyMgi dailyMgi = entry.getKey();
-            OHLCIndicator ohlcIndicator = entry.getValue();
-             if (dailyMgi.getRthOhlc().getOpen().getDate().isEqual(date)) {
+    private boolean isPresent(List<DailyMgi> resultMap, LocalDate date) {
+        for (DailyMgi dailyMgi : resultMap) {
+            if (dailyMgi.getRthOhlc().getOpen().getDate().isEqual(date)) {
                 return true;
             }
         }

@@ -17,12 +17,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-public class MicroInsideAm_AmExtensionsStats extends TrendVsRangeStats {
+public class MicroInsideAm_MicroExtensionsStats extends TrendVsRangeStats {
     //todo - Create unit test!!
+    private static LocalDate localDate = LocalDate.of(2022, 1, 1);
 
     public static Map<Double, TrendVsRangeDailyMgiOhlcResults> microInsideAmExtensionMap = new LinkedHashMap<>();
 
-    private static final String MICRO_INSIDE_AM = "Micro Inside AM";
+    private static final String MICRO_INSIDE_AM = "Micro Inside Micro";
 
     public static Map<String, Results> microInsideAmResultMap = new LinkedHashMap<>();
 
@@ -55,12 +56,12 @@ public class MicroInsideAm_AmExtensionsStats extends TrendVsRangeStats {
     }
 
     public static String getExtensionString(double percentExtensionsToTest) {
-        return MICRO_INSIDE_AM + " | AM Ext: " + DoubleFormatter.formatPercent(percentExtensionsToTest);
+        return MICRO_INSIDE_AM + " | Micro Ext: " + DoubleFormatter.formatPercent(percentExtensionsToTest);
     }
 
     protected void populateTrendMaps(Map<LocalDate, DailyMgi> dailyMgiMap, double percentExtensionsToTest) {
         dailyMgiMap.forEach((date, dailyMgi) -> {
-            populateTrendMap(microInsideAmExtensionMap, date, dailyMgi, dailyMgi.getAmRangeOhlc(), percentExtensionsToTest);
+            populateTrendMap(microInsideAmExtensionMap, date, dailyMgi, dailyMgi.getMicroRangeOhlc(), percentExtensionsToTest);
         });
     }
 
@@ -179,25 +180,25 @@ public class MicroInsideAm_AmExtensionsStats extends TrendVsRangeStats {
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2018, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(localDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 1, 26), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        MicroInsideAm_AmExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_AmExtensionsStats();
+        MicroInsideAm_MicroExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_MicroExtensionsStats();
         rangeExtensionsBasedOnOpeningRangesStats.evaluate(percentExtensionsToTestList);
     }
 
     public static void main(List<Double> percentExtensionsToTestList) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
-//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(localDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 15), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        MicroInsideAm_AmExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_AmExtensionsStats();
+        MicroInsideAm_MicroExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_MicroExtensionsStats();
         rangeExtensionsBasedOnOpeningRangesStats.evaluate(percentExtensionsToTestList);
     }
 

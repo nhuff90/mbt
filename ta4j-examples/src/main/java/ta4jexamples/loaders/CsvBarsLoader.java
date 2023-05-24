@@ -79,7 +79,7 @@ public class CsvBarsLoader {
      * @return the bar series from ES after a specific year.
      */
     public static BarSeries loadEs1MinSeriesAfterYear(ZonedDateTime filteredDate) {
-        System.out.println("Loading after year: " + filteredDate);
+        System.out.println("Loading after date: " + filteredDate.toLocalDate());
         return loadCsvSeriesAfterYear(ES_1_MIN_FILENAME, "es-1min", filteredDate);
     }
 

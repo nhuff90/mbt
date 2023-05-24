@@ -23,41 +23,36 @@
  */
 package ta4jexamples.nate.stats;
 
-import nate.stats.MicroInsideAm_AmExtensionsStats;
+import nate.stats.MicroInsideAm_MicroExtensionsStats;
 import org.junit.Test;
-import org.ta4j.core.indicators.nate.OHLCIndicator;
 import org.ta4j.core.rules.nate.DailyMgi;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class MicroInsideAm_AmExtensionsStatsTest {
+public class MicroInsideAm_MicroExtensionsStatsTest {
 
     @Test
     public void test() throws InterruptedException {
 
-        Double extensionToTest = 0.5;
-        MicroInsideAm_AmExtensionsStats.main(Arrays.asList(extensionToTest));
+        Double extensionToTest = 1.0;
+        MicroInsideAm_MicroExtensionsStats.main(Arrays.asList(extensionToTest));
 
-        /*
-        Continuation Tests
-         */
-        final MicroInsideAm_AmExtensionsStats.Results results =
-                MicroInsideAm_AmExtensionsStats.microInsideAmResultMap.get(MicroInsideAm_AmExtensionsStats.getExtensionString(extensionToTest));
+        final MicroInsideAm_MicroExtensionsStats.Results results =
+                MicroInsideAm_MicroExtensionsStats.microInsideAmResultMap.get(MicroInsideAm_MicroExtensionsStats.getExtensionString(extensionToTest));
 
         // Up Extension Hit Tests
-        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 3, 15));
-        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 1, 10));
+        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 1, 26));
+        assert isPresent(results.getTrendUp(), LocalDate.of(2023, 2, 28));
 
         // Down Extension Hit Tests
         assert isPresent(results.getTrendDown(), LocalDate.of(2022, 11, 15));
-        assert isPresent(results.getTrendDown(), LocalDate.of(2022, 11, 9));
+        assert isPresent(results.getTrendDown(), LocalDate.of(2022, 11, 30));
 
         // Neither Extension Hit Tests
-        assert isPresent(results.getRange(), LocalDate.of(2023, 1, 12));
-        assert isPresent(results.getRange(), LocalDate.of(2023, 1, 26));
+        assert isPresent(results.getRange(), LocalDate.of(2022, 12, 22));
+        assert isPresent(results.getRange(), LocalDate.of(2023, 3, 15));
 
 
     }

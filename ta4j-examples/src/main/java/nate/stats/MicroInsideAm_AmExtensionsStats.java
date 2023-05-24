@@ -17,14 +17,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-public class MicroInsideAmExtensionsStats extends TrendVsRangeStats {
-    //todo - Create unit test!!
+public class MicroInsideAm_AmExtensionsStats extends TrendVsRangeStats {
+    private static LocalDate localDate = LocalDate.of(2022, 1, 1);
 
     public static Map<Double, TrendVsRangeDailyMgiOhlcResults> microInsideAmExtensionMap = new LinkedHashMap<>();
 
     private static final String MICRO_INSIDE_AM = "Micro Inside AM";
 
-    public static Map<String, HighLowEqualsResults> microInsideAmResultMap = new LinkedHashMap<>();
+    public static Map<String, Results> microInsideAmResultMap = new LinkedHashMap<>();
 
 
     private static Map<String, String> microInsideAmMapToPrint = new LinkedHashMap<String, String>();
@@ -54,7 +54,7 @@ public class MicroInsideAmExtensionsStats extends TrendVsRangeStats {
         }
     }
 
-    private String getExtensionString(double percentExtensionsToTest) {
+    public static String getExtensionString(double percentExtensionsToTest) {
         return MICRO_INSIDE_AM + " | AM Ext: " + DoubleFormatter.formatPercent(percentExtensionsToTest);
     }
 
@@ -115,8 +115,8 @@ public class MicroInsideAmExtensionsStats extends TrendVsRangeStats {
             initMaps(microInsideAmResultMap, percentExtensionToTest);
     }
 
-    private void initMaps(Map<String, HighLowEqualsResults> map, double percentExtensionToTest) {
-        map.put(getExtensionString(percentExtensionToTest), new HighLowEqualsResults());
+    private void initMaps(Map<String, Results> map, double percentExtensionToTest) {
+        map.put(getExtensionString(percentExtensionToTest), new Results());
     }
 
     private void printMaps() {
@@ -142,105 +142,92 @@ public class MicroInsideAmExtensionsStats extends TrendVsRangeStats {
     }
 
     private void addResultsToMapToPrint(TrendVsRangeDailyMgiOhlcResults extensionMap, List<DailyMgi> microInsideAmList,
-                                        String str, HighLowEqualsResults microInsideAmResults) {
+                                        String str, Results microInsideAmResults) {
         /*
         Micro Inside AM
          */
 
         microInsideAmList.forEach(dailyMgi -> {
             if (extensionMap.getTrendUpMap().containsKey(dailyMgi)) {
-                microInsideAmResults.highEqTrendUp.add(dailyMgi);
+                microInsideAmResults.trendUp.add(dailyMgi);
+                System.out.println("Trend Up: " + dailyMgi.getRthOhlc().getOpen().getDate());
             } else if (extensionMap.getTrendDownMap().containsKey(dailyMgi)) {
-                microInsideAmResults.highEqTrendDown.add(dailyMgi);
+                microInsideAmResults.trendDown.add(dailyMgi);
+                System.out.println("Trend Down: " + dailyMgi.getRthOhlc().getOpen().getDate());
             } else if (extensionMap.getRangeMap().containsKey(dailyMgi)) {
-                microInsideAmResults.highEqRange.add(dailyMgi);
+                microInsideAmResults.range.add(dailyMgi);
+                System.out.println("Range: " + dailyMgi.getRthOhlc().getOpen().getDate());
             }
         });
 
-        StringBuilder highEqSb = new StringBuilder();
-        highEqSb.append(microInsideAmResults.highEqTrendUp.size());
-        highEqSb.append(",");
-        highEqSb.append(microInsideAmResults.highEqTrendDown.size());
-        highEqSb.append(",");
-        highEqSb.append(microInsideAmResults.highEqRange.size());
-        highEqSb.append(",");
-        highEqSb.append(microInsideAmList.size());
+        StringBuilder sb = new StringBuilder();
+        sb.append(microInsideAmResults.trendUp.size());
+        sb.append(",");
+        sb.append(microInsideAmResults.trendDown.size());
+        sb.append(",");
+        sb.append(microInsideAmResults.range.size());
+        sb.append(",");
+        sb.append(microInsideAmList.size());
 
         if (microInsideAmMapToPrint.containsKey(str) && !microInsideAmMapToPrint.get(str).equals("")) {
             String resultsString = microInsideAmMapToPrint.get(str);
-            microInsideAmMapToPrint.put(str, resultsString + "," + highEqSb.toString());
+            microInsideAmMapToPrint.put(str, resultsString + "," + sb.toString());
         } else {
-            microInsideAmMapToPrint.put(str, highEqSb.toString());
+            microInsideAmMapToPrint.put(str, sb.toString());
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
         // Getting a bar series (from any provider: CSV, web service, etc.)
-        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(localDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
 //        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
 
         createRulesAndRunBackTest(series);
 
-        MicroInsideAmExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAmExtensionsStats();
+        MicroInsideAm_AmExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_AmExtensionsStats();
         rangeExtensionsBasedOnOpeningRangesStats.evaluate(percentExtensionsToTestList);
     }
 
-    public static class HighLowEqualsResults {
-        List<DailyMgi> highEqTrendUp = new ArrayList<>();
-        List<DailyMgi> highEqTrendDown = new ArrayList<>();
-        List<DailyMgi> highEqRange = new ArrayList<>();
+    public static void main(List<Double> percentExtensionsToTestList) throws InterruptedException {
+        // Getting a bar series (from any provider: CSV, web service, etc.)
+        BarSeries series = CsvBarsLoader.loadEs1MinSeriesAfterYear(ZonedDateTime.of(localDate, LocalTime.of(9, 30), ZoneId.of("America/New_York")));
+//        BarSeries series = CsvBarsLoader.loadEs1MinSeriesSpecificDate( ZonedDateTime.of ( LocalDate.of ( 2023, 3, 6), LocalTime.of ( 9, 30 ), ZoneId.of ( "America/New_York" )));
 
-        List<DailyMgi> lowEqTrendUp = new ArrayList<>();
-        List<DailyMgi> lowEqTrendDown = new ArrayList<>();
-        List<DailyMgi> lowEqRange = new ArrayList<>();
 
-        public List<DailyMgi> getHighEqTrendUp() {
-            return highEqTrendUp;
+        createRulesAndRunBackTest(series);
+
+        MicroInsideAm_AmExtensionsStats rangeExtensionsBasedOnOpeningRangesStats = new MicroInsideAm_AmExtensionsStats();
+        rangeExtensionsBasedOnOpeningRangesStats.evaluate(percentExtensionsToTestList);
+    }
+
+    public static class Results {
+        List<DailyMgi> trendUp = new ArrayList<>();
+        List<DailyMgi> trendDown = new ArrayList<>();
+        List<DailyMgi> range = new ArrayList<>();
+
+        public List<DailyMgi> getTrendUp() {
+            return trendUp;
         }
 
-        public void setHighEqTrendUp(List<DailyMgi> highEqTrendUp) {
-            this.highEqTrendUp = highEqTrendUp;
+        public void setTrendUp(List<DailyMgi> trendUp) {
+            this.trendUp = trendUp;
         }
 
-        public List<DailyMgi> getHighEqTrendDown() {
-            return highEqTrendDown;
+        public List<DailyMgi> getTrendDown() {
+            return trendDown;
         }
 
-        public void setHighEqTrendDown(List<DailyMgi> highEqTrendDown) {
-            this.highEqTrendDown = highEqTrendDown;
+        public void setTrendDown(List<DailyMgi> trendDown) {
+            this.trendDown = trendDown;
         }
 
-        public List<DailyMgi> getHighEqRange() {
-            return highEqRange;
+        public List<DailyMgi> getRange() {
+            return range;
         }
 
-        public void setHighEqRange(List<DailyMgi> highEqRange) {
-            this.highEqRange = highEqRange;
-        }
-
-        public List<DailyMgi> getLowEqTrendUp() {
-            return lowEqTrendUp;
-        }
-
-        public void setLowEqTrendUp(List<DailyMgi> lowEqTrendUp) {
-            this.lowEqTrendUp = lowEqTrendUp;
-        }
-
-        public List<DailyMgi> getLowEqTrendDown() {
-            return lowEqTrendDown;
-        }
-
-        public void setLowEqTrendDown(List<DailyMgi> lowEqTrendDown) {
-            this.lowEqTrendDown = lowEqTrendDown;
-        }
-
-        public List<DailyMgi> getLowEqRange() {
-            return lowEqRange;
-        }
-
-        public void setLowEqRange(List<DailyMgi> lowEqRange) {
-            this.lowEqRange = lowEqRange;
+        public void setRange(List<DailyMgi> range) {
+            this.range = range;
         }
     }
 }
