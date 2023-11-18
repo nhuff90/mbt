@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 public class TrendVsRangeDailyMgiOhlcResults {
     Map<DailyMgi, OHLCIndicator> trendUpMap = new LinkedHashMap<>();
     Map<DailyMgi, OHLCIndicator> trendDownMap = new LinkedHashMap<>();
+    Map<DailyMgi, OHLCIndicator> bullishRangeMap = new LinkedHashMap<>();
+    Map<DailyMgi, OHLCIndicator> bearishRangeMap = new LinkedHashMap<>();
     Map<DailyMgi, OHLCIndicator> rangeMap = new LinkedHashMap<>();
     Map<DailyMgi, OHLCIndicator> allMap = new LinkedHashMap<>();
 
@@ -21,6 +23,16 @@ public class TrendVsRangeDailyMgiOhlcResults {
 
     public void addToTrendDownMap(DailyMgi dailyMgi, OHLCIndicator ohlcIndicator) {
         trendDownMap.put(dailyMgi, ohlcIndicator);
+        allMap.put(dailyMgi, ohlcIndicator);
+    }
+
+    public void addToBullishRangeMap(DailyMgi dailyMgi, OHLCIndicator ohlcIndicator) {
+        bullishRangeMap.put(dailyMgi, ohlcIndicator);
+        allMap.put(dailyMgi, ohlcIndicator);
+    }
+
+    public void addToBearishRangeMap(DailyMgi dailyMgi, OHLCIndicator ohlcIndicator) {
+        bearishRangeMap.put(dailyMgi, ohlcIndicator);
         allMap.put(dailyMgi, ohlcIndicator);
     }
 
@@ -37,12 +49,20 @@ public class TrendVsRangeDailyMgiOhlcResults {
         return trendDownMap;
     }
 
+    public Map<DailyMgi, OHLCIndicator> getBullishRangeMap() {
+        return bullishRangeMap;
+    }
+
+    public Map<DailyMgi, OHLCIndicator> getBearishRangeMap() {
+        return bearishRangeMap;
+    }
+
     public Map<DailyMgi, OHLCIndicator> getRangeMap() {
         return rangeMap;
     }
 
     public int getTotalEntries() {
-        return rangeMap.size() + trendUpMap.size() + trendDownMap.size();
+        return rangeMap.size() + trendUpMap.size() + trendDownMap.size() + bullishRangeMap.size() + bearishRangeMap.size();
     }
 
     public Map<DailyMgi, OHLCIndicator> getAllMap() {

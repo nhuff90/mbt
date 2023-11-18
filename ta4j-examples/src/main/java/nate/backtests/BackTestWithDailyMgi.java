@@ -26,7 +26,7 @@ public abstract class BackTestWithDailyMgi {
             System.out.println("No trades taken");
         } else {
             ResultsAnalysis resultsAnalysis = new ResultsAnalysis(series, tradingRecord);
-            resultsAnalysis.printAllTrades();
+//            resultsAnalysis.printAllTrades();
             resultsAnalysis.printResults(buyingRulesStr, sellingRulesStr);
         }
     }

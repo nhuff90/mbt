@@ -625,32 +625,39 @@ public class DailyMgi {
             */
             /*
             Am Ext Up
-            1. 150% AM Extension Hit
+            1. 100% AM Extension Hit
             */
             /*
             Am Ext Down
-            1. 150% AM Extension Hit
+            1. 100% AM Extension Hit
             */
             if (amRangeOhlc.getLow() != null && microRangeOhlc.getLow() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
                     amRangeOhlc.getLow().getPrice().isGreaterThan(microRangeOhlc.getLow().getPrice()) &&
-                    microRangeOhlc.getLow().getPrice().isGreaterThan(pmRangeOhlc.getLow().getPrice()) &&
-                    rthOhlc.getOpen().getPrice().isGreaterThan(pmRangeOhlc.getHigh().getPrice())) {
-                dailyTrend = DailyTrend.TREND_DOWN;
+                    microRangeOhlc.getLow().getPrice().isGreaterThan(pmRangeOhlc.getLow().getPrice())) {
+                if (rthOhlc.getClose().getPrice().isLessThanOrEqual(amRangeOhlc.getExtensionOfRange( 1, false))) {
+                    dailyTrend = DailyTrend.TREND_DOWN;
+                    System.out.println("TREND_DOWN - Date: " + rthOhlc.getClose().getDate());
+                } else if (rthOhlc.getClose().getPrice().isLessThanOrEqual(amRangeOhlc.getLow().getPrice())) {
+                    dailyTrend = DailyTrend.BEARISH_RANGE;
+                    System.out.println("BEARISH_RANGE - Date: " + rthOhlc.getClose().getDate());
+                }
 
             } else if (amRangeOhlc.getHigh() != null && microRangeOhlc.getHigh() != null && rthOhlc.getOpen() != null && rthOhlc.getClose() != null &&
                     amRangeOhlc.getHigh().getPrice().isLessThan(microRangeOhlc.getHigh().getPrice()) &&
-                    microRangeOhlc.getHigh().getPrice().isLessThan(pmRangeOhlc.getHigh().getPrice()) &&
-                    rthOhlc.getOpen().getPrice().isLessThan(pmRangeOhlc.getLow().getPrice())) {
-                dailyTrend = DailyTrend.TREND_UP;
+                    microRangeOhlc.getHigh().getPrice().isLessThan(pmRangeOhlc.getHigh().getPrice())) {
 
-            } else if (amRangeOhlc.getLow() != null && rthOhlc.getOpen() != null &&
-                    rthOhlc.getHigh().getPrice().isLessThanOrEqual(amRangeOhlc.getExtensionOfRange(1.5, false))) {
-                dailyTrend = DailyTrend.AM_EXT_DOWN;
-            } else if (amRangeOhlc.getLow() != null && rthOhlc.getOpen() != null &&
-                    rthOhlc.getHigh().getPrice().isLessThanOrEqual(amRangeOhlc.getExtensionOfRange(1.5, false))) {
-                dailyTrend = DailyTrend.AM_EXT_DOWN;
+                if (rthOhlc.getClose().getPrice().isGreaterThanOrEqual(amRangeOhlc.getExtensionOfRange( 1, true))) {
+                    dailyTrend = DailyTrend.TREND_UP;
+                    System.out.println("TREND_UP - Date: " + rthOhlc.getClose().getDate());
+                } else if (rthOhlc.getClose().getPrice().isGreaterThanOrEqual(amRangeOhlc.getHigh().getPrice())) {
+                    dailyTrend = DailyTrend.BULLISH_RANGE;
+                    System.out.println("BULLISH_RANGE - Date: " + rthOhlc.getClose().getDate());
+                }
             } else {
+//                System.out.println("Close: " + rthOhlc.getClose().getPrice() + "| High: " + rthOhlc.getHigh().getPrice() + "| Low: " + rthOhlc.getLow().getPrice());
+//                System.out.println("100% Ext Up: " + amRangeOhlc.getExtensionOfRange( 1, true) + "| 100% Ext Down: " + amRangeOhlc.getExtensionOfRange( 1, false));
                 dailyTrend = DailyTrend.RANGE;
+                System.out.println("RANGE - Date: " + rthOhlc.getClose().getDate());
             }
         }
     }

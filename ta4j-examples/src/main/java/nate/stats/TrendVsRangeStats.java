@@ -14,16 +14,6 @@ public abstract class TrendVsRangeStats extends Stats {
         dailyMgiMap.forEach((date, dailyMgi) -> {
 
             if (dailyMgi.getRthOhlc().getHigh() != null && dailyMgi.getRthOhlc().getLow() != null) {
-                /*
-                Trend up
-                1. AMH < MicroH < PMH
-                2. Open < PML
-                 */
-                /*
-                Trend down
-                1. AML > MicroL > PMH
-                2. Open > PMH
-                 */
                 if (dailyMgi.getDailyTrend() == DailyTrend.TREND_DOWN) {
 //                    System.out.println(date + " Trend_Down");
                     trendMap.addToTrendDownMap(dailyMgi, dailyMgi.getRthOhlc());
@@ -35,6 +25,14 @@ public abstract class TrendVsRangeStats extends Stats {
                 } else if (dailyMgi.getDailyTrend() == DailyTrend.RANGE) {
 //                    System.out.println(date + " Range");
                     trendMap.addToRangeMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                } else if (dailyMgi.getDailyTrend() == DailyTrend.BULLISH_RANGE) {
+//                    System.out.println(date + " BULLISH_RANGE");
+                    trendMap.addToBullishRangeMap(dailyMgi, dailyMgi.getRthOhlc());
+
+                } else if (dailyMgi.getDailyTrend() == DailyTrend.BEARISH_RANGE) {
+//                    System.out.println(date + " BEARISH_RANGE");
+                    trendMap.addToBearishRangeMap(dailyMgi, dailyMgi.getRthOhlc());
 
                 }
             }
